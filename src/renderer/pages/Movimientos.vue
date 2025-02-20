@@ -1,24 +1,23 @@
 <template>
 
-
-
     <DataTable>
-
-
         <Column field="id" header="ID"></Column>
     </DataTable>
 
-    <Button label="Importar Excel" @click="importarExcel(dataMovimientos)" />
+    <!-- <Button label="Importar Excel" @click="importarExcel" /> -->
+    <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
+    @select="importarExcel" />
     <Toast />
 </template>
 <script>
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useMovimientos} from '../composables/useMovimientos';
+import FileUpload from 'primevue/fileupload';
 
 
 export default defineComponent({
@@ -27,27 +26,20 @@ export default defineComponent({
         Button,
         Column,
         DataTable,
-        Toast
+        Toast,
+        FileUpload
     },
-
-
 
     setup() {
 
-        const toast = useToast();
         const dataMovimientos = ref([]);
 
         const { importarExcel, guardarExcelMovimientos } = useMovimientos();
        
-
-
-
-
         return {
             importarExcel,
             dataMovimientos,
             guardarExcelMovimientos
-
         }
     }
 })

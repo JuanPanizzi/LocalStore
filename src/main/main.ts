@@ -1,8 +1,12 @@
 import { app, BrowserWindow, ipcMain, session, Menu, shell } from 'electron';
 import { join } from 'path';
 import { ipcMainProcess } from "./ipcMain";  
+// Ruta correcta dentro del directorio de la app en Electron
+
+
 
 function createWindow() {
+
 
   // Crea la ventana splash
   const splash = new BrowserWindow({

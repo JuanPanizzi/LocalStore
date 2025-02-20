@@ -1,14 +1,15 @@
 import * as XLSX from "xlsx-js-style";
-import { toast } from "primevue/toast";
-import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha';
+import { formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
+import { useToast } from "primevue/usetoast";
 
 
 export function useMovimientos() {
 
 
-    const importarExcel = async (event, data) => {
+    const toast = useToast();
 
-        console.log('data', data)
+    const importarExcel = async (event) => {
+
 
         const file = event.files[0]; // Obtener el archivo seleccionado
         if (!file) return;
@@ -119,7 +120,7 @@ export function useMovimientos() {
                         ...row,
                         fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
                     }));
-
+                    console.log('exito')
                     toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
 
                 } else {
@@ -128,12 +129,14 @@ export function useMovimientos() {
                         if (response.campoIncompleto == 'Campo desconocido') {
                             toast.add({ severity: "error", summary: `Error al cargar los datos`, detail: "El archivo excel posee datos incompletos.", life: 5000 });
                         } else {
-
+                            console.log(' fail')
                             toast.add({ severity: "error", summary: `Error al cargar los datos`, detail: `El archivo excel posee datos incompletos, revisar los datos de la columna "${response.campoIncompleto}".`, life: 6000 });
                         }
                     }
                 }
             } catch (error) {
+                console.log(' fail 2')
+
                 console.error(error);
                 toast.add({ severity: "error", summary: "Error", detail: "Error al cargar los datos, intente nuevamente.", life: 3000 });
             }
