@@ -8,6 +8,25 @@ export function useMovimientos() {
 
     const toast = useToast();
 
+
+    const obtenerMovimientos = () => {
+
+        try {
+            const response = window.electronAPI.obtenerMovimientos();
+            // console.log('response', response.data)
+
+            if(response.success){
+                console.log('datos obtenidos correctamente', response.data)
+            }else{
+                throw new Error(response.error)
+            }
+
+        } catch (error) {
+            console.log('no se pudieron traer los datos:', error)
+        }
+
+    }
+
     const importarExcel = async (event) => {
 
 
@@ -157,7 +176,8 @@ export function useMovimientos() {
 
     return {
         importarExcel,
-        guardarExcelMovimientos
+        guardarExcelMovimientos,
+        obtenerMovimientos
     }
 
 }

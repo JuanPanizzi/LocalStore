@@ -1,6 +1,27 @@
 import Database from 'better-sqlite3';
 // import { formatFecha } from '../../utils/funcionesFecha'
 import path from 'path';
+import sqlite3 from 'better-sqlite3';
+
+const DB_PATH = 'ls_database.db';
+
+export async function obtenerMovimientos() {
+  
+    const db = new sqlite3(DB_PATH, { verbose: console.log });
+try {
+    
+  const result = db.prepare(`SELECT * FROM movimientos_materiales`);
+  console.log('result', result)
+  
+  return {success: true, data: result}
+
+} catch (error) {
+  console.log('error al obtener los datos', error)
+  return {success: false, error}
+}
+    
+
+}
 
 
 export async function guardarExcelMovimientos(data) {

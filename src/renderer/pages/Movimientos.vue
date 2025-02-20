@@ -7,6 +7,7 @@
     <!-- <Button label="Importar Excel" @click="importarExcel" /> -->
     <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
     @select="importarExcel" />
+    <Button label="Traer datos test" severity="success" @click="obtenerMovimientos" />
     <Toast />
 </template>
 <script>
@@ -34,12 +35,13 @@ export default defineComponent({
 
         const dataMovimientos = ref([]);
 
-        const { importarExcel, guardarExcelMovimientos } = useMovimientos();
+        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
        
         return {
             importarExcel,
             dataMovimientos,
-            guardarExcelMovimientos
+            guardarExcelMovimientos,
+            obtenerMovimientos
         }
     }
 })
