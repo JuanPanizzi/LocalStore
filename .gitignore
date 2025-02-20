@@ -1,0 +1,8 @@
+node_modules
+dist
+build
+*.zip
+.vscode
+.ideadist.zip
+dist.zip
+dist.zip

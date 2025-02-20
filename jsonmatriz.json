@@ -1,0 +1,239 @@
+{
+    "Incendio": [
+      {
+        "planta": "Planta Lubricantes",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS2-3030E"
+      },
+      {
+        "planta": "Planta Lubricantes",
+        "sistema": "Detección por Aspiración",
+        "equipo": "Vesda VLF - VLC - VLS"
+      },
+      {
+        "planta": "Laboratorio Control Calidad Lubricantes",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Laboratorio Derivados de Parafinas",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Sala de Llaves CT-40",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Blending de Lubricantes",
+        "sistema": "Extinción de Incendio",
+        "equipo": "Kidde FenwalNet FN-6000"
+      },
+      {
+        "planta": "Blending de Lubricantes",
+        "sistema": "Detección por Aspiración",
+        "equipo": "Kidde Analaser II"
+      },
+      {
+        "planta": "Depósito de Aerosoles",
+        "sistema": "Extinción de Incendio",
+        "equipo": "Notifier AFP-200"
+      },
+      {
+        "planta": "Recepción - Baldes Vacíos y Anexos I II III",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Aceites Terminados",
+        "sistema": "Detección de Incendio",
+        "equipo": "Kidde FenwalNet FN-6000"
+      },
+      {
+        "planta": "Aceites Terminados",
+        "sistema": "Detección por Aspiración",
+        "equipo": "Kidde Analaser II"
+      },
+      {
+        "planta": "Silo Automático",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS2-3030E"
+      },
+      {
+        "planta": "Oficina MAS",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Galpones GCH1 / GCH2",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Sala de Archivos y Servidores",
+        "sistema": "Extinción de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Oficinas de Ingeniería e Inspección",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Galpones de Insumos - Envasado y Mtto",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Sala de Operadores Asfalto",
+        "sistema": "Extinción de Incendio",
+        "equipo": "Eagle Quantum Premier"
+      },
+      {
+        "planta": "Laboratorio Control Calidad Asfalto",
+        "sistema": "Detección de Incendio",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Asfalto Modificado",
+        "sistema": "Extinción de Incendio",
+        "equipo": "Notifier NFS-320E"
+      }
+    ],
+    "Gases": [
+      {
+        "planta": "Laboratorio Control Calidad Lubricantes",
+        "sistema": "Detección y Alarma de Gases",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Laboratorio Derivados de Parafinas",
+        "sistema": "Detección y Alarma de Gases",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Hornos E-300 / E-304",
+        "sistema": "Detección y Alarma de Gases",
+        "equipo": "Honeywell XCD"
+      },
+      {
+        "planta": "Calentadores B-2001 / B-2002",
+        "sistema": "Detección y Alarma de Gases",
+        "equipo": "Notifier NFS-320E"
+      },
+      {
+        "planta": "Emulsiones Asfálticas",
+        "sistema": "Detección y Alarma de Gases",
+        "equipo": "Honeywell S3KUL2 SERIE 3000 MKII"
+      }
+    ],
+    "Hidrantes": [
+      {
+        "planta": "Red Exterior Lubricantes",
+        "sistema": "Extinción de Incendios",
+        "equipo": "Hidrantes / Manifolds / Monitores"
+      },
+      {
+        "planta": "Red Exterior Asfaltos",
+        "sistema": "Extinción de Incendios",
+        "equipo": "Hidrantes / Manifolds / Monitores"
+      },
+      {
+        "planta": "Planta Asfalto K-19 / Cargadero",
+        "sistema": "Extinción de Incendios",
+        "equipo": "Hidrantes / Manifolds / Monitores"
+      },
+      {
+        "planta": "Planta Asfalto P.S.A. / API-12",
+        "sistema": "Extinción de Incendios",
+        "equipo": "Hidrantes / Manifolds / Monitores"
+      },
+      {
+        "planta": "Cargadero de Lubricantes",
+        "sistema": "Extinción de Incendios",
+        "equipo": "Hidrantes / Manifolds / Monitores"
+      }
+    ],
+    "Alarma": [
+      {
+        "planta": "Planta Lubricantes",
+        "sistema": "Alarma y Extinción de Incendios",
+        "equipo": "Estaciones de Alarma ECA"
+      }
+    ],
+    "Diluvio": [
+      {
+        "planta": "Depósito de Aerosoles",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Válvula Diluvio GEM"
+      },
+      {
+        "planta": "Pta. Asfalto K-19 TK-Solventes",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Válvula Diluvio GEM"
+      },
+      {
+        "planta": "Pta. Asfalto Cargadero de Camiones",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Válvulas Diluvio Bermad"
+      }
+    ],
+    "Bomba Espuma": [
+      {
+        "planta": "Pta. Asfalto Cargadero de Camiones",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Bomba Dosificadora FireDos"
+      }
+    ],
+    "Cajas": [
+      {
+        "planta": "Planta Lubricantes",
+        "sistema": "Extinción de Incendios",
+        "equipo": "Bocas Hidrantes Equipadas (BHIE)"
+      }
+    ],
+    "Tanques": [
+      {
+        "planta": "Red Exterior Planta Lubricantes",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Red Exterior Planta Asfaltos",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Depósito de Aerosoles",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Pta. Lubricantes Cargadero de Camiones",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Pta. Asfalto Cargadero de Camiones",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Pta. Asfalto K-19",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Pta. Asfalto P.S.A.",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      },
+      {
+        "planta": "Pta. Asfalto API-12",
+        "sistema": "Extinción de Incendios por Sofocación",
+        "equipo": "Tanques de Espuma AFFF"
+      }
+    ]
+  }
+  

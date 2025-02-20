@@ -1,0 +1,54 @@
+informe,planta,sistema,equipo
+"Incendio","Planta Lubricantes","Detección de Incendio","Notifier NFS2-3030E"
+"Incendio","Planta Lubricantes","Detección por Aspiración","Vesda VLF - VLC - VLS"
+"Incendio","Laboratorio Control Calidad Lubricantes","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Laboratorio Derivados de Parafinas","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Sala de Llaves CT-40","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Blending de Lubricantes","Extinción de Incendio","Kidde FenwalNet FN-6000"
+"Incendio","Blending de Lubricantes","Detección por Aspiración","Kidde Analaser II"
+"Incendio","Depósito de Aerosoles","Extinción de Incendio","Notifier AFP-200"
+"Incendio","Recepción - Baldes Vacíos y Anexos I II III","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Aceites Terminados","Detección de Incendio","Kidde FenwalNet FN-6000"
+"Incendio","Aceites Terminados","Detección por Aspiración","Kidde Analaser II"
+"Incendio","Silo Automático","Detección de Incendio","Notifier NFS2-3030E"
+"Incendio","Oficina MAS","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Galpones GCH1 / GCH2","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Sala de Archivos y Servidores","Extinción de Incendio","Notifier NFS-320E"
+"Incendio","Oficinas de Ingeniería e Inspección","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Galpones de Insumos - Envasado y Mtto","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Sala de Operadores Asfalto","Extinción de Incendio","Eagle Quantum Premier"
+"Incendio","Laboratorio Control Calidad Asfalto","Detección de Incendio","Notifier NFS-320E"
+"Incendio","Asfalto Modificado","Extinción de Incendio","Notifier NFS-320E"
+
+"Gases", "Laboratorio Control Calidad Lubricantes", "Detección y Alarma de Gases", "Notifier NFS-320E"
+"Gases", "Laboratorio Derivados de Parafinas", "Detección y Alarma de Gases", "Notifier NFS-320E"
+"Gases", "Hornos E-300 / E-304", "Detección y Alarma de Gases", "Honeywell XCD"
+"Gases", "Calentadores B-2001 / B-2002", "Detección y Alarma de Gases", "Notifier NFS-320E"
+"Gases", "Emulsiones Asfálticas", "Detección y Alarma de Gases", "Honeywell S3KUL2 SERIE 3000 MKII"
+
+"Hidrantes", "Red Exterior Lubricantes", "Extinción de Incendios", "Hidrantes / Manifolds / Monitores"
+"Hidrantes", "Red Exterior Asfaltos", "Extinción de Incendios", "Hidrantes / Manifolds / Monitores"
+"Hidrantes", "Planta Asfalto K-19 / Cargadero", "Extinción de Incendios", "Hidrantes / Manifolds / Monitores"
+"Hidrantes", "Planta Asfalto P.S.A. / API-12", "Extinción de Incendios", "Hidrantes / Manifolds / Monitores"
+"Hidrantes", "Cargadero de Lubricantes", "Extinción de Incendios", "Hidrantes / Manifolds / Monitores"
+
+"Alarma", "Planta Lubricantes", "Alarma y Extinción de Incendios", "Estaciones de Alarma ECA"
+
+"Diluvio", "Depósito de Aerosoles","Extinción de Incendios por Sofocación","Válvula Diluvio GEM"
+"Diluvio", "Pta. Asfalto K-19 TK-Solventes","Extinción de Incendios por Sofocación","Válvula Diluvio GEM"
+"Diluvio", "Pta. Asfalto Cargadero de Camiones","Extinción de Incendios por Sofocación","Válvulas Diluvio Bermad"
+
+"Espuma", "Pta. Asfalto Cargadero de Camiones","Extinción de Incendios por Sofocación", "Bomba Dosificadora FireDos"
+
+"Cajas", "Planta Lubricantes", "Extinción de Incendios", "Bocas Hidrantes Equipadas (BHIE)"
+
+"Tanques", "Red Exterior Planta Lubricantes","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Red Exterior Planta Asfaltos","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Depósito de Aerosoles","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Pta. Lubricantes Cargadero de Camiones","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Pta. Asfalto Cargadero de Camiones","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Pta. Asfalto K-19","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Pta. Asfalto P.S.A.","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+"Tanques", "Pta. Asfalto API-12","Extinción de Incendios por Sofocación","Tanques de Espuma AFFF"
+
+ 
