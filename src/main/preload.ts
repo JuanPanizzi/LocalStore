@@ -9,5 +9,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   },
   // insertData: (data: { name: string; age: number }) => ipcRenderer.invoke('insert-data', data),
   // getData: () => ipcRenderer.invoke('get-data'),
+  guardarExcelMovimientos: (data: any) => ipcRenderer.invoke('guardar-excel-movimientos', data),
   
 });
