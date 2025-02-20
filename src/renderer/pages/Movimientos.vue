@@ -109,6 +109,7 @@ export default defineComponent({
                 });
 
 
+
                 if (fechasInvalidas.length > 0) {
                     const columnasInvalidas = [...new Set(fechasInvalidas.map(item => item.columna))];
                     const mensaje = `Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en las siguientes columnas: ${columnasInvalidas.map(col => `"${col}"`).join(", ")}`;
