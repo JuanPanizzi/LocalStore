@@ -55,14 +55,23 @@ export default defineComponent({
        
         const seleccionarExcel = async (event) => {
         const response = await importarExcel(event);
-        console.log('response seleccionar excel', response)
+        
         if(response.success){
             dataMovimientos.value = response.data;
             toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
         }else {
-            toast.add({ severity: "error", summary: `Error`, detail: "Error al cargar los datos intente, nuevamente.", life: 5000 });
-        }
+        
+            switch(response.message){
 
+                case 'Faltan columnas':
+                    toast.add({ severity: "error", summary: `Error`, detail: "Faltan columnas en el archivo excel, intente nuevamente.", life: 5000 });
+                break;
+                case 'Fechas inválidas':
+                toast.add({ severity: "error", summary: `Error`, detail: "Se encontraron fechas inválidas en el archivo excel, intente nuevamente.", life: 5000 });
+
+                break;
+            }
+        }
     };
 
 
@@ -71,10 +80,8 @@ export default defineComponent({
             const response = await obtenerMovimientos();
 
             if(response.success){
-                console.log('response', response)
                 dataMovimientos.value = response.data;
             }else{
-                console.log('entro en el else, response', response)
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });
             }
 

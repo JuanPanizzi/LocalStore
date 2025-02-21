@@ -33,10 +33,13 @@ export function useMovimientos() {
     }
 
     const importarExcel = async (event) => {
-
+        return new Promise((resolve, reject) => {
 
         const file = event.files[0]; // Obtener el archivo seleccionado
-        if (!file) return;
+        if (!file){
+            return reject({ success: false, message: "No se proporcionó archivo" });
+        } 
+
 
         const reader = new FileReader();
         reader.onload = async (e) => {
@@ -70,12 +73,12 @@ export function useMovimientos() {
             );
 
             if (columnasFaltantes.length > 0) {
-                toast.add({
-                    severity: "error", summary: "No se cargaron los datos", detail: `Faltan las siguientes columnas en el archivo excel: ${columnasFaltantes.join(", ")}`,
-                    life: 6000
-                });
+                // toast.add({
+                //     severity: "error", summary: "No se cargaron los datos", detail: `Faltan las siguientes columnas en el archivo excel: ${columnasFaltantes.join(", ")}`,
+                //     life: 6000
+                // });
 
-                return;
+                return resolve({ success: false, message: "Faltan columnas" });
             }
 
             // Formatear los datos para el DataTable
@@ -129,7 +132,7 @@ export function useMovimientos() {
                 const columnasInvalidas = [...new Set(fechasInvalidas.map(item => item.columna))];
                 const mensaje = `Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en las siguientes columnas: ${columnasInvalidas.map(col => `"${col}"`).join(", ")}`;
                 toast.add({ severity: "error", summary: "Fechas Inválidas", detail: mensaje, life: 9000 });
-                return;
+                return resolve({ success: false, message: "Fechas inválidas" });
             }
 
 
@@ -145,11 +148,11 @@ export function useMovimientos() {
                         fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
                     }));
                   
-                    return {success: true, data: movimientos}
+                    resolve({ success: true, data: movimientos });
 
                 } else {
-
-                   throw new Error(); 
+                    reject({ success: false });
+                //    throw new Error(); 
                     // if (response.error == 'Campos incompletos') {
                     //     if (response.campoIncompleto == 'Campo desconocido') {
                   
@@ -164,11 +167,15 @@ export function useMovimientos() {
                 }
             } catch (error) {
                 console.error(error);
-                return {success: false}
+                reject({ success: false, error });
             }
         };
-
+        reader.onerror = (error) => {
+            reject({ success: false, error });
+          };
+      
         reader.readAsArrayBuffer(file); // Leer el archivo como ArrayBuffer
+     })
     };
 
     const guardarExcelMovimientos = async (data) => {
@@ -176,6 +183,7 @@ export function useMovimientos() {
             const response = await window.electronAPI.guardarExcelMovimientos(data);
 
             if(response.success){
+
                 return {success: true, data: response.data} 
 
             }

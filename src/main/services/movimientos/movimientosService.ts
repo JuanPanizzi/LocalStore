@@ -6,12 +6,11 @@ export async function obtenerMovimientos() {
 try {
     
   const result = db.prepare(`SELECT * FROM movimientos_materiales`).all(); 
-  console.log('result', result)
   
   return {success: true, data: result}
 
 } catch (error) {
-  console.log('error al obtener los datos', error)
+  // console.log('error al obtener los datos', error)
   return {success: false, error}
 }
     
