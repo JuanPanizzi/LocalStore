@@ -89,6 +89,7 @@ export async function guardarInforme(data) {
     return { success: false, error: error };
   }
 }
+
 export async function guardarInformesExcel(data) {
   const db = new Database('database.db');
 

@@ -21,7 +21,7 @@
     
     <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
         <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
-        @select="importarExcel" />
+        @select="seleccionarExcel" />
     </div>
     <Toast />
 </section>
@@ -53,8 +53,20 @@ export default defineComponent({
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
        
+        const seleccionarExcel = async (event) => {
+        const response = await importarExcel(event);
+        console.log('response seleccionar excel', response)
+        if(response.success){
+            dataMovimientos.value = response.data;
+            toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
+        }else {
+            toast.add({ severity: "error", summary: `Error`, detail: "Error al cargar los datos intente, nuevamente.", life: 5000 });
+        }
 
-        onMounted( async ()=>{
+    };
+
+
+        onMounted(async ()=>{
 
             const response = await obtenerMovimientos();
 
@@ -66,9 +78,10 @@ export default defineComponent({
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });
             }
 
-        })
+        });
 
         return {
+            seleccionarExcel,
             importarExcel,
             dataMovimientos,
             guardarExcelMovimientos,

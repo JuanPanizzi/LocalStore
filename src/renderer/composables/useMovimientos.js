@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx-js-style";
-import { formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
+import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
 
 
@@ -140,29 +140,31 @@ export function useMovimientos() {
 
                 if (response.success) {
                     // Solo si el reemplazo es exitoso, formatear las fechas para el frontend
-                    dataInformeServicios.value = response.data.map((row) => ({
+                    const movimientos = response.data.map((row) => ({
                         ...row,
                         fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
                     }));
-                    console.log('exito')
-                    toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
+                  
+                    return {success: true, data: movimientos}
 
                 } else {
 
-                    if (response.error == 'Campos incompletos') {
-                        if (response.campoIncompleto == 'Campo desconocido') {
-                            toast.add({ severity: "error", summary: `Error al cargar los datos`, detail: "El archivo excel posee datos incompletos.", life: 5000 });
-                        } else {
-                            console.log(' fail')
-                            toast.add({ severity: "error", summary: `Error al cargar los datos`, detail: `El archivo excel posee datos incompletos, revisar los datos de la columna "${response.campoIncompleto}".`, life: 6000 });
-                        }
-                    }
+                   throw new Error(); 
+                    // if (response.error == 'Campos incompletos') {
+                    //     if (response.campoIncompleto == 'Campo desconocido') {
+                  
+                    //         return {success: false, campoIncompleto: 'columna desconocida'}
+                  
+                    //     } else {
+                  
+                    //         console.log(' fail')
+                    //         return {success: false, campoIncompleto: response.campoIncompleto}
+                    //     }
+                    // }
                 }
             } catch (error) {
-                console.log(' fail 2')
-
                 console.error(error);
-                toast.add({ severity: "error", summary: "Error", detail: "Error al cargar los datos, intente nuevamente.", life: 3000 });
+                return {success: false}
             }
         };
 
@@ -172,10 +174,14 @@ export function useMovimientos() {
     const guardarExcelMovimientos = async (data) => {
         try {
             const response = await window.electronAPI.guardarExcelMovimientos(data);
-            return response; // Devuelve `true` si fue exitoso
+
+            if(response.success){
+                return {success: true, data: response.data} 
+
+            }
         } catch (error) {
             console.error("Error al reemplazar datos en la base de datos:", error);
-            return false; // Devuelve `false` si hubo algún error
+            return {success: false,}
         }
     };
 
