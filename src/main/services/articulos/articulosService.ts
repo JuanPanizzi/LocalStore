@@ -4,7 +4,7 @@ export const obtenerArticulos = async () => {
 
 
     try {
-        const result = db.prepare(`SELECT * FROM articulos`).all();
+        const result = db.prepare(`SELECT * FROM articulsos`).all();
         console.log('result', result);
         return { success: true, data: result }
     } catch (error) {

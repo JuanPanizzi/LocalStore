@@ -92,7 +92,7 @@ export default {
 
 <style>
 body {
-  background: #3256f5 !important;
+  background: #68686b !important;
 }
 
 .p-menubar-item:not(.p-disabled) > .p-menubar-item-content:hover {

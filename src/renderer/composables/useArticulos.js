@@ -11,7 +11,7 @@ export function useArticulos(){
             if(response.success){
                 return {success: true, data: response.data};
             }else{
-                throw new Error('Error al obtener los datos, intente nuevamente')
+                throw new Error('Error al obtener los datos')
             }
             
         } catch (error) {
