@@ -1,12 +1,7 @@
 import { BrowserWindow, ipcMain } from "electron";
-// import { handleInformeServicios } from './handlers/informeServicios';
-// import { handleRepuestosMateriales } from "./handlers/repuestosMateriales";
-// import { handleCorrectivos } from "./handlers/correctivos";
-// import { handleRequerimientos } from "./handlers/requerimientos";
-import path from 'path';
 import Database from 'better-sqlite3';
 import { handleMovimientos } from "./handlers/movimientos";
-// import { handleDevoluciones } from "./handlers/devoluciones";
+import { handleArticulos } from "./handlers/articulos";
 
 export function ipcMainProcess(win: BrowserWindow) {
   
@@ -22,11 +17,8 @@ export function ipcMainProcess(win: BrowserWindow) {
   
 
     handleMovimientos(ipcMain);
-  // handleInformeServicios(ipcMain);
-  // handleRepuestosMateriales(ipcMain);
-  // handleCorrectivos(ipcMain);
-  // handleRequerimientos(ipcMain);
-  // handleDevoluciones(ipcMain);
+    handleArticulos(ipcMain);
+
 
 
 }

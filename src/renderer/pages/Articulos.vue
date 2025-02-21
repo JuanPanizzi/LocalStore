@@ -11,7 +11,7 @@
     </DataTable>
     
 
-
+<Toast />
 </template>
 
 <script>
@@ -19,17 +19,21 @@ import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { defineComponent, onMounted, ref } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
     name: 'Articulos',
     components: {
       DataTable,
-      Column
+      Column,
+      Toast
     },
     
     setup(){
-
       const dataArticulos = ref(null);
+      const toast = useToast();
+
       const { obtenerArticulos } = useArticulos();
       
       onMounted(async () => {
@@ -40,6 +44,9 @@ export default defineComponent({
           console.log('response', response.data)
         }else{
           console.log('no se pudieron obtener los articulos')
+          console.log(response.error)
+          toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los datos, intente nuevamente', life: 3000 });
+
         }
 
       })
