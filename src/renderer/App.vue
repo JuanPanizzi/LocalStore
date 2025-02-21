@@ -35,6 +35,10 @@ export default {
         label: 'Movimientos de Materiales',
         command: () => loadComponent('Movimientos'),
       },
+      {
+        label: 'Artículos',
+        command: () => loadComponent('Articulos'),
+      },
      
     ]);
 
@@ -65,15 +69,15 @@ export default {
     // Load the default component
     loadComponent('Movimientos');
 
-    const gtc = () => {
-      console.log('Go to config App'); 
-      currentComponent.value = defineAsyncComponent(() =>
-        import('./components/Settings.vue').catch((e) => {
-          console.log('Error al cargar el componente', e);
-          return import('./components/Settings.vue'); // Fallback
-        })
-      );
-    };
+      const gtc = () => {
+        
+        currentComponent.value = defineAsyncComponent(() =>
+          import('./pages/Movimientos.vue').catch((e) => {
+         
+            return import('./pages/Movimientos.vue'); // Fallback
+          })
+        );
+      };
 
     return {
       items,
@@ -88,7 +92,7 @@ export default {
 
 <style>
 body {
-  background: #252525 !important;
+  background: #68686b !important;
 }
 
 .p-menubar-item:not(.p-disabled) > .p-menubar-item-content:hover {
