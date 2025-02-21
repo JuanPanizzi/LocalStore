@@ -2,7 +2,6 @@ import db from '../../database/database'
 
 export const obtenerArticulos = async () => {
 
-
     try {
         const result = db.prepare(`SELECT * FROM articulos`).all();
         console.log('result', result);
