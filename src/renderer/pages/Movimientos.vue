@@ -1,20 +1,36 @@
 <template>
+<section class="p-5">
 
-    <DataTable>
-        <Column field="id" header="ID"></Column>
+    <DataTable  :value="dataMovimientos" paginator :rows="5" tableStyle="min-width: 50rem"
+    showGridlines style="max-width: 90vw" class="mx-auto">
+        <Column field="numero_movimiento" header="ID"></Column>
+        <Column field="fecha" header="FECHA"></Column>
+        <Column field="tipo_movimiento" header="MOVIMIENTO"></Column>
+        <Column field="origen" header="ORIGEN"></Column>
+        <Column field="destino" header="DESTINO"></Column>
+        <Column field="cantidad" header="CANTIDAD"></Column>
+        <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
+        <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
+        <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
+        <Column field="remito" header="REMITO"></Column>
+        <Column field="numero_almacenes" header="N° ALMACENES"></Column>
+        <Column field="material_repuesto" header="MATERIAL / REPUESTO"></Column>
+        <Column field="marca" header="MARCA"></Column>
+        <Column field="modelo" header="MODELO"></Column>
     </DataTable>
-
-    <!-- <Button label="Importar Excel" @click="importarExcel" /> -->
-    <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
-    @select="importarExcel" />
-    <Button label="Traer datos test" severity="success" @click="obtenerMovimientos" />
+    
+    <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
+        <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
+        @select="importarExcel" />
+    </div>
     <Toast />
+</section>
 </template>
 <script>
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useMovimientos} from '../composables/useMovimientos';
@@ -33,15 +49,31 @@ export default defineComponent({
 
     setup() {
 
-        const dataMovimientos = ref([]);
-
+        const dataMovimientos = ref(null);
+        const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
        
+
+        onMounted( async ()=>{
+
+            const response = await obtenerMovimientos();
+
+            if(response.success){
+                console.log('response', response)
+                dataMovimientos.value = response.data;
+            }else{
+                console.log('entro en el else, response', response)
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });
+            }
+
+        })
+
         return {
             importarExcel,
             dataMovimientos,
             guardarExcelMovimientos,
-            obtenerMovimientos
+            obtenerMovimientos,
+            
         }
     }
 })

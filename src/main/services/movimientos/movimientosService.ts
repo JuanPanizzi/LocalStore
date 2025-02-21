@@ -5,7 +5,7 @@ export async function obtenerMovimientos() {
   
 try {
     
-  const result = db.prepare(`SELECT * FROM movimientos_materiales`).all(); //Aqui me esta faltando la conexion a la base de datos
+  const result = db.prepare(`SELECT * FROM movimientos_materiales`).all(); 
   console.log('result', result)
   
   return {success: true, data: result}
@@ -22,7 +22,7 @@ try {
 export async function guardarExcelMovimientos(data) {
   
     // const db = new Database(dbPath);
-  console.log('hola')
+  
   // try {
 
   //   // const db = new Database('ls_database.db');

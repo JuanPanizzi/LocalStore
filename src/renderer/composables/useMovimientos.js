@@ -13,16 +13,21 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerMovimientos();
-            console.log('response', response.data)
+            // console.log('response', response.data)
 
             if(response.success){
-                console.log('datos obtenidos correctamente', response.data)
+                // console.log('datos obtenidos correctamente', response.data)
+
+                return {success: true, data: response.data}
             }else{
                 throw new Error(response.error)
             }
 
         } catch (error) {
+            
             console.log('no se pudieron traer los datos:', error)
+            
+            return {success: false}
         }
 
     }
