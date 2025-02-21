@@ -20,13 +20,6 @@ export function ipcMainProcess(win: BrowserWindow) {
   });
   
   
-  // Obtener la ruta absoluta de la base de datos
-  const dbPath = path.resolve(__dirname, 'ls_database.db');
-  console.log("Conectanasdasddo a la base de datos en:", dbPath); // Depuración
-  const db = new Database(dbPath);
-  const result = db.prepare(`SELECT * FROM movimientos_materiales`).all();
-  console.log('result llalala', result)
-
 
     handleMovimientos(ipcMain);
   // handleInformeServicios(ipcMain);

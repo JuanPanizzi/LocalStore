@@ -9,11 +9,11 @@ export function useMovimientos() {
     const toast = useToast();
 
 
-    const obtenerMovimientos = () => {
+    const obtenerMovimientos = async () => {
 
         try {
-            const response = window.electronAPI.obtenerMovimientos();
-            // console.log('response', response.data)
+            const response = await window.electronAPI.obtenerMovimientos();
+            console.log('response', response.data)
 
             if(response.success){
                 console.log('datos obtenidos correctamente', response.data)
