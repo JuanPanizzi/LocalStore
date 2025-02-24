@@ -4,7 +4,6 @@ export function useArticulos(){
 
     const obtenerArticulos  = async () => {
 
-
         try {
             const response = await window.electronAPI.obtenerArticulos();
 
@@ -17,11 +16,29 @@ export function useArticulos(){
         } catch (error) {
             return {success: false, error: error?.message || 'Error al obtener los datos, intente nuevamente' }
         }
+    }
+
+    const crearArticulo = async (articulo) => {
+        
+        try {
+            const response = await window.electronAPI.crearArticulo(articulo);
+            
+            if(response.success){
+                return {success: true, data: response.data}
+            }
+
+        } catch (error) {
+            return {success: false}
+        }
 
     }
 
     return {
-        obtenerArticulos
+        obtenerArticulos,
+        crearArticulo
     }
 
+
+
 }
+

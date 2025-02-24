@@ -42,12 +42,12 @@
 //     ipcMain.handle('agregar-hipervinculo-permiso-trabajo', async (event, data) => {
 //         return await agregarHipervinculoPermiso(data)
 //     });
-//     ipcMain.handle('seleccionar-hipervinculo-permiso-trabajo', async () => {
-//         const { filePaths } = await dialog.showOpenDialog({
-//             properties: ['openFile'],
-//         });
-//         return filePaths[0];
-//     });
+    // ipcMain.handle('seleccionar-hipervinculo-permiso-trabajo', async () => {
+    //     const { filePaths } = await dialog.showOpenDialog({
+    //         properties: ['openFile'],
+    //     });
+    //     return filePaths[0];
+    // });
 //     ipcMain.handle('abrir-hipervinculo-permiso-trabajo', async (_, filePath) => {
 //         console.log('fileparth en informes ', filePath)
 //         if (filePath) {
