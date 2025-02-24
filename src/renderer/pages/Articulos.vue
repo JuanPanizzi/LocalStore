@@ -4,7 +4,7 @@
     <Button label="Nuevo" @click="handleForm(true)" />
   </div>
 
-  <DataTable :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
+  <DataTable  :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
     style="max-width: 90vw" class="mx-auto">
     <Column field="material" header="MATERIAL"></Column>
     <Column field="marca" header="MARCA"></Column>
@@ -13,10 +13,10 @@
     <Column field="cantidad" header="CANTIDAD"></Column>
   </DataTable>
 
+  <!-- Aquí se envuelve el formulario en el diálogo modal -->
   <Dialog v-model:visible="showForm" modal header="Crear Artículo Nuevo">
-    <FormularioArticulos @guardarArticulo="guardarArticulo" />
+    <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
   </Dialog>
-
   <Toast />
 </template>
 
@@ -50,10 +50,10 @@ export default defineComponent({
     const dataArticulos = ref(null);
     const toast = useToast();
     const showForm = ref(false);
-
+    
 
     const handleForm = (show) => {
-      showForm.value = show
+      showForm.value = show;
     }
 
     async function guardarArticulo(datosFormulario) {
@@ -63,6 +63,8 @@ export default defineComponent({
       if (response.success) {
         console.log('response', response)
         dataArticulos.value.push(response.data)
+
+        handleForm(false);
       } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 3000 });
       }
