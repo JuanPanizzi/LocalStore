@@ -1,7 +1,7 @@
 <template>
 
   <div>
-    <Button label="Nuevo"  />
+    <Button label="Nuevo" @click="handleForm(true)" />
   </div>
 
 <DataTable  :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem"
@@ -11,9 +11,9 @@
         <Column field="modelo" header="MODELO"></Column>
         <Column field="imagen" header="IMAGEN"></Column>
         <Column field="cantidad" header="CANTIDAD"></Column>
-        
-    </DataTable>
-    
+</DataTable>
+
+<FormularioArticulos v-if="showForm"  @guardarArticulo="crearArticulo"/>
 
 <Toast />
 </template>
@@ -25,13 +25,19 @@ import { defineComponent, onMounted, ref } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import InputNumber from 'primevue/inputnumber';
+import FormularioArticulos from '../components/Articulos/FormularioArticulos.vue';
+import Button from 'primevue/button';
 
 export default defineComponent({
     name: 'Articulos',
     components: {
       DataTable,
       Column,
-      Toast
+      Toast,
+      InputNumber,
+      Button,
+      FormularioArticulos
     },
     
     setup(){
@@ -39,13 +45,17 @@ export default defineComponent({
       
       const dataArticulos = ref(null);
       const toast = useToast();
+      const showForm = ref(false);
 
       
+      const handleForm = (show) => {
+        showForm.value = show
+      }
 
-
-      async function crearArticulo() {
-
-        const response = await crearArticulo();
+      async function crearArticulo(datosFormulario) {
+        console.log('datos que recibe el componente padre del formulario hijo', datosFormulario)
+        
+        const response = await crearArticulo(datosFormulario);
 
         if(response.success){
           dataArticulos.value.push(response.data)
@@ -61,7 +71,7 @@ export default defineComponent({
         const response = await obtenerArticulos();
         if(response.success){
           dataArticulos.value = response.data;
-          console.log('response', response.data)
+          // console.log('response', response.data)
         }else{
           console.log('no se pudieron obtener los articulos')
           console.log(response.error)
@@ -75,7 +85,9 @@ export default defineComponent({
       return {
 
           dataArticulos,
-          crearArticulo
+          crearArticulo,
+          showForm,
+          handleForm
 
 
         }
