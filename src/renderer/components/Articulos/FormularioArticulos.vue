@@ -41,7 +41,7 @@
                 </div>
                 <div class="flex items-center justify-between">
                     <label class="legend w-2/5 text-right font-semibold mr-3">Imagen:</label>
-                    <Button label="Seleccionar Imagen" />
+                    <Button label="Seleccionar Imagen" @click="seleccionarImagen"  />
                 </div>
             </div>
         </div>
@@ -83,6 +83,17 @@ export default defineComponent({
             imagen: ''
         })
 
+        const seleccionarImagen = async () => {
+
+            try {
+                const response = await window.electronAPI.seleccionarImagen();
+                console.log('response en front', response)
+                
+            } catch (error) {
+                    console.log('error')
+            }
+        }
+
         const cerrarDialog = () =>{
             reiniciarFormulario();
             emit('cancelar')
@@ -103,7 +114,8 @@ export default defineComponent({
             formData,
             guardarArticulo,
             reiniciarFormulario,
-            cerrarDialog
+            cerrarDialog,
+            seleccionarImagen
         }
     }
 

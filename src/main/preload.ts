@@ -13,6 +13,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   obtenerArticulos: () => ipcRenderer.invoke('obtener-articulos'),
   crearArticulo: (nuevoArticulo) => ipcRenderer.invoke('nuevo-articulo', nuevoArticulo),
   guardarExcelMovimientos: (data: any) => ipcRenderer.invoke('guardar-excel-movimientos', data),
-  
+  seleccionarImagen: ()=> ipcRenderer.invoke('seleccionar-imagen-articulo')
 
 });
