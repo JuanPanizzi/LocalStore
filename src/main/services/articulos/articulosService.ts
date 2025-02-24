@@ -15,7 +15,7 @@ export const obtenerArticulos = async () => {
 
 }
 
-export const nuevoArticulo = (articulo) => {
+export const crearArticulo = async (articulo) => {
 
     const { material, marca, modelo, cantidad, imagen} = articulo;
 

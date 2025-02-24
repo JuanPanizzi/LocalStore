@@ -18,10 +18,10 @@ export function useArticulos(){
         }
     }
 
-    const nuevoArticulo = async (articulo) => {
+    const crearArticulo = async (articulo) => {
         
         try {
-            const response = await window.electronAPI.nuevoArticulo();
+            const response = await window.electronAPI.crearArticulo(articulo);
             
             if(response.success){
                 return {success: true, data: response.data}
@@ -35,7 +35,7 @@ export function useArticulos(){
 
     return {
         obtenerArticulos,
-        nuevoArticulo
+        crearArticulo
     }
 
 
