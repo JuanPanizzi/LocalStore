@@ -53,9 +53,9 @@ export default defineComponent({
       }
 
       async function crearArticulo(datosFormulario) {
-        console.log('datos que recibe el componente padre del formulario hijo', datosFormulario)
+        // console.log('datos que recibe el componente padre del formulario hijo', datosFormulario)
         
-        const response = await crearArticulo(datosFormulario);
+        const response = await window.electronAPI.nuevoArticulo(datosFormulario);
 
         if(response.success){
           dataArticulos.value.push(response.data)
@@ -86,6 +86,7 @@ export default defineComponent({
 
           dataArticulos,
           crearArticulo,
+          nuevoArticulo,
           showForm,
           handleForm
 

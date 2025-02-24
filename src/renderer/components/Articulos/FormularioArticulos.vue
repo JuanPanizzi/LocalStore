@@ -1,5 +1,5 @@
 <template>
-    <Form v-if="showForm" class="px-3 pb-20">
+    <Form  class="px-3 pb-20">
         <div>
             <h1 class="text-center text-3xl font-semibold mt-6">
                 Registro de Materiales
