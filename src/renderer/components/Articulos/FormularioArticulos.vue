@@ -13,7 +13,7 @@
 
 
                 </div>
-                <div class="input-group flex items-center justify-between">
+                <div class=" flex items-center justify-between">
                     <label class="legend w-2/5 text-left font-semibold">Marca:</label>
                     <InputText v-model="formData.marca" class="w-3/5" aria-required="required" />
 
@@ -32,24 +32,23 @@
             <div class="col-span-1 space-y-4 flex flex-col bg-red">
 
 
-                <div class="input-group flex justify-between items-center">
+                <div class=" flex justify-between items-center">
 
                     <label class="legend w-2/5 text-left font-semibold">Cantidad:</label>
                     <InputText v-model="formData.cantidad" readonly class="w-3/5" />
 
 
                 </div>
-                <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Imagen:</p>
-                    <InputText v-model="formData.imagen" class="w-3/5" />
-
+                <div class="flex items-center justify-between">
+                    <label class="legend w-2/5 text-right font-semibold mr-3">Imagen:</label>
+                    <Button label="Seleccionar Imagen" />
                 </div>
             </div>
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" outlined severity="secondary" @click="" />
+            <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2"  severity="secondary" @click="reiniciarFormulario" />
             <Button label="Cancelar" icon="pi " class="mr-2" severity="danger" @click="cerrarDialog" />
-            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="" />
+            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
             <!-- <Button v-if="showForm" type="button" label="Generar PDF" severity="danger" icon="pi pi-file-pdf"
    class=" ml-2 text-right " :disabled="!formCompleto"  @click="generarPdf"  /> -->
         </div>

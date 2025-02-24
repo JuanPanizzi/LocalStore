@@ -284,7 +284,6 @@
       <p v-if="hipervinculoPermisoTrabajo" class="my-4 break-words whitespace-normal w-full"><b>Archivo
           seleccionado:</b>
         {{ hipervinculoPermisoTrabajo }}</p>
-
     </div>
     <div class="flex justify-end gap-2">
       <Button type="button" label="Cancelar" severity="secondary" @click="cerrarDialogPermisoTrabajo" />
