@@ -1,5 +1,9 @@
 <template>
 
+  <div>
+    <Button label="Nuevo"  />
+  </div>
+
 <DataTable  :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem"
     showGridlines style="max-width: 90vw" class="mx-auto">
         <Column field="material" header="MATERIAL"></Column>
@@ -31,11 +35,27 @@ export default defineComponent({
     },
     
     setup(){
+      const { obtenerArticulos, nuevoArticulo } = useArticulos();
+      
       const dataArticulos = ref(null);
       const toast = useToast();
 
-      const { obtenerArticulos } = useArticulos();
       
+
+
+      async function crearArticulo() {
+
+        const response = await crearArticulo();
+
+        if(response.success){
+          dataArticulos.value.push(response.data)
+        }else{
+          toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 3000 });
+        }
+
+      } 
+
+
       onMounted(async () => {
 
         const response = await obtenerArticulos();
@@ -54,7 +74,8 @@ export default defineComponent({
 
       return {
 
-          dataArticulos
+          dataArticulos,
+          crearArticulo
 
 
         }
