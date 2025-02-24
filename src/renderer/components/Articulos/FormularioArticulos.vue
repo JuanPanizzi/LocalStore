@@ -1,7 +1,7 @@
 <template>
 
 
-    <Form  class="px-3 pb-20">
+    <Form  class="px-3 ">
 
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-2 gap-4 p-4 border border-gray rounded-lg ">
@@ -23,7 +23,7 @@
 
                 <div class="flex items-center  justify-between">
                     <label class="legend w-2/5 text-left font-semibold">Modelo:</label>
-                    <InputText v-model="formData.modelo" readonly class="w-3/5" />
+                    <InputText v-model="formData.modelo"  class="w-3/5" />
 
                 </div>
             </div>
@@ -35,7 +35,7 @@
                 <div class=" flex justify-between items-center">
 
                     <label class="legend w-2/5 text-left font-semibold">Cantidad:</label>
-                    <InputText v-model="formData.cantidad" readonly class="w-3/5" />
+                    <InputText v-model="formData.cantidad"  class="w-3/5" />
 
 
                 </div>
@@ -97,7 +97,6 @@ export default defineComponent({
 
         const guardarArticulo = () => {
             emit('guardarArticulo', { ...formData });
-            reiniciarFormulario();
         }
 
         return {

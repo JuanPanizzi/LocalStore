@@ -57,7 +57,6 @@ export default defineComponent({
     }
 
     async function guardarArticulo(datosFormulario) {
-      console.log('datos del cop hijo', datosFormulario)
       const response = await crearArticulo(datosFormulario);
 
       if (response.success) {
@@ -65,6 +64,8 @@ export default defineComponent({
         dataArticulos.value.push(response.data)
 
         handleForm(false);
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 3000 });
+
       } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 3000 });
       }
