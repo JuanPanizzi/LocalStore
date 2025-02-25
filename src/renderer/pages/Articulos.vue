@@ -6,7 +6,8 @@
   </div>
 
   <DataTable v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
-    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" :globalFilterFields="['material']">
+    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" 
+    :globalFilterFields="['material', 'marca']">
 
     <Column field="material" header="MATERIAL" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
@@ -16,7 +17,12 @@
 
     </Column>
     <!-- <Column field="material" header="MATERIAL"></Column> -->
-    <Column field="marca" header="MARCA"></Column>
+    <Column field="marca" header="MARCA" :showFilterMenu="false">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+          placeholder="Buscar por marca" />
+      </template>
+    </Column>
     <Column field="modelo" header="MODELO"></Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
@@ -96,7 +102,9 @@ export default defineComponent({
     const showDialogEditar = ref(false)
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+
     })
 
     const handleForm = (show) => {
