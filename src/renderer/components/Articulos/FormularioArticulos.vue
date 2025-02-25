@@ -1,56 +1,48 @@
 <template>
 
 
-    <Form  class="px-3 ">
+    <Form class="px-3 min-w-[70vw]">
 
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-2 gap-4 p-4 border border-gray rounded-lg ">
-            <!-- Columna 1 -->
-            <div class="col-span-1 space-y-4 flex flex-col    justify-between">
-                <div class="flex  items-center justify-start">
-                    <label class="legend w-2/5  text-left font-semibold">Material:</label>
-                    <InputText v-model="formData.material" class="w-3/5 " aria-required="required" />
+            <div class="flex  items-center justify-start">
+                <label class="legend w-1/5  text-left font-semibold">Material:</label>
+                <InputText v-model="formData.material" class="w-4/5 " aria-required="required" />
+            </div>
+            <div class=" flex items-center justify-between">
+                <label class="legend w-1/5 text-left font-semibold">Marca:</label>
+                <InputText v-model="formData.marca" class="w-4/5" aria-required="required" />
 
-
-                </div>
-                <div class=" flex items-center justify-between">
-                    <label class="legend w-2/5 text-left font-semibold">Marca:</label>
-                    <InputText v-model="formData.marca" class="w-3/5" aria-required="required" />
-
-                </div>
-
-
-
-                <div class="flex items-center  justify-between">
-                    <label class="legend w-2/5 text-left font-semibold">Modelo:</label>
-                    <InputText v-model="formData.modelo"  class="w-3/5" />
-
-                </div>
             </div>
 
-            <!-- Columna 2 -->
-            <div class="col-span-1 space-y-4 flex flex-col bg-red">
 
 
-                <div class=" flex justify-between items-center">
+            <div class="flex items-center  justify-between">
+                <label class="legend w-1/5 text-left font-semibold">Modelo:</label>
+                <InputText v-model="formData.modelo" class="w-4/5" />
 
-                    <label class="legend w-2/5 text-left font-semibold">Cantidad:</label>
-                    <InputText v-model="formData.cantidad"  class="w-3/5" />
+            </div>
 
 
+
+            <div class=" flex justify-between items-center">
+
+                <label class="legend w-1/5 text-left font-semibold">Cantidad:</label>
+                <InputNumber v-model="formData.cantidad" class="w-4/5" />
+
+
+            </div>
+            <div class="flex flex-col items-center justify-center col-span-2">
+                <div class="py-5">
+                    <!-- <label class="legend w-1/5 text-right font-semibold mr-2">Imagen:</label> -->
+                    <Button label="Adjuntar Imagen" icon="pi pi-file" @click="seleccionarImagen" />
                 </div>
-                <div class="flex items-center justify-between">
-                <div>
-
-                    <label class="legend w-2/5 text-right font-semibold mr-3">Imagen:</label>
-                    <Button label="Seleccionar Imagen" @click="seleccionarImagen"  />
-                </div>
-                    <p>{{ imagenSeleccionada }}</p>
-                </div>
+                <p>{{ formData.imagen }}</p>
             </div>
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2"  severity="secondary" @click="reiniciarFormulario" />
+            <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" severity="secondary"
+                @click="reiniciarFormulario" />
             <Button label="Cancelar" icon="pi " class="mr-2" severity="danger" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
             <!-- <Button v-if="showForm" type="button" label="Generar PDF" severity="danger" icon="pi pi-file-pdf"
@@ -83,25 +75,23 @@ export default defineComponent({
             material: '',
             marca: '',
             modelo: '',
-            cantidad: '',
+            cantidad: null,
             imagen: ''
         })
-        const imagenSeleccionada = ref(null);
         const seleccionarImagen = async () => {
 
             try {
                 const response = await window.electronAPI.seleccionarImagen();
-                console.log('response en front', response)
-                if(!response.canceled){
-                    imagenSeleccionada.value = response.filePaths[0]
+                if (!response.canceled) {
+                    formData.imagen = response.filePaths[0]
                 }
-                
+
             } catch (error) {
-                    console.log('error')
+                console.log('error')
             }
         }
 
-        const cerrarDialog = () =>{
+        const cerrarDialog = () => {
             reiniciarFormulario();
             emit('cancelar')
         }
@@ -110,7 +100,7 @@ export default defineComponent({
             formData.marca = '';
             formData.modelo = '';
             formData.imagen = null;
-            formData.cantidad = 0;
+            formData.cantidad = null;
         }
 
         const guardarArticulo = () => {
@@ -123,7 +113,6 @@ export default defineComponent({
             reiniciarFormulario,
             cerrarDialog,
             seleccionarImagen,
-            imagenSeleccionada
         }
     }
 

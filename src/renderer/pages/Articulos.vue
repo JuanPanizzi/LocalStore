@@ -1,11 +1,11 @@
 <template>
 
-  <div>
+  <div class="max-w-[90vw] mx-auto my-5">
     <Button label="Nuevo" @click="handleForm(true)" />
   </div>
 
   <DataTable  :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
-    style="max-width: 90vw" class="mx-auto">
+  class="max-w-[90vw] mx-auto">
     <Column field="material" header="MATERIAL"></Column>
     <Column field="marca" header="MARCA"></Column>
     <Column field="modelo" header="MODELO"></Column>
@@ -58,7 +58,7 @@ export default defineComponent({
 
     async function guardarArticulo(datosFormulario) {
       const response = await crearArticulo(datosFormulario);
-
+      
       if (response.success) {
         console.log('response', response)
         dataArticulos.value.push(response.data)

@@ -6,7 +6,6 @@ export function useArticulos(){
 
         try {
             const response = await window.electronAPI.obtenerArticulos();
-
             if(response.success){
                 return {success: true, data: response.data};
             }else{
@@ -22,9 +21,12 @@ export function useArticulos(){
         
         try {
             const response = await window.electronAPI.crearArticulo(articulo);
+            console.log('response del useArticulos' , response)
             
             if(response.success){
                 return {success: true, data: response.data}
+            }else{
+                throw new Error();
             }
 
         } catch (error) {
