@@ -1,7 +1,7 @@
 <template>
 
     <Dialog v-model:visible="dialogVisible" :modal="true" :header="`EDITAR ARTÍCULO`" @hide="cerrarDialog">
-
+{{ formData }}
         <div class="grid grid-cols-2 gap-4">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5 mr-4  text-left font-semibold">Material / Repuesto:</label>
@@ -23,9 +23,9 @@
             <div class="flex flex-col col-span-2 items-center justify-center ">
                 <div class="py-5">
                     <!-- <label class="legend w-1/5 text-right font-semibold mr-2">Imagen:</label> -->
-                    <Button label="Adjuntar Imagen" icon="pi pi-file" @click="seleccionarImagen" />
+                    <Button label="Adjuntar Imagen" icon="pi pi-file" @click="elegirImagen" />
                 </div>
-                <p>{{ formData.imagen || '' }}</p>
+                <p>{{ formData.imagen }}</p>
             </div>
             
             <div class="mt-8 col-span-2 flex items-center justify-end">
@@ -37,45 +37,53 @@
 
         </div>
     </Dialog>
-
+<Toast/>
 </template>
 <script>
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputNumber from 'primevue/inputnumber';
 import { defineComponent, reactive, ref, watch } from 'vue';
-
+import {useArticulos} from '../../composables/useArticulos.js'
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 export default defineComponent({
     name: 'DialogEditar',
     components: {
         Dialog,
         Button,
-        InputNumber
+        InputNumber,
+        Toast
     },
 
 
     setup(props) {
 
+        const { seleccionarImagen } = useArticulos();
+
         const formData = reactive({ ...props.articuloSeleccionado })
         const dialogVisible = ref(true);
+        const toast = useToast()
 
         const cerrarDialog = () => {
             dialogVisible.value = false;
         }
 
-        const seleccionarImagen = async () => {
+        const elegirImagen = async ( ) =>{
+            const response = await seleccionarImagen();
+            console.log('response', response)
+            if(response.success && !response.data.canceled){
+                    formData.imagen = response.data.filePaths[0];
+            }else if(!response.success){
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al seleccionar la imagen, intente nuevamente', life: 3000 });
 
-            try {
-                const response = await window.electronAPI.seleccionarImagen();
-                if (!response.canceled) {
-                    formData.imagen = response.filePaths[0]
-                }
-
-            } catch (error) {
-                console.log('error')
             }
+
+
         }
+
+   
         watch(
             () => props.articuloSeleccionado,
             (newVal) => {
@@ -87,7 +95,8 @@ export default defineComponent({
             formData,
             dialogVisible,
             cerrarDialog,
-            seleccionarImagen
+            seleccionarImagen,
+            elegirImagen
         }
     },
     props: {

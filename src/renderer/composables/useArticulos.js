@@ -55,11 +55,25 @@ export function useArticulos(){
         }
       }
   
+      const seleccionarImagen = async () => {
+
+        try {
+            const response = await window.electronAPI.seleccionarImagen();
+           
+                return {success: true, data: response}
+            
+
+        } catch (error) {
+            console.log('error')
+            return {success: false}
+        }
+    }
 
     return {
         obtenerArticulos,
         crearArticulo,
-        eliminarArticulo
+        eliminarArticulo,
+        seleccionarImagen
     }
 
 

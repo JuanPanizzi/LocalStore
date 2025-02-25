@@ -43,8 +43,7 @@
                 @click="reiniciarFormulario" />
             <Button label="Cancelar" icon="pi " class="mr-2" severity="danger" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
-            <!-- <Button v-if="showForm" type="button" label="Generar PDF" severity="danger" icon="pi pi-file-pdf"
-   class=" ml-2 text-right " :disabled="!formCompleto"  @click="generarPdf"  /> -->
+          
         </div>
     </Form>
 
