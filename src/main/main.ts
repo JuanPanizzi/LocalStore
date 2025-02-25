@@ -9,20 +9,20 @@ function createWindow() {
 
 
   // Crea la ventana splash
-  const splash = new BrowserWindow({
-    width: 496,  // Igual al ancho del video
-  height: 496, // Igual al alto del video
-    frame: false,
-    alwaysOnTop: true,
-    transparent: true,
-    resizable: false, // Evita que se redimensione
-    webPreferences: {
-      preload: join(app.getAppPath(),'main',  'preload.js'),
-      nodeIntegration: true,
-      contextIsolation: true,
-    }
-  });
-  splash.loadFile(join(app.getAppPath(), 'static', 'splash.html'));
+  // const splash = new BrowserWindow({
+  //   width: 496,  // Igual al ancho del video
+  // height: 496, // Igual al alto del video
+  //   frame: false,
+  //   alwaysOnTop: true,
+  //   transparent: true,
+  //   resizable: false, // Evita que se redimensione
+  //   webPreferences: {
+  //     preload: join(app.getAppPath(),'main',  'preload.js'),
+  //     nodeIntegration: true,
+  //     contextIsolation: true,
+  //   }
+  // });
+  // splash.loadFile(join(app.getAppPath(), 'static', 'splash.html'));
 
   const mainWindow = new BrowserWindow({
     width: 1360,
@@ -48,9 +48,9 @@ function createWindow() {
 
   // Después de 5 segundos, ocultar el splash y mostrar la ventana principal
   setTimeout(() => {
-    splash.close();
+    // splash.close();
     mainWindow.show();
-  }, 5000);
+  }, 1000);
 
   const template = [
     {
