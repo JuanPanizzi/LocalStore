@@ -16,10 +16,20 @@
 
     </Column>
     <!-- <Column field="material" header="MATERIAL"></Column> -->
-    <Column field="marca" header="MARCA" ></Column>
-    <Column field="modelo" header="MODELO" ></Column>
-    <Column field="imagen" header="IMAGEN" ></Column>
-    <Column field="cantidad" header="CANTIDAD" ></Column>
+    <Column field="marca" header="MARCA"></Column>
+    <Column field="modelo" header="MODELO"></Column>
+    <Column field="imagen" header="IMAGEN"></Column>
+    <Column field="cantidad" header="CANTIDAD"></Column>
+    <Column>
+      <template #body="slotProps">
+        <div class="flex ">
+          <Button icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
+          <Button class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
+        </div>
+      </template>
+    </Column>
+
+
   </DataTable>
 
   <!-- Aquí se envuelve el formulario en el diálogo modal -->
@@ -27,6 +37,8 @@
     <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
   </Dialog>
   <Toast />
+  <ConfirmDialog></ConfirmDialog>
+
 </template>
 
 <script>
@@ -42,6 +54,8 @@ import FormularioArticulos from '../components/Articulos/FormularioArticulos.vue
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import { FilterMatchMode } from '@primevue/core/api';
+import ConfirmDialog from 'primevue/confirmdialog';
+import { useConfirm } from 'primevue/useconfirm';
 
 export default defineComponent({
   name: 'Articulos',
@@ -53,14 +67,17 @@ export default defineComponent({
     Button,
     FormularioArticulos,
     Dialog,
+    ConfirmDialog
 
   },
 
   setup() {
-    const { obtenerArticulos, crearArticulo } = useArticulos();
+    const { obtenerArticulos, crearArticulo, eliminarArticulo } = useArticulos();
 
     const dataArticulos = ref(null);
     const toast = useToast();
+    const confirm = useConfirm();
+
     const showForm = ref(false);
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -78,21 +95,64 @@ export default defineComponent({
       if (response.success) {
 
         dataArticulos.value.push(response.data)
-
         handleForm(false);
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 5000 });
 
       } else {
-
         if (response.error == 'Ya existe un artículo con esa marca y modelo') {
           toast.add({ severity: 'error', summary: 'Error', detail: `${response.error}`, life: 5000 });
           return;
         }
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 5000 });
       }
-
     }
 
+    const confirmarEliminacion = (articulo) => {
+
+      const { id } = articulo;
+
+      confirm.require({
+        message: `¿Estás seguro de eliminar este artículo?`,
+        header: 'Atención',
+        icon: 'pi pi-info-circle',
+        rejectLabel: 'Cancelar',
+        rejectProps: {
+          label: 'Cancelar',
+          severity: 'secondary',
+          outlined: true
+        },
+        acceptProps: {
+          label: 'Eliminar',
+          severity: 'danger'
+        },
+        accept: async () => {
+
+          const eliminacion = await eliminarArticulo(id);
+
+          if (eliminacion.success) {
+            const indexArticulo = dataArticulos.value.findIndex(i => i.id === id)
+
+            if (indexArticulo !== -1) {
+              dataArticulos.value.splice(indexArticulo, 1);
+            }
+
+            toast.add({ severity: 'info', summary: 'Éxito', detail: `Artículo eliminado correctamente`, life: 5000 });
+
+          } else {
+
+            if (eliminacion.error == 'No se encontró el articulo') {
+              toast.add({ severity: 'error', summary: 'Error', detail: 'No se encontró el articulo, error al eliminarlo, intente nuevamente', life: 3000 });
+              return;
+            }
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el informe, intente nuevamente', life: 3000 });
+          }
+
+        },
+        // reject: () => {
+        // }
+      });
+
+    }
 
     onMounted(async () => {
 
@@ -113,10 +173,12 @@ export default defineComponent({
 
       dataArticulos,
       crearArticulo,
+      eliminarArticulo,
       guardarArticulo,
       showForm,
       handleForm,
-      filters
+      filters,
+      confirmarEliminacion
 
 
     }

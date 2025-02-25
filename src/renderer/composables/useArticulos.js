@@ -36,9 +36,30 @@ export function useArticulos(){
 
     }
 
+    
+    const eliminarArticulo = async (id) => {
+
+        try {
+          const response = await window.electronAPI.eliminarArticulo(id);
+          if (response.success) {
+            return { success: true, error: response.error }
+          }else{
+
+            if(response.error == 'No se encontró el articulo'){
+                return {sucess: false, error: response.error}
+            }
+
+          }
+        } catch (error) {
+          return { success: false, error: response.error }
+        }
+      }
+  
+
     return {
         obtenerArticulos,
-        crearArticulo
+        crearArticulo,
+        eliminarArticulo
     }
 
 

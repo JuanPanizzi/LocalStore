@@ -1,5 +1,5 @@
 import { dialog, IpcMain } from "electron";
-import { crearArticulo, obtenerArticulos } from "../services/articulos/articulosService";
+import { crearArticulo, eliminarArticulo, obtenerArticulos } from "../services/articulos/articulosService";
 
 export function handleArticulos(ipcMain: IpcMain) {
         ipcMain.handle('obtener-articulos', async () => {
@@ -7,6 +7,9 @@ export function handleArticulos(ipcMain: IpcMain) {
         });
         ipcMain.handle('nuevo-articulo', async (event, nuevoArticulo) => {
             return await crearArticulo(nuevoArticulo);
+        });
+        ipcMain.handle('eliminar-articulo', async (event, articuloId) => {
+            return await eliminarArticulo(articuloId);
         });
         ipcMain.handle('seleccionar-imagen-articulo', async () => {
             const resultadoSeleccion = await dialog.showOpenDialog( {
