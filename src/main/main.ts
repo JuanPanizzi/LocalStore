@@ -4,7 +4,6 @@ import { ipcMainProcess } from "./ipcMain";
 // Ruta correcta dentro del directorio de la app en Electron
 
 
-
 function createWindow() {
 
 

@@ -1,7 +1,6 @@
 <template>
 
     <Dialog v-model:visible="dialogVisible" :modal="true" :header="`EDITAR ARTÍCULO`" @hide="cerrarDialog">
-{{ formData }}
         <div class="grid grid-cols-2 gap-4">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5 mr-4  text-left font-semibold">Material / Repuesto:</label>
@@ -30,7 +29,7 @@
             
             <div class="mt-8 col-span-2 flex items-center justify-end">
             <Button label="Cancelar" icon="pi " class="mr-2" severity="danger" @click="cerrarDialog" />
-            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
+            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="editarArticulo" />
             </div>
 
 
@@ -44,7 +43,7 @@ import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import InputNumber from 'primevue/inputnumber';
 import { defineComponent, reactive, ref, watch } from 'vue';
-import {useArticulos} from '../../composables/useArticulos.js'
+import { useArticulos } from '../../composables/useArticulos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 
@@ -60,7 +59,7 @@ export default defineComponent({
 
     setup(props) {
 
-        const { seleccionarImagen } = useArticulos();
+        const { seleccionarImagen, actualizarArticulo } = useArticulos();
 
         const formData = reactive({ ...props.articuloSeleccionado })
         const dialogVisible = ref(true);
@@ -68,6 +67,15 @@ export default defineComponent({
 
         const cerrarDialog = () => {
             dialogVisible.value = false;
+        }
+
+        const editarArticulo = async () => {
+            const response = await actualizarArticulo(formData)
+            if(response.success){
+                console.log('response editar art', response);
+            }else{
+                console.log('response editar success: false', response)
+            }
         }
 
         const elegirImagen = async ( ) =>{
@@ -96,7 +104,9 @@ export default defineComponent({
             dialogVisible,
             cerrarDialog,
             seleccionarImagen,
-            elegirImagen
+            elegirImagen,
+            editarArticulo,
+            actualizarArticulo
         }
     },
     props: {

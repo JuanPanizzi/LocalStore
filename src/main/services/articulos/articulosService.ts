@@ -4,7 +4,7 @@ export const obtenerArticulos = async () => {
 
     try {
         const result = db.prepare(`SELECT * FROM articulos`).all();
-        
+
         return { success: true, data: result }
     } catch (error) {
         console.log('error al obtener datos', error);
@@ -16,7 +16,7 @@ export const obtenerArticulos = async () => {
 
 export const crearArticulo = async (articulo) => {
 
-    const { material, marca, modelo, cantidad, imagen} = articulo;
+    const { material, marca, modelo, cantidad, imagen } = articulo;
 
     try {
 
@@ -31,11 +31,11 @@ export const crearArticulo = async (articulo) => {
         const result = stmt.run(material, marca, modelo, cantidad, imagen);
 
 
-        if(result.changes === 0){
-            return {success: false};
+        if (result.changes === 0) {
+            return { success: false };
         }
 
-       const nuevoArticulo = {
+        const nuevoArticulo = {
             id: result.lastInsertRowid,
             material,
             marca,
@@ -44,12 +44,12 @@ export const crearArticulo = async (articulo) => {
             cantidad
         }
 
-        return {success: true, data: nuevoArticulo}
+        return { success: true, data: nuevoArticulo }
 
 
     } catch (error) {
         console.log('error al insertar articulo', error)
-        return {success: false, error}
+        return { success: false, error }
     }
 }
 
@@ -58,7 +58,7 @@ export const eliminarArticulo = async (articuloId: number | string) => {
     try {
         const result = db.prepare(`DELETE FROM articulos WHERE id = ?`).run(articuloId);
 
-        if(result.changes == 0){
+        if (result.changes == 0) {
             return { success: false, error: 'No se encontró el articulo' }
         }
 
@@ -67,7 +67,35 @@ export const eliminarArticulo = async (articuloId: number | string) => {
 
     } catch (error) {
         console.log('error', error)
-        return {success: false}
+        return { success: false }
     }
 
+}
+
+export const actualizarArticulo = async (articulo) => {
+    const { material, marca, modelo, cantidad, imagen, id } = articulo;
+    console.log('articulo que llega', articulo)
+    try {
+        // const stmt = db.prepare(`UPDATE articulos SET material = ?, marca = ?, modelo = ?, cantidad = ?, imagen = ? WHERE id = ?`);
+
+        // const result = stmt.run(material, marca, modelo, cantidad, imagen, id);
+        // if(result.changes == 0){
+        //     return { success: false, error: 'No se encontró el informe' }
+        // }
+
+        const stmt = db.prepare(
+            `UPDATE articulos 
+             SET material = ?, marca = ?, modelo = ?, cantidad = ?, imagen = ? 
+             WHERE id = ? 
+             RETURNING *`
+        );
+        const articuloActualizado = stmt.get(material, marca, modelo, cantidad, imagen, id);
+        console.log('articulo actualizado', articuloActualizado)
+
+        return { success: true, data: articuloActualizado }
+
+    } catch (error) {
+        console.log('error al actualizar articulo', error)
+        return {success: false}
+    }
 }

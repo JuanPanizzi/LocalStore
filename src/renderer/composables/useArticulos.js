@@ -55,6 +55,20 @@ export function useArticulos(){
         }
       }
   
+
+      const actualizarArticulo = async (articulo) => {
+        console.log('articulo que llega', articulo)
+        try {
+            const response = await window.electronAPI.actualizarArticulo(articulo);
+            console.log('response actualizarArticulo', response)
+            if(response.sucess){
+                return {succes: true, data: response.data}
+            }
+        } catch (error) {
+            return {success: false}
+        }
+      }
+
       const seleccionarImagen = async () => {
 
         try {
@@ -73,7 +87,8 @@ export function useArticulos(){
         obtenerArticulos,
         crearArticulo,
         eliminarArticulo,
-        seleccionarImagen
+        seleccionarImagen,
+        actualizarArticulo
     }
 
 
