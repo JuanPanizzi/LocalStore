@@ -3,7 +3,7 @@
     <Dialog v-model:visible="dialogVisible" :modal="true" :header="`EDITAR ARTÍCULO`" @hide="cerrarDialog">
 
 
-        <div class="grid grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 gap-4">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5  text-left font-semibold">Material / Repuesto:</label>
                 <InputText v-model="formData.material" class="w-4/5 " aria-required="required" />
