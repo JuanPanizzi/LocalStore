@@ -57,17 +57,23 @@ export default defineComponent({
     }
 
     async function guardarArticulo(datosFormulario) {
+
       const response = await crearArticulo(datosFormulario);
       
       if (response.success) {
-        console.log('response', response)
+       
         dataArticulos.value.push(response.data)
 
         handleForm(false);
-        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 3000 });
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 5000 });
 
       } else {
-        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 3000 });
+
+        if(response.error == 'Ya existe un artículo con esa marca y modelo'){
+          toast.add({ severity: 'error', summary: 'Error', detail: `${response.error}`, life: 5000 });
+          return;
+        }
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 5000 });
       }
 
     }

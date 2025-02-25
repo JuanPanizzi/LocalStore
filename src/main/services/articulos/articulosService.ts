@@ -17,7 +17,16 @@ export const crearArticulo = async (articulo) => {
 
     const { material, marca, modelo, cantidad, imagen} = articulo;
 
+
+
     try {
+
+        const articuloRepetido = db.prepare(`SELECT id FROM articulos WHERE marca = ? AND modelo = ?`).get(marca, modelo);
+
+        if (articuloRepetido) {
+            return { success: false, error: "Ya existe un artículo con esa marca y modelo" };
+        }
+
         const stmt = db.prepare(`INSERT INTO articulos (material, marca, modelo, cantidad, imagen) VALUES (?,?,?,?,?)`);
 
         const result = stmt.run(material, marca, modelo, cantidad, imagen);

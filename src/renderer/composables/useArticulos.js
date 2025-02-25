@@ -21,14 +21,15 @@ export function useArticulos(){
         
         try {
             const response = await window.electronAPI.crearArticulo(articulo);
-            console.log('response del useArticulos' , response)
             
             if(response.success){
                 return {success: true, data: response.data}
             }else{
+                if(response.error == 'Ya existe un artículo con esa marca y modelo'){
+                    return {success: false, error: response.error}
+                }
                 throw new Error();
             }
-
         } catch (error) {
             return {success: false}
         }
