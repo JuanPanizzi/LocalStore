@@ -8,7 +8,7 @@
   <DataTable v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
     tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" :globalFilterFields="['material']">
 
-    <Column field="material" header="MATERIAL">
+    <Column field="material" header="MATERIAL" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
         <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
           placeholder="Buscar por material" />
@@ -16,10 +16,10 @@
 
     </Column>
     <!-- <Column field="material" header="MATERIAL"></Column> -->
-    <Column field="marca" header="MARCA"></Column>
-    <Column field="modelo" header="MODELO"></Column>
-    <Column field="imagen" header="IMAGEN"></Column>
-    <Column field="cantidad" header="CANTIDAD"></Column>
+    <Column field="marca" header="MARCA" ></Column>
+    <Column field="modelo" header="MODELO" ></Column>
+    <Column field="imagen" header="IMAGEN" ></Column>
+    <Column field="cantidad" header="CANTIDAD" ></Column>
   </DataTable>
 
   <!-- Aquí se envuelve el formulario en el diálogo modal -->
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { defineComponent, onMounted, ref } from 'vue';
@@ -65,12 +66,6 @@ export default defineComponent({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       material: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
     })
-
-    const representatives = ref([
-      { name: 'mat' },
-      { name: 'material' },
-
-    ]);
 
     const handleForm = (show) => {
       showForm.value = show;
