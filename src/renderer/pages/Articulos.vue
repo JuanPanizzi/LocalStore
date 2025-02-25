@@ -26,7 +26,7 @@
     <Column field="modelo" header="MODELO" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
         <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-          placeholder="Buscar por marca" />
+          placeholder="Buscar por modelo" />
       </template>
     </Column>
     <Column field="imagen" header="IMAGEN"></Column>
