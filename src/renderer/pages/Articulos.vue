@@ -2,12 +2,20 @@
 
   <div class="max-w-[90vw] mx-auto my-5">
     <Button label="Nuevo" @click="handleForm(true)" />
-    <Button label="Buscar" class="mx-2"/>
+    <Button label="Buscar" class="mx-2" />
   </div>
 
-  <DataTable  :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
-  class="max-w-[90vw] mx-auto">
-    <Column field="material" header="MATERIAL"></Column>
+  <DataTable v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
+    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" :globalFilterFields="['material']">
+
+    <Column field="material" header="MATERIAL">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+          placeholder="Buscar por material" />
+      </template>
+
+    </Column>
+    <!-- <Column field="material" header="MATERIAL"></Column> -->
     <Column field="marca" header="MARCA"></Column>
     <Column field="modelo" header="MODELO"></Column>
     <Column field="imagen" header="IMAGEN"></Column>
@@ -32,6 +40,7 @@ import InputNumber from 'primevue/inputnumber';
 import FormularioArticulos from '../components/Articulos/FormularioArticulos.vue';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
+import { FilterMatchMode } from '@primevue/core/api';
 
 export default defineComponent({
   name: 'Articulos',
@@ -42,7 +51,8 @@ export default defineComponent({
     InputNumber,
     Button,
     FormularioArticulos,
-    Dialog
+    Dialog,
+
   },
 
   setup() {
@@ -51,7 +61,16 @@ export default defineComponent({
     const dataArticulos = ref(null);
     const toast = useToast();
     const showForm = ref(false);
-    
+    const filters = ref({
+      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+    })
+
+    const representatives = ref([
+      { name: 'mat' },
+      { name: 'material' },
+
+    ]);
 
     const handleForm = (show) => {
       showForm.value = show;
@@ -60,9 +79,9 @@ export default defineComponent({
     async function guardarArticulo(datosFormulario) {
 
       const response = await crearArticulo(datosFormulario);
-      
+
       if (response.success) {
-       
+
         dataArticulos.value.push(response.data)
 
         handleForm(false);
@@ -70,7 +89,7 @@ export default defineComponent({
 
       } else {
 
-        if(response.error == 'Ya existe un artículo con esa marca y modelo'){
+        if (response.error == 'Ya existe un artículo con esa marca y modelo') {
           toast.add({ severity: 'error', summary: 'Error', detail: `${response.error}`, life: 5000 });
           return;
         }
@@ -85,7 +104,6 @@ export default defineComponent({
       const response = await obtenerArticulos();
       if (response.success) {
         dataArticulos.value = response.data;
-        // console.log('response', response.data)
       } else {
         console.log('no se pudieron obtener los articulos')
         console.log(response.error)
@@ -102,7 +120,8 @@ export default defineComponent({
       crearArticulo,
       guardarArticulo,
       showForm,
-      handleForm
+      handleForm,
+      filters
 
 
     }

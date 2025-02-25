@@ -4,6 +4,8 @@ export const obtenerArticulos = async () => {
 
     try {
         const result = db.prepare(`SELECT * FROM articulos`).all();
+        console.log(' res´ponse articulso', result)
+        
         return { success: true, data: result }
     } catch (error) {
         console.log('error al obtener datos', error);
