@@ -23,7 +23,12 @@
           placeholder="Buscar por marca" />
       </template>
     </Column>
-    <Column field="modelo" header="MODELO"></Column>
+    <Column field="modelo" header="MODELO" :showFilterMenu="false">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+          placeholder="Buscar por marca" />
+      </template>
+    </Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
     <Column>
@@ -104,6 +109,7 @@ export default defineComponent({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       material: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      modelo: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 
     })
 
