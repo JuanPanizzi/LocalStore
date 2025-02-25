@@ -29,13 +29,18 @@
       </template>
     </Column>
 
-
   </DataTable>
 
-  <!-- Aquí se envuelve el formulario en el diálogo modal -->
+  <!-- Dialog crear articulo -->
   <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
     <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
   </Dialog>
+
+  <DialogEditar v-if="showDialogEditar" :articuloSeleccionado="articuloSeleccionado" />
+
+
+
+
   <Toast />
   <ConfirmDialog></ConfirmDialog>
 
@@ -45,7 +50,7 @@
 
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { defineComponent, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, reactive, ref } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
@@ -56,6 +61,7 @@ import Dialog from 'primevue/dialog';
 import { FilterMatchMode } from '@primevue/core/api';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from 'primevue/useconfirm';
+import DialogEditar from '../components/Articulos/DialogEditar.vue';
 
 export default defineComponent({
   name: 'Articulos',
@@ -67,7 +73,8 @@ export default defineComponent({
     Button,
     FormularioArticulos,
     Dialog,
-    ConfirmDialog
+    ConfirmDialog,
+    DialogEditar
 
   },
 
@@ -77,8 +84,16 @@ export default defineComponent({
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
-
+    const articuloSeleccionado = ref({
+      id: null,
+      material: '',
+      marca: '',
+      modelo: '',
+      cantidad: null,
+      imagen: ''
+    })
     const showForm = ref(false);
+    const showDialogEditar = ref(false)
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       material: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
@@ -105,6 +120,12 @@ export default defineComponent({
         }
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 5000 });
       }
+    }
+
+    const abrirDialogEditar = (articulo) => {
+     
+      articuloSeleccionado.value = { ...articulo};
+      showDialogEditar.value = true;
     }
 
     const confirmarEliminacion = (articulo) => {
@@ -178,7 +199,10 @@ export default defineComponent({
       showForm,
       handleForm,
       filters,
-      confirmarEliminacion
+      confirmarEliminacion,
+      abrirDialogEditar,
+      showDialogEditar,
+      articuloSeleccionado
 
 
     }
