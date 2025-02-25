@@ -14,7 +14,7 @@
   </DataTable>
 
   <!-- Aquí se envuelve el formulario en el diálogo modal -->
-  <Dialog v-model:visible="showForm" modal header="Crear Artículo Nuevo">
+  <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
     <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
   </Dialog>
   <Toast />

@@ -21,7 +21,7 @@ export const crearArticulo = async (articulo) => {
 
     try {
 
-        const articuloRepetido = db.prepare(`SELECT id FROM articulos WHERE marca = ? AND modelo = ?`).get(marca, modelo);
+        const articuloRepetido = db.prepare(`SELECT id FROM articulos WHERE marca = ? COLLATE NOCASE AND modelo = ? COLLATE NOCASE`).get(marca, modelo);
 
         if (articuloRepetido) {
             return { success: false, error: "Ya existe un artículo con esa marca y modelo" };

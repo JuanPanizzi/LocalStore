@@ -1,10 +1,10 @@
 <template>
 
 
-    <Form class="px-3 min-w-[70vw]">
+    <Form class="px-3 min-w-[50vw]  ">
 
         <!-- Grid de inputs alineados -->
-        <div class="grid grid-cols-2 gap-4 p-4 border border-gray rounded-lg ">
+        <div class="grid grid-cols-1 gap-4 p-4 border border-gray rounded-lg ">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5  text-left font-semibold">Material:</label>
                 <InputText v-model="formData.material" class="w-4/5 " aria-required="required" />
@@ -17,7 +17,7 @@
 
 
 
-            <div class="flex items-center  justify-between">
+            <div class="flex items-center  justify-between ">
                 <label class="legend w-1/5 text-left font-semibold">Modelo:</label>
                 <InputText v-model="formData.modelo" class="w-4/5" />
 
@@ -25,14 +25,12 @@
 
 
 
-            <div class=" flex justify-between items-center">
+            <!-- <div class=" flex justify-between items-center">
 
                 <label class="legend w-1/5 text-left font-semibold">Cantidad:</label>
                 <InputNumber v-model="formData.cantidad" class="w-4/5" />
-
-
-            </div>
-            <div class="flex flex-col items-center justify-center col-span-2">
+            </div> -->
+            <div class="flex flex-col items-center justify-center ">
                 <div class="py-5">
                     <!-- <label class="legend w-1/5 text-right font-semibold mr-2">Imagen:</label> -->
                     <Button label="Adjuntar Imagen" icon="pi pi-file" @click="seleccionarImagen" />
