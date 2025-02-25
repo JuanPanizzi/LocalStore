@@ -2,6 +2,7 @@
 
   <div class="max-w-[90vw] mx-auto my-5">
     <Button label="Nuevo" @click="handleForm(true)" />
+    <Button label="Buscar" class="mx-2"/>
   </div>
 
   <DataTable  :value="dataArticulos" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines

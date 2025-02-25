@@ -6,7 +6,7 @@
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-1 gap-4 p-4 border border-gray rounded-lg ">
             <div class="flex  items-center justify-start">
-                <label class="legend w-1/5  text-left font-semibold">Material:</label>
+                <label class="legend w-1/5  text-left font-semibold">Material / Repuesto:</label>
                 <InputText v-model="formData.material" class="w-4/5 " aria-required="required" />
             </div>
             <div class=" flex items-center justify-between">
@@ -73,7 +73,7 @@ export default defineComponent({
             material: '',
             marca: '',
             modelo: '',
-            cantidad: null,
+            cantidad: 0,
             imagen: ''
         })
         const seleccionarImagen = async () => {
@@ -98,7 +98,7 @@ export default defineComponent({
             formData.marca = '';
             formData.modelo = '';
             formData.imagen = null;
-            formData.cantidad = null;
+            formData.cantidad = 0;
         }
 
         const guardarArticulo = () => {
