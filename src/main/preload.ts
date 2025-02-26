@@ -12,7 +12,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // getData: () => ipcRenderer.invoke('get-data'),
   obtenerMovimientos: () => ipcRenderer.invoke('obtener-movimientos'),
   obtenerArticulos: () => ipcRenderer.invoke('obtener-articulos'),
-  guardarMovimiento: ()=> ipcRenderer.invoke('guardar-movimiento'),
+  guardarMovimiento: (movimiento)=> ipcRenderer.invoke('guardar-movimiento', movimiento),
   crearArticulo: (nuevoArticulo) => ipcRenderer.invoke('nuevo-articulo', nuevoArticulo),
   eliminarArticulo: (articuloId)=> ipcRenderer.invoke('eliminar-articulo', articuloId),
   guardarExcelMovimientos: (data: any) => ipcRenderer.invoke('guardar-excel-movimientos', data),

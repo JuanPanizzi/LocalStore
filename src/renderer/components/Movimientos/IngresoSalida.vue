@@ -74,8 +74,8 @@
                 <InputText v-model="formData.marca" class="w-3/5" />
             </div>
             <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
-                <InputText v-model="formData.modelo" class="w-3/5" />
+                <p class="mr-2  w-2/5 text-left  font-semibold">modelo_serie:</p>
+                <InputText v-model="formData.modelo_serie" class="w-3/5" />
             </div>
 
         </div>
@@ -128,7 +128,7 @@ export default defineComponent({
             numero_almacenes: null,
             material_repuesto: null,
             marca: null,
-            modelo: null
+            modelo_serie: null
         });
 
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
@@ -156,7 +156,7 @@ export default defineComponent({
                 numero_almacenes: '',
                 material_repuesto: '',
                 marca: '',
-                modelo: ''
+                modelo_serie: ''
             };
         };
         return {

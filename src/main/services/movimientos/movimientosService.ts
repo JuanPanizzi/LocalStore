@@ -27,13 +27,13 @@ export async function guardarExcelMovimientos(data) {
     // Preparar la inserción de nuevos datos (no se esta pasando documento_referencia ni observaciones)
     const insert = db.prepare(`
       INSERT INTO movimientos_materiales 
-      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes,  numero_movimiento, modelo_serie) 
+      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes,  numero_movimiento, modelo_serie_serie) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? )
     `);
 
     // fecha // tipo_movimiento // origen // destino // material_repuesto // marca // articulo_id // cantidad // permiso_trabajo_asociado
     // informe_asociado // orden_trabajo_asociada // remito // numero_almacenes // numero_serie // numero_movimiento 
-    // modelo_serie
+    // modelo_serie_serie
 
     const insertMany = db.transaction((movimientos) => {
       for (const movimiento of movimientos) {
@@ -52,7 +52,7 @@ export async function guardarExcelMovimientos(data) {
           movimiento.remito,
           movimiento.numero_almacenes,
           movimiento.numero_movimiento,
-          movimiento.modelo_serie
+          movimiento.modelo_serie_serie
         );
       }
     });
@@ -78,15 +78,15 @@ export async function guardarExcelMovimientos(data) {
 
 export const guardarMovimiento = async (movimiento) => {
   
-  const {numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo} = movimiento;
+  const {numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie} = movimiento;
 
 
   try {
-      const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo)
+      const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
         const result = stmt.run(
-          numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo
+          numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie
         )
 
         const movimientoCreado = {
@@ -104,7 +104,7 @@ export const guardarMovimiento = async (movimiento) => {
           numero_almacenes, 
           material_repuesto, 
           marca, 
-          modelo
+          modelo_serie
         }
 
         if(result.changes == 0){
