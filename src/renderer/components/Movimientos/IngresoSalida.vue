@@ -5,7 +5,7 @@
                 <div class="inputs-container flex flex-col items-end mb-4">
                     <div class="input-group flex items-center mb-3">
                         <label class="legend w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                        <InputNumber v-model="numeroInforme" class="w-64" />
+                        <InputNumber v-model="numero_movimiento" class="w-64" />
 
                     </div>
                     <div :class="`input-group flex items-center `">
@@ -31,8 +31,6 @@
 
                 </div>
 
-
-
                 <div class="flex items-center  justify-between">
                     <label class="legend w-2/5 text-left font-semibold">Destino:</label>
                     <InputText v-model="destino" readonly class="w-3/5" />
@@ -56,6 +54,31 @@
                     <p class="legend w-2/5 text-right mr-3 font-semibold">Informe Asociado:</p>
                     <InputText v-model="informe_asociado" class="w-3/5" />
                 </div>
+                <div class="input-group flex items-center">
+                    <p class="legend w-2/5 text-right mr-3 font-semibold">Orden de trabajo Asociada:</p>
+                    <InputText v-model="orden_trabajo_asociada" class="w-3/5" />
+                </div>
+                <div class="input-group flex items-center">
+                    <p class="legend w-2/5 text-right mr-3 font-semibold">Remito:</p>
+                    <InputText v-model="remito" class="w-3/5" />
+                </div>
+                <div class="input-group flex items-center">
+                    <p class="legend w-2/5 text-right mr-3 font-semibold">N° Almacenes:</p>
+                    <InputText v-model="numero_almacenes" class="w-3/5" />
+                </div>
+                <div class="input-group flex items-center">
+                    <p class="legend w-2/5 text-right mr-3 font-semibold">Material / Repuesto:</p>
+                    <InputText v-model="material_repuesto" class="w-3/5" />
+                </div>
+                <div class="input-group flex items-center">
+                    <p class="legend w-2/5 text-right mr-3 font-semibold">Marca:</p>
+                    <InputText v-model="marca" class="w-3/5" />
+                </div>
+                <div class="input-group flex items-center">
+                    <p class="legend w-2/5 text-right mr-3 font-semibold">Modelo:</p>
+                    <InputText v-model="modelo" class="w-3/5" />
+                </div>
+
         </div>
         <div class="mt-8 flex items-center justify-end">
             <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" outlined severity="secondary"
@@ -85,21 +108,33 @@ export default defineComponent({
     },
 
     setup() {
-        const numeroInforme = ref(null);
+        const numero_movimiento = ref(null);
         const fecha = ref(null);
         const tipo_movimiento = ref(null);
         const origen = ref(null);
         const cantidad = ref(null);
         const permiso_trabajo_asociado = ref(null);
+        const orden_trabajo_asociada = ref(null);
+        const remito = ref(null);
+        const numero_almacenes = ref(null);
+        const material_repuesto = ref(null);
+        const marca = ref(null);
+        const modelo = ref(null);
 
         return {
-            numeroInforme,
+            numero_movimiento,
             fecha,
             tipo_movimiento,
             origen,
             cantidad,
             permiso_trabajo_asociado,
-
+            orden_trabajo_asociada,
+            remito,
+            numero_almacenes,
+            material_repuesto,
+            marca,
+            modelo,
+            
         }
     }
 })
