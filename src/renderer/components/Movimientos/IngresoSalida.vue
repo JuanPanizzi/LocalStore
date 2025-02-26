@@ -1,11 +1,11 @@
 <template>
-    <Form class="px-3 pb-20 max-w-[95vw] mx-auto">
+    <Form class="px-3 py-5 border border-gray rounded-xl  max-w-[95vw] mx-auto">
 
             <div>
                 <div class="inputs-container flex flex-col items-end mb-4">
                     <div class="input-group flex items-center mb-3">
                         <label class="legend w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                        <InputNumber v-model="numero_movimiento" class="w-64" />
+                        <InputNumber v-model="numero_movimiento" readonly class="w-64" />
 
                     </div>
                     <div :class="`input-group flex items-center `">
@@ -17,9 +17,9 @@
             </div>
 
         <!-- Grid de inputs alineados -->
-        <div class="grid grid-cols-3 gap-4 p-4 border border-gray rounded-lg ">
+        <div class="grid grid-cols-3 gap-4 p-4 rounded-lg ">
             <!-- Columna 1 -->
-                <div class="flex  items-center justify-start">
+                <div class="flex  items-center justify-between">
                     <label class="legend w-2/5  text-left font-semibold">Movimiento</label>
                     <InputText v-model="tipo_movimiento" class="w-3/5 " aria-required="required" />
 
@@ -33,58 +33,58 @@
 
                 <div class="flex items-center  justify-between">
                     <label class="legend w-2/5 text-left font-semibold">Destino:</label>
-                    <InputText v-model="destino" readonly class="w-3/5" />
+                    <InputText v-model="destino"  class="w-3/5" />
                 </div>
 
             <!-- Columna 2 -->
 
                 <div class="flex justify-between items-center ">
-                    <label class=" w-2/5  text-right font-semibold mr-3">Cantidad:</label>
-                    <InputNumber v-model="cantidad" />
+                    <label class=" w-2/5  text-left font-semibold ">Cantidad:</label>
+                    <InputNumber v-model="cantidad" class="w-3/5"/>
                 </div>
 
                 <div class="input-group flex justify-between items-center">
 
-                    <p class=" w-2/5  text-right  mr-3 font-semibold">Permiso de Trabajo Asociado: </p>
+                    <p class=" w-2/5  text-left   font-semibold">Permiso de Trabajo Asociado: </p>
                     <InputText v-model="permiso_trabajo_asociado" class="w-3/5 " />
 
 
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Informe Asociado:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">Informe Asociado:</p>
                     <InputText v-model="informe_asociado" class="w-3/5" />
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Orden de trabajo Asociada:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">Orden de trabajo Asociada:</p>
                     <InputText v-model="orden_trabajo_asociada" class="w-3/5" />
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Remito:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">Remito:</p>
                     <InputText v-model="remito" class="w-3/5" />
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">N° Almacenes:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">N° Almacenes:</p>
                     <InputText v-model="numero_almacenes" class="w-3/5" />
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Material / Repuesto:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">Material / Repuesto:</p>
                     <InputText v-model="material_repuesto" class="w-3/5" />
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Marca:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">Marca:</p>
                     <InputText v-model="marca" class="w-3/5" />
                 </div>
                 <div class="input-group flex items-center">
-                    <p class="legend w-2/5 text-right mr-3 font-semibold">Modelo:</p>
+                    <p class="legend w-2/5 text-left  font-semibold">Modelo:</p>
                     <InputText v-model="modelo" class="w-3/5" />
                 </div>
 
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" outlined severity="secondary"
-                @click="reiniciarFormulario" />
-            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarInforme"
-                :disabled="!formCompleto" />
+            <Button label="Cancelar" icon="pi pi-refresh" class="mr-2"  severity="danger"
+                @click="" />
+            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click=""
+                 />
 
         </div>
     </Form>
@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import Button from 'primevue/button';
 import DatePicker from 'primevue/datepicker';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
@@ -104,7 +105,8 @@ export default defineComponent({
     components: {
         InputNumber,
         DatePicker,
-        InputText
+        InputText,
+        Button
     },
 
     setup() {
