@@ -5,7 +5,7 @@
             <div class="inputs-container flex flex-col items-end mb-4">
                 <div class="input-group flex items-center mb-3">
                     <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                    <InputText v-model="formData.numeroInforme" readonly class="w-64" />
+                    <InputText v-model="formData.numero_movimiento" readonly class="w-64" />
                 </div>
                 <div :class="`input-group flex items-center `">
                     <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
@@ -93,7 +93,7 @@ import Button from 'primevue/button';
 import DatePicker from 'primevue/datepicker';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
-import { ref, watch } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { defineComponent } from 'vue';
 
 
