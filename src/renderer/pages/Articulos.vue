@@ -1,8 +1,7 @@
 <template>
 
   <div class="max-w-[90vw] mx-auto my-5">
-    <Button outlined label="Ingreso" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
-    <Button outlined label="Salida" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
+    
     <Button outlined label="Crear Artículo" @click="handleForm(true)" />
     
   </div>
@@ -33,9 +32,17 @@
     </Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
-    <Column>
+    <Column header="INGRESO / SALIDA">
+<template #body>
+<div class="flex justify-center">
+  <Button  icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
+  <Button  icon="pi pi-sign-out" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
+</div>
+</template>
+    </Column>
+    <Column header="EDITAR / ELIMINAR">
       <template #body="slotProps">
-        <div class="flex ">
+        <div class="flex justify-center">
           <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
           <Button outlined class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
         </div>
