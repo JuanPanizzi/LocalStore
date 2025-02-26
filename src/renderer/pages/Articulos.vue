@@ -53,7 +53,7 @@
 
   <Dialog v-model:visible="showIngresoSalida.show" modal 
   :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida />
+    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" />
   </Dialog>
 
 
@@ -128,7 +128,10 @@ export default defineComponent({
     const handleIngresoSalida = async (show, accion) => {
       
       const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
-
+      if(!ultimoNumMovimiento){
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
+        return;
+      }
       numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
 
       showIngresoSalida.value.show = show;
@@ -172,10 +175,6 @@ export default defineComponent({
     } 
 
     
-
-   
-
-
     const confirmarEliminacion = (articulo) => {
 
       const { id } = articulo;
