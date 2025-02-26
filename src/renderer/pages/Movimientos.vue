@@ -93,6 +93,7 @@ export default defineComponent({
             dataMovimientos,
             guardarExcelMovimientos,
             obtenerMovimientos,
+
             
         }
     }

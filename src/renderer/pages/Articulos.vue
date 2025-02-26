@@ -1,12 +1,15 @@
 <template>
 
   <div class="max-w-[90vw] mx-auto my-5">
-    <Button label="Nuevo" @click="handleForm(true)" />
-    <Button label="Buscar" class="mx-2" />
+    <Button outlined label="Ingreso" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
+    <Button outlined label="Salida" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
+    <Button outlined label="Crear Artículo" @click="handleForm(true)" />
+    
   </div>
 
-  <DataTable v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
-    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" :globalFilterFields="['material']">
+  <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
+    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" 
+    :globalFilterFields="['material', 'marca']">
 
     <Column field="material" header="MATERIAL" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
@@ -16,15 +19,25 @@
 
     </Column>
     <!-- <Column field="material" header="MATERIAL"></Column> -->
-    <Column field="marca" header="MARCA"></Column>
-    <Column field="modelo" header="MODELO"></Column>
+    <Column field="marca" header="MARCA" :showFilterMenu="false">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+          placeholder="Buscar por marca" />
+      </template>
+    </Column>
+    <Column field="modelo" header="MODELO" :showFilterMenu="false">
+      <template #filter="{ filterModel, filterCallback }">
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+          placeholder="Buscar por modelo" />
+      </template>
+    </Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
     <Column>
       <template #body="slotProps">
         <div class="flex ">
-          <Button icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
-          <Button class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
+          <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
+          <Button outlined class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
         </div>
       </template>
     </Column>
@@ -38,7 +51,10 @@
 
   <DialogEditar v-if="showDialogEditar" :articuloSeleccionado="articuloSeleccionado" />
 
-
+  <Dialog v-model:visible="showIngresoSalida.show" modal 
+  :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
+    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" />
+  </Dialog>
 
 
   <Toast />
@@ -62,6 +78,7 @@ import { FilterMatchMode } from '@primevue/core/api';
 import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from 'primevue/useconfirm';
 import DialogEditar from '../components/Articulos/DialogEditar.vue';
+import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
 
 export default defineComponent({
   name: 'Articulos',
@@ -74,16 +91,18 @@ export default defineComponent({
     FormularioArticulos,
     Dialog,
     ConfirmDialog,
-    DialogEditar
+    DialogEditar,
+    IngresoSalida
 
   },
 
   setup() {
-    const { obtenerArticulos, crearArticulo, eliminarArticulo } = useArticulos();
+    const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
 
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
+    const numeroInformeMovimiento = ref(null);
     const articuloSeleccionado = ref({
       id: null,
       material: '',
@@ -93,16 +112,31 @@ export default defineComponent({
       imagen: ''
     })
     const showForm = ref(false);
-    const showDialogEditar = ref(false)
+    const showDialogEditar = ref(false);
+    const showIngresoSalida = ref({show: false, accion: ''});
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH }
+      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      modelo: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+
     })
 
     const handleForm = (show) => {
       showForm.value = show;
     }
+    const handleIngresoSalida = async (show, accion) => {
+      
+      const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
+      if(!ultimoNumMovimiento){
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
+        return;
+      }
+      numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
 
+      showIngresoSalida.value.show = show;
+      showIngresoSalida.value.accion = accion;
+    }
     async function guardarArticulo(datosFormulario) {
 
       const response = await crearArticulo(datosFormulario);
@@ -128,6 +162,19 @@ export default defineComponent({
       showDialogEditar.value = true;
     }
 
+    const ultimoNumeroMovimiento = async () => {
+
+      const response = await obtenerUltimoMovimiento();
+      if(response.success){
+        return response.data;
+      }else {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al obtener el N° de informe, intente nuevamente', life: 5000 });
+        return;
+      }
+
+    } 
+
+    
     const confirmarEliminacion = (articulo) => {
 
       const { id } = articulo;
@@ -202,8 +249,12 @@ export default defineComponent({
       confirmarEliminacion,
       abrirDialogEditar,
       showDialogEditar,
-      articuloSeleccionado
-
+      showIngresoSalida,
+      articuloSeleccionado,
+      handleIngresoSalida,
+      ultimoNumeroMovimiento,
+      obtenerUltimoMovimiento,
+      numeroInformeMovimiento
 
     }
   }
