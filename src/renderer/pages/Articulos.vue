@@ -53,7 +53,7 @@
 
   <Dialog v-model:visible="showIngresoSalida.show" modal 
   :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" />
+    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="guardarMovimiento" />
   </Dialog>
 
 
@@ -221,6 +221,12 @@ export default defineComponent({
       });
 
     }
+
+    const guardarMovimiento = (datosFormulario) => { 
+      
+        const response = await guardarMovimiento(datosFormulario);
+
+     }
 
     onMounted(async () => {
 

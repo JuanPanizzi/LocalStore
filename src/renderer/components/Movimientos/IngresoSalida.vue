@@ -111,37 +111,38 @@ export default defineComponent({
             default: 0
         }
     },
-    setup(props) {
+    emits: ['guardarMovimiento'],
+    setup(props, {emit}) {
 
-        const formData = ref({
-            numeroInforme: props.numeroInformeMovimiento,
+        const formData = reactive({
+            numero_movimiento: props.numeroInformeMovimiento,
             fecha: null,
-            tipo_movimiento: '',
-            origen: '',
-            destino: '',
+            tipo_movimiento: null,
+            origen: null,
+            destino: null,
             cantidad: null,
-            permiso_trabajo_asociado: '',
-            informe_asociado: '',
-            orden_trabajo_asociada: '',
-            remito: '',
-            numero_almacenes: '',
-            material_repuesto: '',
-            marca: '',
-            modelo: ''
+            permiso_trabajo_asociado: null,
+            informe_asociado: null,
+            orden_trabajo_asociada: null,
+            remito: null,
+            numero_almacenes: null,
+            material_repuesto: null,
+            marca: null,
+            modelo: null
         });
 
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
-            formData.value.numeroInforme = nuevoValor;
+            formData.numero_movimiento = nuevoValor;
         });
 
+        const guardarMovimiento = () => {
+            emit('guardarMovimiento', {...formData})
+         }
 
-        const handleSubmit = () => {
-            
-        }
-
+     
         const resetForm = () => {
             formData.value = {
-                numeroInforme: props.numeroInformeMovimiento,
+                numero_movimiento: props.numeroInformeMovimiento,
                 fecha: null,
                 tipo_movimiento: '',
                 origen: '',

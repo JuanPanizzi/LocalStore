@@ -32,6 +32,16 @@ export function useMovimientos() {
 
     }
 
+    const guardarMovimiento = async (movimiento) => {
+        try {
+            const response = await window.electronAPI.guardarMovimiento(movimiento);
+            
+        } catch (error) {
+            
+        }
+        
+
+     }
 
 
     const importarExcel = async (event) => {
@@ -198,7 +208,8 @@ export function useMovimientos() {
     return {
         importarExcel,
         guardarExcelMovimientos,
-        obtenerMovimientos
+        obtenerMovimientos,
+        guardarMovimiento
     }
 
 }

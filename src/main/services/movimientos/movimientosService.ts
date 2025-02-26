@@ -13,14 +13,10 @@ try {
   // console.log('error al obtener los datos', error)
   return {success: false, error}
 }
-    
-
 }
 
 
 export async function guardarExcelMovimientos(data) {
-  
-  
   
   try {
 
@@ -79,3 +75,49 @@ export async function guardarExcelMovimientos(data) {
     return { success: false, error: error };
   } 
 }
+
+export const guardarMovimiento = async (movimiento) => {
+  
+  const {numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo} = movimiento;
+
+
+  try {
+      const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+        const result = stmt.run(
+          numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo
+        )
+
+        const movimientoCreado = {
+          id: result.lastInsertRowid,
+          numero_movimiento, 
+          fecha, 
+          tipo_movimiento,
+          origen, 
+          destino, 
+          cantidad, 
+          permiso_trabajo_asociado, 
+          informe_asociado, 
+          orden_trabajo_asociada, 
+          remito, 
+          numero_almacenes, 
+          material_repuesto, 
+          marca, 
+          modelo
+        }
+
+        if(result.changes == 0){
+          return {success: false}
+        }
+
+        return {success: true, data: movimientoCreado}
+        
+
+  } catch (error) {
+    console.log(error)
+    
+    return {success: false}
+  }
+
+ }
