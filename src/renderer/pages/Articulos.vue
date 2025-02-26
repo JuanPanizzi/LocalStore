@@ -1,8 +1,7 @@
 <template>
 
   <div class="max-w-[90vw] mx-auto my-5">
-    <Button outlined label="Ingreso" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
-    <Button outlined label="Salida" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
+    
     <Button outlined label="Crear Artículo" @click="handleForm(true)" />
     
   </div>
@@ -33,9 +32,17 @@
     </Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
-    <Column>
+    <Column header="INGRESO / SALIDA">
+<template #body>
+<div class="flex justify-center">
+  <Button  icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
+  <Button  icon="pi pi-sign-out" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
+</div>
+</template>
+    </Column>
+    <Column header="EDITAR / ELIMINAR">
       <template #body="slotProps">
-        <div class="flex ">
+        <div class="flex justify-center">
           <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
           <Button outlined class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
         </div>
@@ -53,7 +60,7 @@
 
   <Dialog v-model:visible="showIngresoSalida.show" modal 
   :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" />
+    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
 
@@ -68,6 +75,7 @@ import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { defineComponent, onMounted, reactive, ref } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
+import { useMovimientos } from '../composables/useMovimientos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import InputNumber from 'primevue/inputnumber';
@@ -98,7 +106,7 @@ export default defineComponent({
 
   setup() {
     const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
-
+    const { guardarMovimiento } = useMovimientos()
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
@@ -222,6 +230,19 @@ export default defineComponent({
 
     }
 
+    const crearMovimiento = async (datosFormulario) => { 
+        console.log('datosFormulario', datosFormulario)
+        const response = await guardarMovimiento(datosFormulario);
+        if(response.success){
+          dataArticulos.value.push(response.data);
+          toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
+        
+      }else{
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
+
+        }
+     }
+
     onMounted(async () => {
 
       const response = await obtenerArticulos();
@@ -254,7 +275,9 @@ export default defineComponent({
       handleIngresoSalida,
       ultimoNumeroMovimiento,
       obtenerUltimoMovimiento,
-      numeroInformeMovimiento
+      numeroInformeMovimiento,
+      guardarMovimiento,
+      crearMovimiento
 
     }
   }
