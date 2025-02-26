@@ -136,6 +136,7 @@ export default defineComponent({
         });
 
         const guardarMovimiento = () => {
+            console.log('holaaa')
             emit('guardarMovimiento', { ...formData })
         }
 

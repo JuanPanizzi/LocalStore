@@ -53,7 +53,7 @@
 
   <Dialog v-model:visible="showIngresoSalida.show" modal 
   :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="guardarMovimiento" />
+    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
 
@@ -68,6 +68,7 @@ import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { defineComponent, onMounted, reactive, ref } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
+import { useMovimientos } from '../composables/useMovimientos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import InputNumber from 'primevue/inputnumber';
@@ -98,7 +99,7 @@ export default defineComponent({
 
   setup() {
     const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
-
+    const { guardarMovimiento } = useMovimientos()
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
@@ -222,7 +223,7 @@ export default defineComponent({
 
     }
 
-    const guardarMovimiento = async (datosFormulario) => { 
+    const crearMovimiento = async (datosFormulario) => { 
         console.log('datosFormulario', datosFormulario)
         const response = await guardarMovimiento(datosFormulario);
         if(response.success){
@@ -267,7 +268,9 @@ export default defineComponent({
       handleIngresoSalida,
       ultimoNumeroMovimiento,
       obtenerUltimoMovimiento,
-      numeroInformeMovimiento
+      numeroInformeMovimiento,
+      guardarMovimiento,
+      crearMovimiento
 
     }
   }
