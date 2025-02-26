@@ -153,6 +153,9 @@ export default defineComponent({
       showDialogEditar.value = true;
     }
 
+   
+
+
     const confirmarEliminacion = (articulo) => {
 
       const { id } = articulo;
