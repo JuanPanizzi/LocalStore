@@ -81,7 +81,7 @@
         </div>
         <div class="mt-8 flex items-center justify-end">
             <Button label="Cancelar" icon="pi pi-refresh" class="mr-2" severity="danger" @click="" />
-            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="" />
+            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
 
         </div>
     </Form>
@@ -112,7 +112,7 @@ export default defineComponent({
         }
     },
     emits: ['guardarMovimiento'],
-    setup(props, {emit}) {
+    setup(props, { emit }) {
 
         const formData = reactive({
             numero_movimiento: props.numeroInformeMovimiento,
@@ -136,10 +136,10 @@ export default defineComponent({
         });
 
         const guardarMovimiento = () => {
-            emit('guardarMovimiento', {...formData})
-         }
+            emit('guardarMovimiento', { ...formData })
+        }
 
-     
+
         const resetForm = () => {
             formData.value = {
                 numero_movimiento: props.numeroInformeMovimiento,
@@ -159,11 +159,12 @@ export default defineComponent({
             };
         };
         return {
-         formData
-
+            formData,
+            resetForm,
+            guardarMovimiento
         }
     },
-    
+
 })
 
 </script>

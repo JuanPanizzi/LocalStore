@@ -36,10 +36,12 @@ export function useMovimientos() {
         try {
             const response = await window.electronAPI.guardarMovimiento(movimiento);
             
+            if(response.success){
+                return {success: true, data: response.data}
+            }
         } catch (error) {
-            
+            return {succes: false}
         }
-        
 
      }
 

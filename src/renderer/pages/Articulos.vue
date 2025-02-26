@@ -222,10 +222,17 @@ export default defineComponent({
 
     }
 
-    const guardarMovimiento = (datosFormulario) => { 
-      
+    const guardarMovimiento = async (datosFormulario) => { 
+        console.log('datosFormulario', datosFormulario)
         const response = await guardarMovimiento(datosFormulario);
+        if(response.success){
+          dataArticulos.value.push(response.data);
+          toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
+        
+      }else{
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
 
+        }
      }
 
     onMounted(async () => {

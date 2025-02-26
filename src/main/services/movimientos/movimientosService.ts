@@ -115,8 +115,7 @@ export const guardarMovimiento = async (movimiento) => {
         
 
   } catch (error) {
-    console.log(error)
-    
+    console.log('error al insertar movimiento', error)
     return {success: false}
   }
 
