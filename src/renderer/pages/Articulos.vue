@@ -97,11 +97,12 @@ export default defineComponent({
   },
 
   setup() {
-    const { obtenerArticulos, crearArticulo, eliminarArticulo } = useArticulos();
+    const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
 
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
+    const numeroInformeMovimiento = ref(null);
     const articuloSeleccionado = ref({
       id: null,
       material: '',
@@ -124,7 +125,12 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
-    const handleIngresoSalida = (show, accion) => {
+    const handleIngresoSalida = async (show, accion) => {
+      
+      const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
+
+      numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
+
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
     }
@@ -152,6 +158,20 @@ export default defineComponent({
       articuloSeleccionado.value = { ...articulo};
       showDialogEditar.value = true;
     }
+
+    const ultimoNumeroMovimiento = async () => {
+
+      const response = await obtenerUltimoMovimiento();
+      if(response.success){
+        return response.data;
+      }else {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al obtener el N° de informe, intente nuevamente', life: 5000 });
+        return;
+      }
+
+    } 
+
+    
 
    
 
@@ -232,7 +252,10 @@ export default defineComponent({
       showDialogEditar,
       showIngresoSalida,
       articuloSeleccionado,
-      handleIngresoSalida
+      handleIngresoSalida,
+      ultimoNumeroMovimiento,
+      obtenerUltimoMovimiento,
+      numeroInformeMovimiento
 
     }
   }
