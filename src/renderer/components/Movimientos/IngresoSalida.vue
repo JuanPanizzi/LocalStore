@@ -17,12 +17,23 @@
 
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-3 gap-4 p-4 rounded-lg ">
-            <!-- Columna 1 -->
+           
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
+                <InputText v-model="formData.material_repuesto" class="w-3/5" />
+            </div>
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
+                <InputText v-model="formData.marca" class="w-3/5" />
+            </div>
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
+                <InputText v-model="formData.modelo" class="w-3/5" />
+            </div>
+           
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Movimiento</label>
-                <InputText v-model="formData.tipo_movimiento" class="w-3/5 " aria-required="required" />
-
-
+                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
@@ -35,7 +46,7 @@
                 <InputText v-model="formData.destino" class="w-3/5" />
             </div>
 
-            <!-- Columna 2 -->
+           
 
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
@@ -65,18 +76,7 @@
                 <p class="mr-2  w-2/5 text-left  font-semibold">N° Almacenes:</p>
                 <InputText v-model="formData.numero_almacenes" class="w-3/5" />
             </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
-                <InputText v-model="formData.material_repuesto" class="w-3/5" />
-            </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
-                <InputText v-model="formData.marca" class="w-3/5" />
-            </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
-                <InputText v-model="formData.modelo" class="w-3/5" />
-            </div>
+          
 
         </div>
         <div class="mt-8 flex items-center justify-end">
@@ -112,12 +112,15 @@ export default defineComponent({
         },
         movimientoSeleccionado: {
             type: Object
+        },
+        ingresoSalida: {
+            type: String
         }
     },
     emits: ['guardarMovimiento'],
     setup(props, { emit }) {
 
-        const movimiento = ref({ ...props.movimientoSeleccionado });
+         const movimiento = ref({ ...props.movimientoSeleccionado });
 
         const formData = reactive({
             id: props.movimientoSeleccionado.id,
@@ -127,7 +130,7 @@ export default defineComponent({
             modelo: props.movimientoSeleccionado.modelo,
             cantidad: props.movimientoSeleccionado.cantidad,
             fecha: null,
-            tipo_movimiento: null,
+            tipo_movimiento: props.ingresoSalida,
             origen: null,
             destino: null,
             permiso_trabajo_asociado: null,

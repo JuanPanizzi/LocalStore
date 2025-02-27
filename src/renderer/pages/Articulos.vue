@@ -33,9 +33,9 @@
     <Column header="INGRESO / SALIDA">
       <template #body="slotProps">
         <div class="flex justify-center">
-          <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar', slotProps.data)" />
+          <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
           <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
-            @click="handleIngresoSalida(true, 'Salida', slotProps.data)" />
+            @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
         </div>
       </template>
     </Column>
@@ -59,8 +59,8 @@
   <DialogEditar v-if="showDialogEditar" :articuloSeleccionado="articuloSeleccionado" />
 
   <Dialog v-model:visible="showIngresoSalida.show" modal
-    :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-    <IngresoSalida :movimientoSeleccionado="movimientoSeleccionado" :numeroInformeMovimiento="numeroInformeMovimiento"
+    :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :movimientoSeleccionado="movimientoSeleccionado" :numeroInformeMovimiento="numeroInformeMovimiento"
       @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
