@@ -20,17 +20,21 @@
            
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
-                <InputText v-model="formData.material_repuesto" class="w-3/5" />
+                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
-                <InputText v-model="formData.marca" class="w-3/5" />
+                <InputText v-model="formData.marca" class="w-3/5" readonly />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
-                <InputText v-model="formData.modelo" class="w-3/5" />
+                <InputText v-model="formData.modelo_serie" class="w-3/5" readonly />
             </div>
-           
+            
+            <div class="flex justify-between items-center ">
+                <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
+                <InputNumber v-model="formData.cantidad" class="w-3/5" readonly />
+            </div>
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Movimiento</label>
                 <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
@@ -48,10 +52,6 @@
 
            
 
-            <div class="flex justify-between items-center ">
-                <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
-                <InputNumber v-model="formData.cantidad" class="w-3/5" />
-            </div>
 
             <div class="input-group flex justify-between items-center">
 
@@ -128,7 +128,7 @@ export default defineComponent({
             numero_movimiento: props.numeroInformeMovimiento,
             material_repuesto: props.movimientoSeleccionado.material_repuesto,
             marca: props.movimientoSeleccionado.marca,
-            modelo: props.movimientoSeleccionado.modelo,
+            modelo_serie: props.movimientoSeleccionado.modelo_serie,
             cantidad: props.movimientoSeleccionado.cantidad,
             fecha: fechaActual(),
             tipo_movimiento: props.ingresoSalida,
@@ -166,7 +166,7 @@ export default defineComponent({
                 numero_almacenes: '',
                 material_repuesto: '',
                 marca: '',
-                modelo: ''
+                modelo_serie: ''
             };
         };
         return {

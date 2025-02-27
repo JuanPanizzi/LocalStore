@@ -77,9 +77,11 @@ export async function guardarExcelMovimientos(data) {
 }
 
 export const guardarMovimiento = async (movimiento) => {
-  
+  console.log('movimiento que llega en guardar movimento', movimiento)
   const {numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie} = movimiento;
 
+  //validar que exista el articulo
+  //sumar cantidad de artuclo
 
   try {
       const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie)
