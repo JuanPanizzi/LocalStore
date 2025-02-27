@@ -8,9 +8,9 @@
 
   <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
     tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" 
-    :globalFilterFields="['material', 'marca']">
+    :globalFilterFields="['material_repuesto', 'marca']">
 
-    <Column field="material" header="MATERIAL" :showFilterMenu="false">
+    <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
         <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
           placeholder="Buscar por material" />
@@ -113,7 +113,7 @@ export default defineComponent({
     const numeroInformeMovimiento = ref(null);
     const articuloSeleccionado = ref({
       id: null,
-      material: '',
+      material_repuesto: '',
       marca: '',
       modelo: '',
       cantidad: null,
@@ -126,7 +126,7 @@ export default defineComponent({
 
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      material_repuesto: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       modelo: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 
@@ -249,6 +249,7 @@ export default defineComponent({
     onMounted(async () => {
 
       const response = await obtenerArticulos();
+      console.log('response.data en obtenerArt', response.data)
       if (response.success) {
         dataArticulos.value = response.data;
       } else {

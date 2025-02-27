@@ -117,9 +117,10 @@ export default defineComponent({
     emits: ['guardarMovimiento'],
     setup(props, { emit }) {
 
-        const movimiento = reactive(props.movimientoSeleccionado)
+        const movimiento = reactive(props.movimientoSeleccionado) 
 
         const formData = reactive({
+            id: props.movimientoSeleccionado.id,
             numero_movimiento: props.numeroInformeMovimiento,
             fecha: null,
             tipo_movimiento: null,
@@ -131,8 +132,8 @@ export default defineComponent({
             orden_trabajo_asociada: null,
             remito: null,
             numero_almacenes: null,
-            material_repuesto: null,
-            marca: null,
+            material_repuesto: props.movimientoSeleccionado.material_repuesto,
+            marca: props.movimientoSeleccionado.marca,
             modelo_serie: null
         });
 
