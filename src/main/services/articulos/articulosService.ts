@@ -100,18 +100,41 @@ export const actualizarArticulo = async (articulo) => {
     }
 }
 
+// export const obtenerUltimoMovimiento = async () => {
+//     try {
+//         const result = db
+//           .prepare(`SELECT MAX(numero_movimiento) as maxNumero FROM movimientos_materiales`)
+//           .get();
+//         // Si no hay registros, result.maxNumero será null, por lo que devolvemos 0 (o el valor que consideres por defecto)
+//         const maxNumero = result?.maxNumero ?? 0;
+//         return { success: true, data: maxNumero };
+//       } catch (error) {
+//         console.error('Error al obtener el número de movimiento:', error);
+//         return { success: false, error: error || 'Error al obtener el número de movimiento' };
+//       }
+
+    
+// } 
 export const obtenerUltimoMovimiento = async () => {
     try {
         const result = db
-          .prepare(`SELECT MAX(numero_movimiento) as maxNumero FROM movimientos_materiales`)
-          .get();
-        // Si no hay registros, result.maxNumero será null, por lo que devolvemos 0 (o el valor que consideres por defecto)
-        const maxNumero = result?.maxNumero ?? 0;
+            .prepare(`
+                SELECT numero_movimiento 
+                FROM movimientos_materiales 
+                ORDER BY CAST(numero_movimiento AS INTEGER) DESC, numero_movimiento DESC 
+                LIMIT 1
+            `)
+            .get();
+
+        if (!result || !result.numero_movimiento) {
+            return { success: true, data: 0 };
+        }
+
+        const maxNumero = result.numero_movimiento;
+
         return { success: true, data: maxNumero };
-      } catch (error) {
+    } catch (error) {
         console.error('Error al obtener el número de movimiento:', error);
         return { success: false, error: error || 'Error al obtener el número de movimiento' };
-      }
-
-    
-} 
+    }
+};

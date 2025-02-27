@@ -60,8 +60,8 @@
 
   <Dialog v-model:visible="showIngresoSalida.show" modal
     :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :movimientoSeleccionado="movimientoSeleccionado" :numeroInformeMovimiento="numeroInformeMovimiento"
-      @guardarMovimiento="crearMovimiento" />
+    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :movimientoSeleccionado="movimientoSeleccionado"
+      :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
 
@@ -143,7 +143,18 @@ export default defineComponent({
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
         return;
       }
-      numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
+
+      // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
+      const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
+
+      if (isNaN(formatUltimoMovimiento)){
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
+        return;
+      }
+      
+      //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
+      numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
+      console.log('numeroInformeMovimiento.value', numeroInformeMovimiento.value)
 
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
