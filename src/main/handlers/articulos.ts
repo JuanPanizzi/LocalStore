@@ -1,5 +1,5 @@
 import { dialog, IpcMain } from "electron";
-import { actualizarArticulo, crearArticulo, eliminarArticulo, obtenerArticulos, obtenerUltimoMovimiento } from "../services/articulos/articulosService";
+import { actualizarArticulo, crearArticulo, eliminarArticulo, obtenerArticulos } from "../services/articulos/articulosService";
 
 export function handleArticulos(ipcMain: IpcMain) {
         ipcMain.handle('obtener-articulos', async () => {
@@ -7,9 +7,6 @@ export function handleArticulos(ipcMain: IpcMain) {
         });
         ipcMain.handle('nuevo-articulo', async (event, nuevoArticulo) => {
             return await crearArticulo(nuevoArticulo);
-        });
-        ipcMain.handle('obtener-ultimo-movimiento', async (event) => {
-            return await obtenerUltimoMovimiento();
         });
         ipcMain.handle('eliminar-articulo', async (event, articuloId) => {
             return await eliminarArticulo(articuloId);

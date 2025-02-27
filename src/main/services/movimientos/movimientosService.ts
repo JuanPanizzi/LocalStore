@@ -120,3 +120,27 @@ export const guardarMovimiento = async (movimiento) => {
   }
 
  }
+
+ export const obtenerUltimoMovimiento = async () => {
+  try {
+      const result = db
+          .prepare(`
+              SELECT numero_movimiento 
+              FROM movimientos_materiales 
+              ORDER BY CAST(numero_movimiento AS INTEGER) DESC, numero_movimiento DESC 
+              LIMIT 1
+          `)
+          .get();
+
+      if (!result || !result.numero_movimiento) {
+          return { success: true, data: 0 };
+      }
+
+      const maxNumero = result.numero_movimiento;
+
+      return { success: true, data: maxNumero };
+  } catch (error) {
+      console.error('Error al obtener el número de movimiento:', error);
+      return { success: false, error: error || 'Error al obtener el número de movimiento' };
+  }
+};
