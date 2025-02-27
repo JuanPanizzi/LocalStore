@@ -95,6 +95,7 @@ import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import { reactive, ref, watch } from 'vue';
 import { defineComponent } from 'vue';
+import { fechaActual } from '../../utils/funcionesFecha.js'
 
 
 export default defineComponent({
@@ -129,7 +130,7 @@ export default defineComponent({
             marca: props.movimientoSeleccionado.marca,
             modelo: props.movimientoSeleccionado.modelo,
             cantidad: props.movimientoSeleccionado.cantidad,
-            fecha: null,
+            fecha: fechaActual(),
             tipo_movimiento: props.ingresoSalida,
             origen: null,
             destino: null,
@@ -147,6 +148,7 @@ export default defineComponent({
         const guardarMovimiento = () => {
             emit('guardarMovimiento', { ...formData })
         }
+
 
 
         const resetForm = () => {
@@ -172,6 +174,7 @@ export default defineComponent({
             resetForm,
             guardarMovimiento,
             movimiento,
+            fechaActual,
         }
     },
 
