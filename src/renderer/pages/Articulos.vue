@@ -33,10 +33,10 @@
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
     <Column header="INGRESO / SALIDA">
-<template #body>
+<template #body="slotProps">
 <div class="flex justify-center">
-  <Button  icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
-  <Button  icon="pi pi-sign-out" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
+  <Button  icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar', slotProps.data)"  />
+  <Button  icon="pi pi-sign-out" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida', slotProps.data)" />
 </div>
 </template>
     </Column>
@@ -60,7 +60,7 @@
 
   <Dialog v-model:visible="showIngresoSalida.show" modal 
   :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
+    <IngresoSalida :movimientoSeleccionado="movimientoSeleccionado" :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
 
@@ -121,7 +121,9 @@ export default defineComponent({
     })
     const showForm = ref(false);
     const showDialogEditar = ref(false);
-    const showIngresoSalida = ref({show: false, accion: ''});
+    const showIngresoSalida = ref({mostrar: false, accion: ''});
+    const movimientoSeleccionado = ref(null);
+
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       material: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
@@ -133,7 +135,7 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
-    const handleIngresoSalida = async (show, accion) => {
+    const handleIngresoSalida = async (mostrar, accion, movimiento ) => {
       
       const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
       if(!ultimoNumMovimiento){
@@ -142,8 +144,9 @@ export default defineComponent({
       }
       numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
 
-      showIngresoSalida.value.show = show;
+      showIngresoSalida.value.mostrar = mostrar;
       showIngresoSalida.value.accion = accion;
+      movimientoSeleccionado.value = {...movimiento }
     }
     async function guardarArticulo(datosFormulario) {
 
@@ -277,7 +280,8 @@ export default defineComponent({
       obtenerUltimoMovimiento,
       numeroInformeMovimiento,
       guardarMovimiento,
-      crearMovimiento
+      crearMovimiento,
+      movimientoSeleccionado
 
     }
   }

@@ -109,10 +109,15 @@ export default defineComponent({
         numeroInformeMovimiento: {
             type: [Number, String],
             default: 0
+        },
+        movimientoSeleccionado: {
+            type: Object
         }
     },
     emits: ['guardarMovimiento'],
     setup(props, { emit }) {
+
+        const movimiento = reactive(props.movimientoSeleccionado)
 
         const formData = reactive({
             numero_movimiento: props.numeroInformeMovimiento,
@@ -136,7 +141,6 @@ export default defineComponent({
         });
 
         const guardarMovimiento = () => {
-            console.log('holaaa')
             emit('guardarMovimiento', { ...formData })
         }
 
@@ -162,7 +166,8 @@ export default defineComponent({
         return {
             formData,
             resetForm,
-            guardarMovimiento
+            guardarMovimiento,
+            movimiento,
         }
     },
 
