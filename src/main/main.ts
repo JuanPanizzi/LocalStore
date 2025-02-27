@@ -33,7 +33,7 @@ function createWindow() {
       contextIsolation: true,
     }
   });
- 
+  //mainWindow.maximize();
   ipcMainProcess(mainWindow);
   // open dev tools
   // mainWindow.webContents.openDevTools();
