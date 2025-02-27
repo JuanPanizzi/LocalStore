@@ -1,16 +1,16 @@
 <template>
 
   <div class="max-w-[90vw] mx-auto my-5">
-    
+
     <Button outlined label="Crear Artículo" @click="handleForm(true)" />
-    
+
   </div>
 
-  <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
-    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" 
-    :globalFilterFields="['material', 'marca']">
+  <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
+    filterDisplay="row" tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto"
+    :globalFilterFields="['material_repuesto', 'marca']">
 
-    <Column field="material" header="MATERIAL" :showFilterMenu="false">
+    <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
         <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
           placeholder="Buscar por material" />
@@ -20,31 +20,31 @@
     <!-- <Column field="material" header="MATERIAL"></Column> -->
     <Column field="marca" header="MARCA" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-          placeholder="Buscar por marca" />
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por marca" />
       </template>
     </Column>
     <Column field="modelo" header="MODELO" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-          placeholder="Buscar por modelo" />
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por modelo" />
       </template>
     </Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
     <Column header="INGRESO / SALIDA">
-<template #body>
-<div class="flex justify-center">
-  <Button  icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar')"  />
-  <Button  icon="pi pi-sign-out" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida')" />
-</div>
-</template>
+      <template #body="slotProps">
+        <div class="flex justify-center">
+          <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
+          <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
+            @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
+        </div>
+      </template>
     </Column>
     <Column header="EDITAR / ELIMINAR">
       <template #body="slotProps">
         <div class="flex justify-center">
           <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
-          <Button outlined class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
+          <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"
+            @click="confirmarEliminacion(slotProps.data)" />
         </div>
       </template>
     </Column>
@@ -56,11 +56,12 @@
     <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
   </Dialog>
 
-  <DialogEditar v-if="showDialogEditar" :articuloSeleccionado="articuloSeleccionado" />
+  <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" />
 
-  <Dialog v-model:visible="showIngresoSalida.show" modal 
-  :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
+  <Dialog v-model:visible="showIngresoSalida.show" modal
+    :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+      :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
 
@@ -87,6 +88,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from 'primevue/useconfirm';
 import DialogEditar from '../components/Articulos/DialogEditar.vue';
 import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
+import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 
 export default defineComponent({
   name: 'Articulos',
@@ -111,9 +113,9 @@ export default defineComponent({
     const toast = useToast();
     const confirm = useConfirm();
     const numeroInformeMovimiento = ref(null);
-    const articuloSeleccionado = ref({
+    const articuloEdicion = ref({
       id: null,
-      material: '',
+      material_repuesto: '',
       marca: '',
       modelo: '',
       cantidad: null,
@@ -121,10 +123,12 @@ export default defineComponent({
     })
     const showForm = ref(false);
     const showDialogEditar = ref(false);
-    const showIngresoSalida = ref({show: false, accion: ''});
+    const showIngresoSalida = ref({ show: false, accion: '' });
+    const articuloSeleccionado = ref(null);
+
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      material: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      material_repuesto: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       modelo: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 
@@ -133,17 +137,29 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
-    const handleIngresoSalida = async (show, accion) => {
-      
+    const handleIngresoSalida = async (show, accion, articulo) => {
+
       const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
-      if(!ultimoNumMovimiento){
+      if (!ultimoNumMovimiento) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
         return;
       }
-      numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
+
+      // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
+      const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
+
+      if (isNaN(formatUltimoMovimiento)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
+        return;
+      }
+
+      //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
+      numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
 
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
+      articuloSeleccionado.value = { ...articulo }
+      console.log('articuloSeleccionado.value', articuloSeleccionado.value)
     }
     async function guardarArticulo(datosFormulario) {
 
@@ -165,24 +181,24 @@ export default defineComponent({
     }
 
     const abrirDialogEditar = (articulo) => {
-     
-      articuloSeleccionado.value = { ...articulo};
+
+      articuloEdicion.value = { ...articulo };
       showDialogEditar.value = true;
     }
 
     const ultimoNumeroMovimiento = async () => {
 
       const response = await obtenerUltimoMovimiento();
-      if(response.success){
+      if (response.success) {
         return response.data;
-      }else {
+      } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al obtener el N° de informe, intente nuevamente', life: 5000 });
         return;
       }
 
-    } 
+    }
 
-    
+
     const confirmarEliminacion = (articulo) => {
 
       const { id } = articulo;
@@ -230,18 +246,32 @@ export default defineComponent({
 
     }
 
-    const crearMovimiento = async (datosFormulario) => { 
-        console.log('datosFormulario', datosFormulario)
-        const response = await guardarMovimiento(datosFormulario);
-        if(response.success){
-          dataArticulos.value.push(response.data);
-          toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
-        
-      }else{
-        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
+    const crearMovimiento = async (datosCompIngresoSalida) => {
+      console.log('datosFormulario', datosCompIngresoSalida) //llegan del componente hijo
+
+      const datosFormulario = {
+        ...datosCompIngresoSalida,
+        fecha: datosCompIngresoSalida.fecha ? formatFechaToYYYYMMDD(datosCompIngresoSalida.fecha) : ''
+      }
+
+      const response = await guardarMovimiento(datosFormulario);
+      if (response.success) {
+        dataArticulos.value.push(response.data);
+        showIngresoSalida.value = false;
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
+      } else {
+
+        if (response.error == 'El artículo no existe') {
+
+          showIngresoSalida.value = false;
+          toast.add({ severity: 'error', summary: 'Error', detail: 'El artículo no existe en la base de datos', life: 3000 });
 
         }
-     }
+
+        showIngresoSalida.value = false;
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
+      }
+    }
 
     onMounted(async () => {
 
@@ -271,13 +301,16 @@ export default defineComponent({
       abrirDialogEditar,
       showDialogEditar,
       showIngresoSalida,
-      articuloSeleccionado,
+      articuloEdicion,
       handleIngresoSalida,
       ultimoNumeroMovimiento,
       obtenerUltimoMovimiento,
       numeroInformeMovimiento,
       guardarMovimiento,
-      crearMovimiento
+      crearMovimiento,
+      articuloEdicion,
+      articuloSeleccionado,
+      formatFechaToYYYYMMDD
 
     }
   }

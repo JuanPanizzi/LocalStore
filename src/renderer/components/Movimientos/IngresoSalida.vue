@@ -17,12 +17,27 @@
 
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-3 gap-4 p-4 rounded-lg ">
-            <!-- Columna 1 -->
+           
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
+                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly />
+            </div>
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
+                <InputText v-model="formData.marca" class="w-3/5" readonly />
+            </div>
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
+                <InputText v-model="formData.modelo_serie" class="w-3/5" readonly />
+            </div>
+            
+            <div class="flex justify-between items-center ">
+                <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
+                <InputNumber v-model="formData.cantidad" class="w-3/5" readonly />
+            </div>
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Movimiento</label>
-                <InputText v-model="formData.tipo_movimiento" class="w-3/5 " aria-required="required" />
-
-
+                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
@@ -35,12 +50,8 @@
                 <InputText v-model="formData.destino" class="w-3/5" />
             </div>
 
-            <!-- Columna 2 -->
+           
 
-            <div class="flex justify-between items-center ">
-                <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
-                <InputNumber v-model="formData.cantidad" class="w-3/5" />
-            </div>
 
             <div class="input-group flex justify-between items-center">
 
@@ -65,18 +76,7 @@
                 <p class="mr-2  w-2/5 text-left  font-semibold">N° Almacenes:</p>
                 <InputText v-model="formData.numero_almacenes" class="w-3/5" />
             </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
-                <InputText v-model="formData.material_repuesto" class="w-3/5" />
-            </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
-                <InputText v-model="formData.marca" class="w-3/5" />
-            </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">modelo_serie:</p>
-                <InputText v-model="formData.modelo_serie" class="w-3/5" />
-            </div>
+          
 
         </div>
         <div class="mt-8 flex items-center justify-end">
@@ -95,6 +95,7 @@ import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
 import { reactive, ref, watch } from 'vue';
 import { defineComponent } from 'vue';
+import { fechaActual } from '../../utils/funcionesFecha.js'
 
 
 export default defineComponent({
@@ -109,40 +110,55 @@ export default defineComponent({
         numeroInformeMovimiento: {
             type: [Number, String],
             default: 0
+        },
+        articuloSeleccionado: {
+            type: Object
+        },
+        ingresoSalida: {
+            type: String
         }
     },
     emits: ['guardarMovimiento'],
     setup(props, { emit }) {
+        console.log('props.articuloSeleccionado', props.articuloSeleccionado)
+         const movimiento = ref({ ...props.articuloSeleccionado });
 
         const formData = reactive({
+            id: props.articuloSeleccionado.id,
             numero_movimiento: props.numeroInformeMovimiento,
-            fecha: null,
-            tipo_movimiento: null,
+            material_repuesto: props.articuloSeleccionado.material_repuesto,
+            marca: props.articuloSeleccionado.marca,
+            modelo_serie: props.articuloSeleccionado.modelo_serie,
+            cantidad: props.articuloSeleccionado.cantidad,
+            fecha: fechaActual(),
+            tipo_movimiento: props.ingresoSalida,
             origen: null,
             destino: null,
-            cantidad: null,
             permiso_trabajo_asociado: null,
             informe_asociado: null,
             orden_trabajo_asociada: null,
             remito: null,
             numero_almacenes: null,
-            material_repuesto: null,
-            marca: null,
-            modelo_serie: null
         });
 
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
 
-        const guardarMovimiento = () => {
-            console.log('holaaa')
+        const guardarMovimiento = () => {   
+
+            // if(!form)
+
+
+
             emit('guardarMovimiento', { ...formData })
         }
 
 
+
         const resetForm = () => {
             formData.value = {
+                id: null,
                 numero_movimiento: props.numeroInformeMovimiento,
                 fecha: null,
                 tipo_movimiento: '',
@@ -162,7 +178,9 @@ export default defineComponent({
         return {
             formData,
             resetForm,
-            guardarMovimiento
+            guardarMovimiento,
+            movimiento,
+            fechaActual,
         }
     },
 

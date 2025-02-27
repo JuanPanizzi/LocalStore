@@ -97,7 +97,7 @@ body {
 
 .p-menubar-item:not(.p-disabled) > .p-menubar-item-content:hover {
   /* background-color:  #1DB756 !important; */
-  background-color:  #F97316 !important;
+   background-color:  #0EA5E9 !important;
   color: white !important;
 }
 </style>

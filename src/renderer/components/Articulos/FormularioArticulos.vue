@@ -19,7 +19,7 @@
 
             <div class="flex items-center  justify-between ">
                 <label class="legend w-1/5 text-left font-semibold">Modelo:</label>
-                <InputText v-model="formData.modelo" class="w-4/5" />
+                <InputText v-model="formData.modelo_serie" class="w-4/5" />
 
             </div>
 
@@ -71,7 +71,7 @@ export default defineComponent({
         const formData = reactive({
             material: '',
             marca: '',
-            modelo: '',
+            modelo_serie: '',
             cantidad: 0,
             imagen: ''
         })
@@ -95,7 +95,7 @@ export default defineComponent({
         const reiniciarFormulario = () => {
             formData.material = '';
             formData.marca = '';
-            formData.modelo = '';
+            formData.modelo_serie = '';
             formData.imagen = null;
             formData.cantidad = 0;
         }

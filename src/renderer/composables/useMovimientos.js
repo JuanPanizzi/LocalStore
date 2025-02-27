@@ -40,7 +40,7 @@ export function useMovimientos() {
                 return {success: true, data: response.data}
             }
         } catch (error) {
-            return {succes: false}
+            return {succes: false, error: response.error}
         }
 
      }

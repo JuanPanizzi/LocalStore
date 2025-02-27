@@ -85,3 +85,8 @@ export function validarFormatoFecha(fecha) {
   // Si no es ni Date ni string, retorna false
   return false;
 }
+
+export const fechaActual = () => {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate()); //  Fija la hora en 00:00:00
+};

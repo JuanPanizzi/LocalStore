@@ -16,7 +16,7 @@
         <Column field="numero_almacenes" header="N° ALMACENES"></Column>
         <Column field="material_repuesto" header="MATERIAL / REPUESTO"></Column>
         <Column field="marca" header="MARCA"></Column>
-        <Column field="modelo" header="MODELO"></Column>
+        <Column field="modelo_serie" header="MODELO"></Column>
     </DataTable>
     
     <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
