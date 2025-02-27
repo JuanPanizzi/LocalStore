@@ -27,13 +27,13 @@ export async function guardarExcelMovimientos(data) {
     // Preparar la inserción de nuevos datos (no se esta pasando documento_referencia ni observaciones)
     const insert = db.prepare(`
       INSERT INTO movimientos_materiales 
-      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes,  numero_movimiento, modelo_serie_serie) 
+      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes,  numero_movimiento, modelo_serie) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? )
     `);
 
     // fecha // tipo_movimiento // origen // destino // material_repuesto // marca // articulo_id // cantidad // permiso_trabajo_asociado
     // informe_asociado // orden_trabajo_asociada // remito // numero_almacenes // numero_serie // numero_movimiento 
-    // modelo_serie_serie
+    // modelo_serie
 
     const insertMany = db.transaction((movimientos) => {
       for (const movimiento of movimientos) {
@@ -52,7 +52,7 @@ export async function guardarExcelMovimientos(data) {
           movimiento.remito,
           movimiento.numero_almacenes,
           movimiento.numero_movimiento,
-          movimiento.modelo_serie_serie
+          movimiento.modelo_serie
         );
       }
     });
