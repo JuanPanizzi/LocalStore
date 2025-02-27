@@ -111,7 +111,7 @@ export default defineComponent({
             type: [Number, String],
             default: 0
         },
-        movimientoSeleccionado: {
+        articuloSeleccionado: {
             type: Object
         },
         ingresoSalida: {
@@ -120,16 +120,16 @@ export default defineComponent({
     },
     emits: ['guardarMovimiento'],
     setup(props, { emit }) {
-
-         const movimiento = ref({ ...props.movimientoSeleccionado });
+        console.log('props.articuloSeleccionado', props.articuloSeleccionado)
+         const movimiento = ref({ ...props.articuloSeleccionado });
 
         const formData = reactive({
-            id: props.movimientoSeleccionado.id,
+            id: props.articuloSeleccionado.id,
             numero_movimiento: props.numeroInformeMovimiento,
-            material_repuesto: props.movimientoSeleccionado.material_repuesto,
-            marca: props.movimientoSeleccionado.marca,
-            modelo_serie: props.movimientoSeleccionado.modelo_serie,
-            cantidad: props.movimientoSeleccionado.cantidad,
+            material_repuesto: props.articuloSeleccionado.material_repuesto,
+            marca: props.articuloSeleccionado.marca,
+            modelo_serie: props.articuloSeleccionado.modelo_serie,
+            cantidad: props.articuloSeleccionado.cantidad,
             fecha: fechaActual(),
             tipo_movimiento: props.ingresoSalida,
             origen: null,
@@ -153,6 +153,7 @@ export default defineComponent({
 
         const resetForm = () => {
             formData.value = {
+                id: null,
                 numero_movimiento: props.numeroInformeMovimiento,
                 fecha: null,
                 tipo_movimiento: '',

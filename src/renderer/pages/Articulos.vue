@@ -56,11 +56,11 @@
     <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
   </Dialog>
 
-  <DialogEditar v-if="showDialogEditar" :articuloSeleccionado="articuloSeleccionado" />
+  <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" />
 
   <Dialog v-model:visible="showIngresoSalida.show" modal
     :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :movimientoSeleccionado="movimientoSeleccionado"
+    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
       :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
@@ -112,7 +112,7 @@ export default defineComponent({
     const toast = useToast();
     const confirm = useConfirm();
     const numeroInformeMovimiento = ref(null);
-    const articuloSeleccionado = ref({
+    const articuloEdicion = ref({
       id: null,
       material_repuesto: '',
       marca: '',
@@ -123,7 +123,7 @@ export default defineComponent({
     const showForm = ref(false);
     const showDialogEditar = ref(false);
     const showIngresoSalida = ref({ show: false, accion: '' });
-    const movimientoSeleccionado = ref(null);
+    const articuloSeleccionado = ref(null);
 
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -136,7 +136,7 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
-    const handleIngresoSalida = async (show, accion, movimiento) => {
+    const handleIngresoSalida = async (show, accion, articulo) => {
 
       const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
       if (!ultimoNumMovimiento) {
@@ -154,12 +154,11 @@ export default defineComponent({
       
       //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
       numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
-      console.log('numeroInformeMovimiento.value', numeroInformeMovimiento.value)
 
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
-      movimientoSeleccionado.value = { ...movimiento }
-      console.log('movimientoSeleccionado.value', movimientoSeleccionado.value)
+      articuloSeleccionado.value = { ...articulo }
+      console.log('articuloSeleccionado.value', articuloSeleccionado.value)
     }
     async function guardarArticulo(datosFormulario) {
 
@@ -182,7 +181,7 @@ export default defineComponent({
 
     const abrirDialogEditar = (articulo) => {
 
-      articuloSeleccionado.value = { ...articulo };
+      articuloEdicion.value = { ...articulo };
       showDialogEditar.value = true;
     }
 
@@ -287,14 +286,15 @@ export default defineComponent({
       abrirDialogEditar,
       showDialogEditar,
       showIngresoSalida,
-      articuloSeleccionado,
+      articuloEdicion,
       handleIngresoSalida,
       ultimoNumeroMovimiento,
       obtenerUltimoMovimiento,
       numeroInformeMovimiento,
       guardarMovimiento,
       crearMovimiento,
-      movimientoSeleccionado
+      articuloEdicion,
+      articuloSeleccionado
 
     }
   }

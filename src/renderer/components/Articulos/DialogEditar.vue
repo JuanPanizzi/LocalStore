@@ -61,7 +61,7 @@ export default defineComponent({
 
         const { seleccionarImagen, actualizarArticulo } = useArticulos();
 
-        const formData = reactive({ ...props.articuloSeleccionado })
+        const formData = reactive({ ...props.articuloEdicion })
         const dialogVisible = ref(true);
         const toast = useToast()
 
@@ -93,7 +93,7 @@ export default defineComponent({
 
    
         watch(
-            () => props.articuloSeleccionado,
+            () => props.articuloEdicion,
             (newVal) => {
                 Object.assign(formData, newVal);
                 dialogVisible.value = true;
@@ -110,7 +110,7 @@ export default defineComponent({
         }
     },
     props: {
-        articuloSeleccionado: {
+        articuloEdicion: {
             type: Object,
             required: true,
             // Valor por defecto en caso de que no se reciba la prop

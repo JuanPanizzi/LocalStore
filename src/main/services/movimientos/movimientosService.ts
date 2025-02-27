@@ -2,25 +2,25 @@
 import db from '../../database/database'
 
 export async function obtenerMovimientos() {
-  
-try {
-    
-  const result = db.prepare(`SELECT * FROM movimientos_materiales`).all(); 
-  
-  return {success: true, data: result}
 
-} catch (error) {
-  // console.log('error al obtener los datos', error)
-  return {success: false, error}
-}
+  try {
+
+    const result = db.prepare(`SELECT * FROM movimientos_materiales`).all();
+
+    return { success: true, data: result }
+
+  } catch (error) {
+    // console.log('error al obtener los datos', error)
+    return { success: false, error }
+  }
 }
 
 
 export async function guardarExcelMovimientos(data) {
-  
+
   try {
 
-      
+
     // Eliminar todos los registros existentes
     db.prepare(`DELETE FROM movimientos_materiales`).run();
 
@@ -70,79 +70,125 @@ export async function guardarExcelMovimientos(data) {
 
 
   } catch (error) {
-    
+
     console.error('[!] Hubo un error  al reemplazar datos:', error);
     return { success: false, error: error };
-  } 
+  }
 }
 
 export const guardarMovimiento = async (movimiento) => {
-  console.log('movimiento que llega en guardar movimento', movimiento)
-  const {numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie} = movimiento;
+  // console.log('movimiento que llega en guardar movimento', movimiento)
+  const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, id: articulo_id } = movimiento;
 
-  //validar que exista el articulo
-  //sumar cantidad de artuclo
+
 
   try {
-      const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
-        const result = stmt.run(
-          numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie
-        )
+    db.prepare("BEGIN TRANSACTION").run(); // Iniciar la transacción
 
-        const movimientoCreado = {
-          id: result.lastInsertRowid,
-          numero_movimiento, 
-          fecha, 
-          tipo_movimiento,
-          origen, 
-          destino, 
-          cantidad, 
-          permiso_trabajo_asociado, 
-          informe_asociado, 
-          orden_trabajo_asociada, 
-          remito, 
-          numero_almacenes, 
-          material_repuesto, 
-          marca, 
-          modelo_serie
-        }
+    // Verificar si el artículo existe
+    const articulo = db.prepare("SELECT cantidad FROM articulos WHERE id = ?").get(articulo_id);
+    if (!articulo) {
+      db.prepare("ROLLBACK").run(); // Revertir cambios si el artículo no existe
+      return { success: false, message: "El artículo no existe" };
+    }
 
-        if(result.changes == 0){
-          return {success: false}
-        }
+    let nuevaCantidad = articulo.cantidad;
 
-        return {success: true, data: movimientoCreado}
-        
+    // Determinar nueva cantidad según el tipo de movimiento
+    if (tipo_movimiento === "INGRESO") {
+      nuevaCantidad += cantidad;
+    } else if (tipo_movimiento === "SALIDA") {
+      if (articulo.cantidad < cantidad) {
+        db.prepare("ROLLBACK").run(); // Revertir cambios si no hay suficiente stock
+        return { success: false, message: "Stock insuficiente para realizar la salida" };
+      }
+      nuevaCantidad -= cantidad;
+    } else {
+      db.prepare("ROLLBACK").run(); // Revertir si el tipo de movimiento es inválido
+      return { success: false, message: "Tipo de movimiento inválido" };
+    }
+
+     // Actualizar la cantidad del artículo en la base de datos
+     const updateStmt = db.prepare("UPDATE articulos SET cantidad = ? WHERE id = ?");
+     const updateResult = updateStmt.run(nuevaCantidad, articulo_id);
+
+
+     if (updateResult.changes === 0) {
+      db.prepare("ROLLBACK").run(); // Revertir si la actualización falla
+      return { success: false, message: "No se pudo actualizar la cantidad del artículo" };
+    }
+
+    
+
+
+    const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+
+    const result = stmt.run(
+      numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id
+    )
+
+    if (result.changes === 0) {
+      db.prepare("ROLLBACK").run(); // Revertir si la inserción del movimiento falla
+      return { success: false, message: "No se pudo registrar el movimiento" };
+    }
+
+
+    db.prepare("COMMIT").run(); // Confirmar transacción si todo salió bien
+
+    const movimientoCreado = {
+      id: result.lastInsertRowid,
+      numero_movimiento,
+      fecha,
+      tipo_movimiento,
+      origen,
+      destino,
+      cantidad,
+      permiso_trabajo_asociado,
+      informe_asociado,
+      orden_trabajo_asociada,
+      remito,
+      numero_almacenes,
+      material_repuesto,
+      marca,
+      modelo_serie,
+      articulo_id
+    }
+
+
+
+    return { success: true, data: movimientoCreado }
+
 
   } catch (error) {
-    console.log('error al insertar movimiento', error)
-    return {success: false}
+    db.prepare("ROLLBACK").run(); // Si hay un error, deshacer todos los cambios
+    console.log('Error al insertar movimiento:', error);
+    return { success: false, message: "Error en la base de datos" };
   }
 
- }
+}
 
- export const obtenerUltimoMovimiento = async () => {
+export const obtenerUltimoMovimiento = async () => {
   try {
-      const result = db
-          .prepare(`
+    const result = db
+      .prepare(`
               SELECT numero_movimiento 
               FROM movimientos_materiales 
               ORDER BY CAST(numero_movimiento AS INTEGER) DESC, numero_movimiento DESC 
               LIMIT 1
           `)
-          .get();
+      .get();
 
-      if (!result || !result.numero_movimiento) {
-          return { success: true, data: 0 };
-      }
+    if (!result || !result.numero_movimiento) {
+      return { success: true, data: 0 };
+    }
 
-      const maxNumero = result.numero_movimiento;
+    const maxNumero = result.numero_movimiento;
 
-      return { success: true, data: maxNumero };
+    return { success: true, data: maxNumero };
   } catch (error) {
-      console.error('Error al obtener el número de movimiento:', error);
-      return { success: false, error: error || 'Error al obtener el número de movimiento' };
+    console.error('Error al obtener el número de movimiento:', error);
+    return { success: false, error: error || 'Error al obtener el número de movimiento' };
   }
 };
