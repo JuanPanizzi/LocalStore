@@ -74,8 +74,8 @@
                 <InputText v-model="formData.marca" class="w-3/5" />
             </div>
             <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">modelo_serie:</p>
-                <InputText v-model="formData.modelo_serie" class="w-3/5" />
+                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
+                <InputText v-model="formData.modelo" class="w-3/5" />
             </div>
 
         </div>
@@ -117,24 +117,24 @@ export default defineComponent({
     emits: ['guardarMovimiento'],
     setup(props, { emit }) {
 
-        const movimiento = reactive(props.movimientoSeleccionado) 
+        const movimiento = ref({ ...props.movimientoSeleccionado });
 
         const formData = reactive({
             id: props.movimientoSeleccionado.id,
             numero_movimiento: props.numeroInformeMovimiento,
+            material_repuesto: props.movimientoSeleccionado.material_repuesto,
+            marca: props.movimientoSeleccionado.marca,
+            modelo: props.movimientoSeleccionado.modelo,
+            cantidad: props.movimientoSeleccionado.cantidad,
             fecha: null,
             tipo_movimiento: null,
             origen: null,
             destino: null,
-            cantidad: null,
             permiso_trabajo_asociado: null,
             informe_asociado: null,
             orden_trabajo_asociada: null,
             remito: null,
             numero_almacenes: null,
-            material_repuesto: props.movimientoSeleccionado.material_repuesto,
-            marca: props.movimientoSeleccionado.marca,
-            modelo_serie: null
         });
 
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
@@ -161,7 +161,7 @@ export default defineComponent({
                 numero_almacenes: '',
                 material_repuesto: '',
                 marca: '',
-                modelo_serie: ''
+                modelo: ''
             };
         };
         return {

@@ -1,13 +1,13 @@
 <template>
 
   <div class="max-w-[90vw] mx-auto my-5">
-    
+
     <Button outlined label="Crear Artículo" @click="handleForm(true)" />
-    
+
   </div>
 
-  <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5" filterDisplay="row"
-    tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto" 
+  <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
+    filterDisplay="row" tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto"
     :globalFilterFields="['material_repuesto', 'marca']">
 
     <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
@@ -20,31 +20,31 @@
     <!-- <Column field="material" header="MATERIAL"></Column> -->
     <Column field="marca" header="MARCA" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-          placeholder="Buscar por marca" />
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por marca" />
       </template>
     </Column>
     <Column field="modelo" header="MODELO" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-          placeholder="Buscar por modelo" />
+        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por modelo" />
       </template>
     </Column>
     <Column field="imagen" header="IMAGEN"></Column>
     <Column field="cantidad" header="CANTIDAD"></Column>
     <Column header="INGRESO / SALIDA">
-<template #body="slotProps">
-<div class="flex justify-center">
-  <Button  icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar', slotProps.data)"  />
-  <Button  icon="pi pi-sign-out" severity="danger" class="mx-2" @click="handleIngresoSalida(true, 'Salida', slotProps.data)" />
-</div>
-</template>
+      <template #body="slotProps">
+        <div class="flex justify-center">
+          <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'Ingresar', slotProps.data)" />
+          <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
+            @click="handleIngresoSalida(true, 'Salida', slotProps.data)" />
+        </div>
+      </template>
     </Column>
     <Column header="EDITAR / ELIMINAR">
       <template #body="slotProps">
         <div class="flex justify-center">
           <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
-          <Button outlined class="ml-2" icon="pi pi-trash" severity="danger" @click="confirmarEliminacion(slotProps.data)" />
+          <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"
+            @click="confirmarEliminacion(slotProps.data)" />
         </div>
       </template>
     </Column>
@@ -58,9 +58,10 @@
 
   <DialogEditar v-if="showDialogEditar" :articuloSeleccionado="articuloSeleccionado" />
 
-  <Dialog v-model:visible="showIngresoSalida.show" modal 
-  :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'" >
-    <IngresoSalida :movimientoSeleccionado="movimientoSeleccionado" :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
+  <Dialog v-model:visible="showIngresoSalida.show" modal
+    :header="showIngresoSalida.accion == 'Ingresar' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+    <IngresoSalida :movimientoSeleccionado="movimientoSeleccionado" :numeroInformeMovimiento="numeroInformeMovimiento"
+      @guardarMovimiento="crearMovimiento" />
   </Dialog>
 
 
@@ -121,7 +122,7 @@ export default defineComponent({
     })
     const showForm = ref(false);
     const showDialogEditar = ref(false);
-    const showIngresoSalida = ref({mostrar: false, accion: ''});
+    const showIngresoSalida = ref({ show: false, accion: '' });
     const movimientoSeleccionado = ref(null);
 
     const filters = ref({
@@ -135,18 +136,19 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
-    const handleIngresoSalida = async (mostrar, accion, movimiento ) => {
-      
+    const handleIngresoSalida = async (show, accion, movimiento) => {
+
       const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
-      if(!ultimoNumMovimiento){
+      if (!ultimoNumMovimiento) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
         return;
       }
       numeroInformeMovimiento.value = ultimoNumMovimiento + 1;
 
-      showIngresoSalida.value.mostrar = mostrar;
+      showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
-      movimientoSeleccionado.value = {...movimiento }
+      movimientoSeleccionado.value = { ...movimiento }
+      console.log('movimientoSeleccionado.value', movimientoSeleccionado.value)
     }
     async function guardarArticulo(datosFormulario) {
 
@@ -168,24 +170,24 @@ export default defineComponent({
     }
 
     const abrirDialogEditar = (articulo) => {
-     
-      articuloSeleccionado.value = { ...articulo};
+
+      articuloSeleccionado.value = { ...articulo };
       showDialogEditar.value = true;
     }
 
     const ultimoNumeroMovimiento = async () => {
 
       const response = await obtenerUltimoMovimiento();
-      if(response.success){
+      if (response.success) {
         return response.data;
-      }else {
+      } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al obtener el N° de informe, intente nuevamente', life: 5000 });
         return;
       }
 
-    } 
+    }
 
-    
+
     const confirmarEliminacion = (articulo) => {
 
       const { id } = articulo;
@@ -233,23 +235,22 @@ export default defineComponent({
 
     }
 
-    const crearMovimiento = async (datosFormulario) => { 
-        console.log('datosFormulario', datosFormulario)
-        const response = await guardarMovimiento(datosFormulario);
-        if(response.success){
-          dataArticulos.value.push(response.data);
-          toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
-        
-      }else{
+    const crearMovimiento = async (datosFormulario) => {
+      console.log('datosFormulario', datosFormulario)
+      const response = await guardarMovimiento(datosFormulario);
+      if (response.success) {
+        dataArticulos.value.push(response.data);
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
+
+      } else {
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
 
-        }
-     }
+      }
+    }
 
     onMounted(async () => {
 
       const response = await obtenerArticulos();
-      console.log('response.data en obtenerArt', response.data)
       if (response.success) {
         dataArticulos.value = response.data;
       } else {
