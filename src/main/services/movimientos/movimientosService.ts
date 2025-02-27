@@ -77,7 +77,7 @@ export async function guardarExcelMovimientos(data) {
 }
 
 export const guardarMovimiento = async (movimiento) => {
-  // console.log('movimiento que llega en guardar movimento', movimiento)
+
   const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, id: articulo_id } = movimiento;
 
 
@@ -90,23 +90,23 @@ console.log('movimiento', movimiento)
     const articulo = db.prepare("SELECT cantidad FROM articulos WHERE id = ?").get(articulo_id);
     if (!articulo) {
       db.prepare("ROLLBACK").run(); // Revertir cambios si el artículo no existe
-      return { success: false, message: "El artículo no existe" };
+      return { success: false, error: "El artículo no existe" };
     }
 
     let nuevaCantidad = articulo.cantidad;
-
+    console.log('articulo.cantidad', articulo.cantidad)
     // Determinar nueva cantidad según el tipo de movimiento
     if (tipo_movimiento === "INGRESO") {
       nuevaCantidad += cantidad;
     } else if (tipo_movimiento === "SALIDA") {
       if (articulo.cantidad < cantidad) {
         db.prepare("ROLLBACK").run(); // Revertir cambios si no hay suficiente stock
-        return { success: false, message: "Stock insuficiente para realizar la salida" };
+        return { success: false, error: "Stock insuficiente para realizar la salida" };
       }
       nuevaCantidad -= cantidad;
     } else {
       db.prepare("ROLLBACK").run(); // Revertir si el tipo de movimiento es inválido
-      return { success: false, message: "Tipo de movimiento inválido" };
+      return { success: false, error: "Tipo de movimiento inválido" };
     }
 
      // Actualizar la cantidad del artículo en la base de datos
@@ -116,7 +116,7 @@ console.log('movimiento', movimiento)
 
      if (updateResult.changes === 0) {
       db.prepare("ROLLBACK").run(); // Revertir si la actualización falla
-      return { success: false, message: "No se pudo actualizar la cantidad del artículo" };
+      return { success: false, error: "No se pudo actualizar la cantidad del artículo" };
     }
 
     
@@ -131,7 +131,7 @@ console.log('movimiento', movimiento)
 
     if (result.changes === 0) {
       db.prepare("ROLLBACK").run(); // Revertir si la inserción del movimiento falla
-      return { success: false, message: "No se pudo registrar el movimiento" };
+      return { success: false, error: "No se pudo registrar el movimiento" };
     }
 
 
@@ -164,7 +164,7 @@ console.log('movimiento', movimiento)
   } catch (error) {
     db.prepare("ROLLBACK").run(); // Si hay un error, deshacer todos los cambios
     console.log('Error al insertar movimiento:', error);
-    return { success: false, message: "Error en la base de datos" };
+    return { success: false, error: "Error en la base de datos" };
   }
 
 }

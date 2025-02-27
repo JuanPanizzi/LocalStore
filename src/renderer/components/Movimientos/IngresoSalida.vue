@@ -145,7 +145,12 @@ export default defineComponent({
             formData.numero_movimiento = nuevoValor;
         });
 
-        const guardarMovimiento = () => {
+        const guardarMovimiento = () => {   
+
+            // if(!form)
+
+
+
             emit('guardarMovimiento', { ...formData })
         }
 

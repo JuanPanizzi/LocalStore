@@ -15,20 +15,20 @@ export const obtenerArticulos = async () => {
 }
 
 export const crearArticulo = async (articulo) => {
-
-    const { material_repuesto, marca, modelo, cantidad, imagen } = articulo;
+    console.log('articulo', articulo)
+    const { material_repuesto, marca, modelo_serie, cantidad, imagen } = articulo;
 
     try {
 
-        const articuloRepetido = db.prepare(`SELECT id FROM articulos WHERE marca = ? COLLATE NOCASE AND modelo = ? COLLATE NOCASE`).get(marca, modelo);
+        const articuloRepetido = db.prepare(`SELECT id FROM articulos WHERE marca = ? COLLATE NOCASE AND modelo_serie = ? COLLATE NOCASE`).get(marca, modelo_serie);
 
         if (articuloRepetido) {
-            return { success: false, error: "Ya existe un artículo con esa marca y modelo" };
+            return { success: false, error: "Ya existe un artículo con esa marca y modelo_serie" };
         }
 
-        const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo, cantidad, imagen) VALUES (?,?,?,?,?)`);
+        const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen) VALUES (?,?,?,?,?)`);
 
-        const result = stmt.run(material_repuesto, marca, modelo, cantidad, imagen);
+        const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen);
 
 
         if (result.changes === 0) {
@@ -39,7 +39,7 @@ export const crearArticulo = async (articulo) => {
             id: result.lastInsertRowid,
             material_repuesto,
             marca,
-            modelo,
+            modelo_serie,
             imagen,
             cantidad
         }
@@ -73,23 +73,23 @@ export const eliminarArticulo = async (articuloId: number | string) => {
 }
 
 export const actualizarArticulo = async (articulo) => {
-    const { material_repuesto, marca, modelo, cantidad, imagen, id } = articulo;
+    const { material_repuesto, marca, modelo_serie, cantidad, imagen, id } = articulo;
     console.log('articulo que llega', articulo)
     try {
-        // const stmt = db.prepare(`UPDATE articulos SET material_repuesto = ?, marca = ?, modelo = ?, cantidad = ?, imagen = ? WHERE id = ?`);
+        // const stmt = db.prepare(`UPDATE articulos SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? WHERE id = ?`);
 
-        // const result = stmt.run(material_repuesto, marca, modelo, cantidad, imagen, id);
+        // const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen, id);
         // if(result.changes == 0){
         //     return { success: false, error: 'No se encontró el informe' }
         // }
 
         const stmt = db.prepare(
             `UPDATE articulos 
-             SET material_repuesto = ?, marca = ?, modelo = ?, cantidad = ?, imagen = ? 
+             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? 
              WHERE id = ? 
              RETURNING *`
         );
-        const articuloActualizado = stmt.get(material_repuesto, marca, modelo, cantidad, imagen, id);
+        const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, imagen, id);
         console.log('articulo actualizado', articuloActualizado)
 
         return { success: true, data: articuloActualizado }

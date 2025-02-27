@@ -148,11 +148,11 @@ export default defineComponent({
       // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
       const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
 
-      if (isNaN(formatUltimoMovimiento)){
+      if (isNaN(formatUltimoMovimiento)) {
         toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
         return;
       }
-      
+
       //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
       numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
 
@@ -260,9 +260,16 @@ export default defineComponent({
         showIngresoSalida.value = false;
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
       } else {
-        showIngresoSalida.value = false;        
-        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
 
+        if (response.error == 'El artículo no existe') {
+
+          showIngresoSalida.value = false;
+          toast.add({ severity: 'error', summary: 'Error', detail: 'El artículo no existe en la base de datos', life: 3000 });
+
+        }
+
+        showIngresoSalida.value = false;
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
       }
     }
 
