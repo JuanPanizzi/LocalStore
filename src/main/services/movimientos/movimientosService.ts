@@ -81,7 +81,7 @@ export const guardarMovimiento = async (movimiento) => {
   const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, id: articulo_id } = movimiento;
 
 
-
+console.log('movimiento', movimiento)
   try {
 
     db.prepare("BEGIN TRANSACTION").run(); // Iniciar la transacción

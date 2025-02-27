@@ -88,6 +88,7 @@ import ConfirmDialog from 'primevue/confirmdialog';
 import { useConfirm } from 'primevue/useconfirm';
 import DialogEditar from '../components/Articulos/DialogEditar.vue';
 import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
+import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 
 export default defineComponent({
   name: 'Articulos',
@@ -245,8 +246,14 @@ export default defineComponent({
 
     }
 
-    const crearMovimiento = async (datosFormulario) => {
-      console.log('datosFormulario', datosFormulario)
+    const crearMovimiento = async (datosCompIngresoSalida) => {
+      console.log('datosFormulario', datosCompIngresoSalida) //llegan del componente hijo
+
+      const datosFormulario = {
+        ...datosCompIngresoSalida,
+        fecha: datosCompIngresoSalida.fecha ? formatFechaToYYYYMMDD(datosCompIngresoSalida.fecha) : ''
+      }
+
       const response = await guardarMovimiento(datosFormulario);
       if (response.success) {
         dataArticulos.value.push(response.data);
@@ -294,7 +301,8 @@ export default defineComponent({
       guardarMovimiento,
       crearMovimiento,
       articuloEdicion,
-      articuloSeleccionado
+      articuloSeleccionado,
+      formatFechaToYYYYMMDD
 
     }
   }
