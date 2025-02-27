@@ -257,9 +257,10 @@ export default defineComponent({
       const response = await guardarMovimiento(datosFormulario);
       if (response.success) {
         dataArticulos.value.push(response.data);
+        showIngresoSalida.value = false;
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
-
       } else {
+        showIngresoSalida.value = false;        
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
 
       }
