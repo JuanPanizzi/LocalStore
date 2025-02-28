@@ -15,7 +15,7 @@ export const obtenerArticulos = async () => {
 }
 
 export const crearArticulo = async (articulo) => {
-    console.log('articulo', articulo)
+    // console.log('articulo', articulo)
     const { material_repuesto, marca, modelo_serie, cantidad, imagen } = articulo;
 
     try {

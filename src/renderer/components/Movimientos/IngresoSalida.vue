@@ -17,7 +17,7 @@
 
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-3 gap-4 p-4 rounded-lg ">
-           
+
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
                 <InputText v-model="formData.material_repuesto" class="w-3/5" readonly />
@@ -27,30 +27,32 @@
                 <InputText v-model="formData.marca" class="w-3/5" readonly />
             </div>
             <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
+                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo / Serie:</p>
                 <InputText v-model="formData.modelo_serie" class="w-3/5" readonly />
             </div>
-            
+
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
                 <InputNumber v-model="formData.cantidad" class="w-3/5" readonly />
             </div>
             <div class="flex  items-center justify-between">
-                <label class="mr-2  w-2/5  text-left font-semibold">Movimiento</label>
+                <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
                 <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
-                <InputText v-model="formData.origen" class="w-3/5" aria-required="required" />
+                <InputText v-model="formData.origen" :invalid="camposIncompletos.origen && !formData.origen"
+                    class="w-3/5" aria-required="required" required />
 
             </div>
 
             <div class="flex items-center  justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Destino:</label>
-                <InputText v-model="formData.destino" class="w-3/5" />
+                <InputText v-model="formData.destino" class="w-3/5"
+                    :invalid="camposIncompletos.destino && !formData.destino" />
             </div>
 
-           
+
 
 
             <div class="input-group flex justify-between items-center">
@@ -69,23 +71,31 @@
                 <InputText v-model="formData.orden_trabajo_asociada" class="w-3/5" />
             </div>
             <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Remito:</p>
+                <p class="mr-2  w-2/5 text-left  font-semibold">Remito de Ingreso:</p>
                 <InputText v-model="formData.remito" class="w-3/5" />
             </div>
             <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">N° Almacenes:</p>
+                <p class="mr-2  w-2/5 text-left  font-semibold">N° Pieza de Almacén:</p>
                 <InputText v-model="formData.numero_almacenes" class="w-3/5" />
             </div>
-          
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Observaciones:</p>
+                <InputText v-model="formData.observaciones" class="w-3/5" />
+            </div>
+
+
 
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <Button label="Cancelar" icon="pi pi-refresh" class="mr-2" severity="danger" @click="" />
+            <Button label="Generar PDF " icon="pi pi-file-pdf" class="mr-2" severity="danger"
+                :disabled="!camposRequeridos" @click="generarPdf(formData)" />
+            <Button label="Cancelar" icon="pi pi-refresh" class="mr-2" severity="danger"
+                @click="cancelarIngresoSalida" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
 
         </div>
     </Form>
-
+    <Toast />
 </template>
 
 <script>
@@ -93,10 +103,12 @@ import Button from 'primevue/button';
 import DatePicker from 'primevue/datepicker';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
-import { reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { defineComponent } from 'vue';
 import { fechaActual } from '../../utils/funcionesFecha.js'
-
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
+import { useMovimientos } from '../../composables/useMovimientos.js'
 
 export default defineComponent({
     name: 'IngresoSalida',
@@ -104,7 +116,8 @@ export default defineComponent({
         InputNumber,
         DatePicker,
         InputText,
-        Button
+        Button,
+        Toast
     },
     props: {
         numeroInformeMovimiento: {
@@ -118,10 +131,17 @@ export default defineComponent({
             type: String
         }
     },
-    emits: ['guardarMovimiento'],
+    emits: ['guardarMovimiento', 'cancelarIngresoSalida'],
     setup(props, { emit }) {
-        console.log('props.articuloSeleccionado', props.articuloSeleccionado)
-         const movimiento = ref({ ...props.articuloSeleccionado });
+
+        const {generarPdf} = useMovimientos();
+
+        const movimiento = ref({ ...props.articuloSeleccionado });
+        const toast = useToast();
+        const camposIncompletos = ref({
+            origen: null,
+            destino: null
+        })
 
         const formData = reactive({
             id: props.articuloSeleccionado.id,
@@ -139,21 +159,47 @@ export default defineComponent({
             orden_trabajo_asociada: null,
             remito: null,
             numero_almacenes: null,
+            observaciones: null
         });
+
+        const camposRequeridos = computed(() => {
+            return (
+                formData.numero_movimiento &&
+                formData.fecha &&
+                formData.material_repuesto &&
+                formData.marca &&
+                formData.modelo_serie &&
+                formData.cantidad &&
+                formData.tipo_movimiento &&
+                formData.origen &&
+                formData.destino
+            )
+        })
 
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
 
-        const guardarMovimiento = () => {   
+        const guardarMovimiento = () => {
 
-            // if(!form)
-
-
+            if (!formData.origen) {
+                camposIncompletos.value.origen = true;
+                toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de origen.", life: 5000 });
+                return;
+            }
+            if (!formData.destino) {
+                camposIncompletos.value.destino = true;
+                toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de destino.", life: 5000 });
+                return;
+            }
 
             emit('guardarMovimiento', { ...formData })
         }
 
+        const cancelarIngresoSalida = () => {
+
+            emit('cancelarIngresoSalida')
+        }
 
 
         const resetForm = () => {
@@ -181,6 +227,10 @@ export default defineComponent({
             guardarMovimiento,
             movimiento,
             fechaActual,
+            cancelarIngresoSalida,
+            camposIncompletos,
+            camposRequeridos,
+            generarPdf,
         }
     },
 

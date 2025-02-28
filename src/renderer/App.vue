@@ -2,6 +2,9 @@
   <div class="min-h-screen ">
     <div class="card bg-success mx-2">
       <Menubar :model="items" :end="configItem" />
+      
+      <Button label="Toggle Dark Mode" @click="toggleDarkMode()" />
+
     </div>
     <div class="flex">
       <div class="m-2 p-1 bg-white shadow-md rounded-lg w-full">
@@ -21,10 +24,12 @@
 <script>
 import { ref, markRaw, defineAsyncComponent } from 'vue';
 import Menubar from 'primevue/menubar';
+import Button from 'primevue/button';
 
 export default {
   components: {
     Menubar,
+    Button
   },
   
   setup() {
@@ -79,12 +84,19 @@ export default {
         );
       };
 
+
+      function toggleDarkMode() {
+    document.documentElement.classList.toggle('my-app-dark');
+}
+
+
     return {
       items,
       gtc,
       configItem,
       currentComponent,
       loading,
+      toggleDarkMode
     };
   },
 };
