@@ -156,15 +156,11 @@ export default defineComponent({
 
       //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
       numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
-      console.log('parametro show ANTES', show)
-      console.log('showIngresoSalida.value.show ANTES', showIngresoSalida.value.show)
 
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
       articuloSeleccionado.value = { ...articulo }
-      console.log('parametro show DESPUES', show)
       
-      console.log('showIngresoSalida.value.show DESPUES', showIngresoSalida.value.show)
       // console.log('articuloSeleccionado.value', articuloSeleccionado.value)
     }
     async function guardarArticulo(datosFormulario) {
@@ -252,7 +248,7 @@ export default defineComponent({
     }
 
     const crearMovimiento = async (datosCompIngresoSalida) => {
-      console.log('datosFormulario', datosCompIngresoSalida) //llegan del componente hijo
+      //console.log('datosFormulario', datosCompIngresoSalida) //llegan del componente hijo
 
       const datosFormulario = {
         ...datosCompIngresoSalida,
@@ -261,8 +257,19 @@ export default defineComponent({
 
       const response = await guardarMovimiento(datosFormulario);
       if (response.success) {
-        console.log('response.data que devuelve GUARDAR MOVIMIENTO', response.data)
-        dataArticulos.value.push(response.data);
+        
+        console.log('response.data movmiento generado', response.data)
+        //dataArticulos.value.push(response.data);
+        const movimientoArticulo = response.data;
+        const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id );
+
+        if(indexArticulo == -1){
+          toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo encontrar el artículo, intente nuevamente', life: 3000 });
+          return;
+        }
+
+        dataArticulos.value[indexArticulo].cantidad +=1  
+
 
         showIngresoSalida.value.show = false;
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
