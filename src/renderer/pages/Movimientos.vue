@@ -1,5 +1,5 @@
 <template>
-<section class="p-5">
+<section class="p-5 bg-[#0F172A]">
 
     <DataTable  :value="dataMovimientos" paginator :rows="5" tableStyle="min-width: 50rem"
     showGridlines style="max-width: 90vw" class="mx-auto">
