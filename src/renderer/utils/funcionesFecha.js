@@ -90,3 +90,14 @@ export const fechaActual = () => {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), now.getDate()); //  Fija la hora en 00:00:00
 };
+
+export const formatearFecha = (fecha) => {
+
+  const fechaDate = new Date(fecha);
+  const dia = String(fechaDate.getDate()).padStart(2, '0');
+  const mes = String(fechaDate.getMonth() + 1).padStart(2, '0');
+  const año = fechaDate.getFullYear();
+
+  const fechaFormateada = `${dia}/${mes}/${año}`;
+  return fechaFormateada;
+}

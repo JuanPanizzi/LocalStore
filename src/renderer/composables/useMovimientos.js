@@ -1,7 +1,8 @@
 import * as XLSX from "xlsx-js-style";
 import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
-import logo from '../../resources/logo.png'
+import logo from '../../resources/pdfLogo.jpeg'
+import { formatearFecha } from '../utils/funcionesFecha'
 import jsPDF from 'jspdf';
 
 export function useMovimientos() {
@@ -247,8 +248,8 @@ export function useMovimientos() {
         doc.rect(173, 6, 30, 5) //rectangulo fecha
         doc.text(`FECHA: `, 159, 10);
         doc.setFont('helvetica', 'normal');
-        // doc.text(`${formatearFecha(fecha)}`, 176, 10);
-        doc.text(`${fecha}`, 176, 10);
+        doc.text(`${formatearFecha(fecha)}`, 176, 10);
+        // doc.text(`${fecha}`, 176, 10);
 
 
         doc.setFont('helvetica', 'bold');
@@ -272,7 +273,7 @@ export function useMovimientos() {
         doc.setFont('helvetica', 'bold');
         doc.text(`DESTINO.:`, 104, 60)
         doc.setFont('helvetica', 'normal');
-        doc.text(`${destino}`, 49, 50)
+        // doc.text(`${destino}`, 49, 50)
 
 
 
@@ -280,7 +281,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS INFERIORES
-        // doc.rect(3, 81, 204, 100)
+         doc.rect(3, 81, 204, 100)
 
         // doc.setFont('helvetica', 'bold');
         // doc.text(`PLANTA: `, 7, 70);
