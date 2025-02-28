@@ -35,7 +35,7 @@
         <div class="flex justify-center">
           <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
           <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
-            @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
+            @click="handleIngresoSalida(false, 'SALIDA', slotProps.data)" />
         </div>
       </template>
     </Column>
@@ -156,18 +156,22 @@ export default defineComponent({
 
       //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
       numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
+      console.log('parametro show ANTES', show)
+      console.log('showIngresoSalida.value.show ANTES', showIngresoSalida.value.show)
 
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
       articuloSeleccionado.value = { ...articulo }
-      console.log('articuloSeleccionado.value', articuloSeleccionado.value)
+      console.log('parametro show DESPUES', show)
+      
+      console.log('showIngresoSalida.value.show DESPUES', showIngresoSalida.value.show)
+      // console.log('articuloSeleccionado.value', articuloSeleccionado.value)
     }
     async function guardarArticulo(datosFormulario) {
 
       const response = await crearArticulo(datosFormulario);
 
       if (response.success) {
-
         dataArticulos.value.push(response.data)
         handleForm(false);
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 5000 });
@@ -257,8 +261,10 @@ export default defineComponent({
 
       const response = await guardarMovimiento(datosFormulario);
       if (response.success) {
+        console.log('response.data que devuelve GUARDAR MOVIMIENTO', response.data)
         dataArticulos.value.push(response.data);
-        showIngresoSalida.value = false;
+
+        showIngresoSalida.value.show = false;
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
       } else {
 
