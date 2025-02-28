@@ -1,11 +1,11 @@
 <template>
+  <section class="p-5 bg-[#0F172A]">
 
   <div class="max-w-[90vw] mx-auto my-5">
 
     <Button outlined label="Crear Artículo" @click="handleForm(true)" />
 
   </div>
-
   <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
     filterDisplay="row" tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto"
     :globalFilterFields="['material_repuesto', 'marca']">
@@ -63,6 +63,7 @@
     <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
       :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
   </Dialog>
+</section>
 
 
   <Toast />
