@@ -1,69 +1,71 @@
 <template>
   <section class="p-5 bg-[#0F172A]">
 
-  <div class="max-w-[90vw] mx-auto my-5">
+    <div class="max-w-[90vw] mx-auto my-5">
 
-    <Button outlined label="Crear Artículo" @click="handleForm(true)" />
+      <Button outlined label="Crear Artículo" @click="handleForm(true)" />
 
-  </div>
-  <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
-    filterDisplay="row" tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto"
-    :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie']">
+    </div>
+    <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
+      filterDisplay="row" tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto"
+      :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie']">
 
-    <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-          placeholder="Buscar por material" />
-      </template>
+      <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+            placeholder="Buscar por material" />
+        </template>
 
-    </Column>
-    <!-- <Column field="material" header="MATERIAL"></Column> -->
-    <Column field="marca" header="MARCA" :showFilterMenu="false">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por marca" />
-      </template>
-    </Column>
-    <Column field="modelo_serie" header="MODELO" :showFilterMenu="false">
-      <template #filter="{ filterModel, filterCallback }">
-        <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por modelo" />
-      </template>
-    </Column>
-    <Column field="imagen" header="IMAGEN"></Column>
-    <Column field="cantidad" header="CANTIDAD"></Column>
-    <Column header="INGRESO / SALIDA">
-      <template #body="slotProps">
-        <div class="flex justify-center">
-          <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
-          <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
-            @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
-        </div>
-      </template>
-    </Column>
-    <Column header="EDITAR / ELIMINAR">
-      <template #body="slotProps">
-        <div class="flex justify-center">
-          <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
-          <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"
-            @click="confirmarEliminacion(slotProps.data)" />
-        </div>
-      </template>
-    </Column>
+      </Column>
+      <!-- <Column field="material" header="MATERIAL"></Column> -->
+      <Column field="marca" header="MARCA" :showFilterMenu="false">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por marca" />
+        </template>
+      </Column>
+      <Column field="modelo_serie" header="MODELO" :showFilterMenu="false">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+            placeholder="Buscar por modelo" />
+        </template>
+      </Column>
+      <Column field="imagen" header="IMAGEN"></Column>
+      <Column field="cantidad" header="CANTIDAD"></Column>
+      <Column header="INGRESO / SALIDA">
+        <template #body="slotProps">
+          <div class="flex justify-center">
+            <Button icon="pi pi-plus" severity="success"
+              @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
+            <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
+              @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
+          </div>
+        </template>
+      </Column>
+      <Column header="EDITAR / ELIMINAR">
+        <template #body="slotProps">
+          <div class="flex justify-center">
+            <Button outlined icon="pi pi-pencil" @click="abrirDialogEditar(slotProps.data)" />
+            <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"
+              @click="confirmarEliminacion(slotProps.data)" />
+          </div>
+        </template>
+      </Column>
 
-  </DataTable>
+    </DataTable>
 
-  <!-- Dialog crear articulo -->
-  <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
-    <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
-  </Dialog>
+    <!-- Dialog crear articulo -->
+    <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
+      <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
+    </Dialog>
 
-  <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" />
+    <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" />
 
-  <Dialog v-model:visible="showIngresoSalida.show" modal
-    :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-    <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-      :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
-  </Dialog>
-</section>
+    <Dialog v-model:visible="showIngresoSalida.show" modal
+      :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+      <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
+    </Dialog>
+  </section>
 
 
   <Toast />
@@ -160,7 +162,7 @@ export default defineComponent({
       showIngresoSalida.value.show = show;
       showIngresoSalida.value.accion = accion;
       articuloSeleccionado.value = { ...articulo }
-      
+
       // console.log('articuloSeleccionado.value', articuloSeleccionado.value)
     }
     async function guardarArticulo(datosFormulario) {
@@ -258,13 +260,13 @@ export default defineComponent({
       const response = await guardarMovimiento(datosFormulario);
       console.log('response en crear movimiento', response)
       if (response.success) {
-        
+
         console.log('response.data movmiento generado', response.data)
         //dataArticulos.value.push(response.data);
         const movimientoArticulo = response.data;
-        const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id );
+        const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
 
-        if(indexArticulo == -1){
+        if (indexArticulo == -1) {
           toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo encontrar el artículo, intente nuevamente', life: 3000 });
           return;
         }
@@ -283,16 +285,13 @@ export default defineComponent({
           showIngresoSalida.value.show = false;
           toast.add({ severity: 'error', summary: 'Error', detail: 'El artículo no existe en la base de datos', life: 3000 });
           return;
-        } else if(response.error == 'Stock insuficiente para realizar la salida'){
+        } else if (response.error == 'Stock insuficiente para realizar la salida') {
 
           showIngresoSalida.value.show = false;
-          toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 3000 });
+          toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 5000 });
           return;
 
         } 
-
-
-        
 
         showIngresoSalida.value.show = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
