@@ -8,14 +8,14 @@ export async function obtenerMovimientos() {
       const result = db.prepare(`
       SELECT * FROM movimientos_materiales
       ORDER BY 
-        CAST(SUBSTR(numero_informe, 1, INSTR(numero_informe || '-', '-') - 1) AS INTEGER) DESC, 
-        SUBSTR(numero_informe, INSTR(numero_informe, '-') + 1) DESC
+        CAST(SUBSTR(numero_movimiento, 1, INSTR(numero_movimiento || '-', '-') - 1) AS INTEGER) DESC, 
+        SUBSTR(numero_movimiento, INSTR(numero_movimiento, '-') + 1) DESC
     `).all();
 
     return { success: true, data: result }
 
   } catch (error) {
-    // console.log('error al obtener los datos', error)
+    console.log('error al obtener los datos', error)
     return { success: false, error }
   }
 }
