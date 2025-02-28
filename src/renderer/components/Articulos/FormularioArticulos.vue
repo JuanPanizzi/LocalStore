@@ -7,7 +7,7 @@
         <div class="grid grid-cols-1 gap-4 p-4 border border-gray rounded-lg ">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5  text-left font-semibold">Material / Repuesto:</label>
-                <InputText v-model="formData.material" class="w-4/5 " aria-required="required" />
+                <InputText v-model="formData.material_repuesto" class="w-4/5 " aria-required="required" />
             </div>
             <div class=" flex items-center justify-between">
                 <label class="legend w-1/5 text-left font-semibold">Marca:</label>
@@ -69,7 +69,7 @@ export default defineComponent({
     setup(props, { emit }) {
 
         const formData = reactive({
-            material: '',
+            material_repuesto: '',
             marca: '',
             modelo_serie: '',
             cantidad: 0,
@@ -93,7 +93,7 @@ export default defineComponent({
             emit('cancelar')
         }
         const reiniciarFormulario = () => {
-            formData.material = '';
+            formData.material_repuesto = '';
             formData.marca = '';
             formData.modelo_serie = '';
             formData.imagen = null;
