@@ -256,6 +256,7 @@ export default defineComponent({
       }
 
       const response = await guardarMovimiento(datosFormulario);
+      console.log('response en crear movimiento', response)
       if (response.success) {
         
         console.log('response.data movmiento generado', response.data)
@@ -268,11 +269,9 @@ export default defineComponent({
           return;
         }
 
-        if(showIngresoSalida.value.accion == 'INGRESO'){
-          dataArticulos.value[indexArticulo].cantidad +=1  
-        } else if(showIngresoSalida.value.accion == 'SALIDA'){
-          dataArticulos.value[indexArticulo].cantidad -=1  
-        }
+        const articuloParaModificar = dataArticulos.value[indexArticulo];
+
+        articuloParaModificar.cantidad += showIngresoSalida.value.accion === 'INGRESO' ? 1 : -1;
 
 
         showIngresoSalida.value.show = false;
@@ -281,12 +280,21 @@ export default defineComponent({
 
         if (response.error == 'El artículo no existe') {
 
-          showIngresoSalida.value = false;
+          showIngresoSalida.value.show = false;
           toast.add({ severity: 'error', summary: 'Error', detail: 'El artículo no existe en la base de datos', life: 3000 });
+          return;
+        } else if(response.error == 'Stock insuficiente para realizar la salida'){
 
-        }
+          showIngresoSalida.value.show = false;
+          toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 3000 });
+          return;
 
-        showIngresoSalida.value = false;
+        } 
+
+
+        
+
+        showIngresoSalida.value.show = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
       }
     }
