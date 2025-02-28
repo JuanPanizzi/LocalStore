@@ -8,7 +8,7 @@
   </div>
   <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
     filterDisplay="row" tableStyle="min-width: 50rem" showGridlines class="max-w-[90vw] mx-auto"
-    :globalFilterFields="['material_repuesto', 'marca']">
+    :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie']">
 
     <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
@@ -23,7 +23,7 @@
         <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por marca" />
       </template>
     </Column>
-    <Column field="modelo" header="MODELO" :showFilterMenu="false">
+    <Column field="modelo_serie" header="MODELO" :showFilterMenu="false">
       <template #filter="{ filterModel, filterCallback }">
         <InputText v-model="filterModel.value" type="text" @input="filterCallback()" placeholder="Buscar por modelo" />
       </template>
@@ -118,7 +118,7 @@ export default defineComponent({
       id: null,
       material_repuesto: '',
       marca: '',
-      modelo: '',
+      modelo_serie: '',
       cantidad: null,
       imagen: ''
     })
@@ -131,7 +131,7 @@ export default defineComponent({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
       material_repuesto: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
       marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-      modelo: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+      modelo_serie: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 
     })
 
@@ -279,6 +279,7 @@ export default defineComponent({
       const response = await obtenerArticulos();
       if (response.success) {
         dataArticulos.value = response.data;
+        console.log('dataArticulos.value', dataArticulos.value)
       } else {
         console.log('no se pudieron obtener los articulos')
         console.log(response.error)
