@@ -83,7 +83,7 @@ export async function guardarExcelMovimientos(data) {
 
 export const guardarMovimiento = async (movimiento) => {
 
-  const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, id: articulo_id } = movimiento;
+  const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id: articulo_id } = movimiento;
 
 
   // console.log('movimiento', movimiento)
@@ -126,11 +126,11 @@ export const guardarMovimiento = async (movimiento) => {
 
 
 
-    const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
     const result = stmt.run(
-      numero_movimiento, fecha, tipo_movimiento, origen, destino, nuevaCantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id
+      numero_movimiento, fecha, tipo_movimiento, origen, destino, nuevaCantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id
     )
 
     if (result.changes === 0) {
@@ -157,6 +157,7 @@ export const guardarMovimiento = async (movimiento) => {
       material_repuesto,
       marca,
       modelo_serie,
+      observaciones,
       articulo_id
     }
 

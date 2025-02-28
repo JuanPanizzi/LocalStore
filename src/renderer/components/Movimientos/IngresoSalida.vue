@@ -76,6 +76,11 @@
                 <p class="mr-2  w-2/5 text-left  font-semibold">N° Pieza de Almacén:</p>
                 <InputText v-model="formData.numero_almacenes" class="w-3/5" />
             </div>
+            <div class="input-group flex items-center">
+                <p class="mr-2  w-2/5 text-left  font-semibold">Observaciones:</p>
+                <InputText v-model="formData.observaciones" class="w-3/5" />
+            </div>
+            
           
 
         </div>
@@ -146,6 +151,7 @@ export default defineComponent({
             orden_trabajo_asociada: null,
             remito: null,
             numero_almacenes: null,
+            observaciones: null
         });
 
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {

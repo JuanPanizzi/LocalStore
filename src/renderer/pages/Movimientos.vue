@@ -17,6 +17,7 @@
         <Column field="material_repuesto" header="MATERIAL / REPUESTO"></Column>
         <Column field="marca" header="MARCA"></Column>
         <Column field="modelo_serie" header="MODELO"></Column>
+        <Column field="observaciones" header="OBSERVACIONES"></Column>
     </DataTable>
     
     <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
