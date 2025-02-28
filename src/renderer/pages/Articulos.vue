@@ -35,7 +35,7 @@
         <div class="flex justify-center">
           <Button icon="pi pi-plus" severity="success" @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
           <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
-            @click="handleIngresoSalida(false, 'SALIDA', slotProps.data)" />
+            @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
         </div>
       </template>
     </Column>
@@ -268,7 +268,11 @@ export default defineComponent({
           return;
         }
 
-        dataArticulos.value[indexArticulo].cantidad +=1  
+        if(showIngresoSalida.value.accion == 'INGRESO'){
+          dataArticulos.value[indexArticulo].cantidad +=1  
+        } else if(showIngresoSalida.value.accion == 'SALIDA'){
+          dataArticulos.value[indexArticulo].cantidad -=1  
+        }
 
 
         showIngresoSalida.value.show = false;
