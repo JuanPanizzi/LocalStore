@@ -60,10 +60,11 @@
 
     <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" />
 
+    <!-- Dialog para ingresar o dar salida a un artículo -->
     <Dialog v-model:visible="showIngresoSalida.show" modal
       :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
       <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" />
+        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" @cancelarIngresoSalida = "handleIngresoSalida(false)"  />
     </Dialog>
   </section>
 
@@ -140,7 +141,15 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
+
+    
+
     const handleIngresoSalida = async (show, accion, articulo) => {
+
+      if(!show){
+        showIngresoSalida.value.show = false
+        return
+      }
 
       const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
       if (!ultimoNumMovimiento) {
