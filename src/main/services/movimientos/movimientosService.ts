@@ -5,7 +5,12 @@ export async function obtenerMovimientos() {
 
   try {
 
-    const result = db.prepare(`SELECT * FROM movimientos_materiales`).all();
+      const result = db.prepare(`
+      SELECT * FROM movimientos_materiales
+      ORDER BY 
+        CAST(SUBSTR(numero_informe, 1, INSTR(numero_informe || '-', '-') - 1) AS INTEGER) DESC, 
+        SUBSTR(numero_informe, INSTR(numero_informe, '-') + 1) DESC
+    `).all();
 
     return { success: true, data: result }
 
