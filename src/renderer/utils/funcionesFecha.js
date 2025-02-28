@@ -91,6 +91,7 @@ export const fechaActual = () => {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate()); //  Fija la hora en 00:00:00
 };
 
+// convierte objeto date a dd/mm/aaaa
 export const formatearFecha = (fecha) => {
 
   const fechaDate = new Date(fecha);
