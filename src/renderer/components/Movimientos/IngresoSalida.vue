@@ -41,13 +41,13 @@
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
-                <InputText v-model="formData.origen" class="w-3/5" aria-required="required" required />
+                <InputText v-model="formData.origen" :invalid="camposIncompletos.origen && !formData.origen" class="w-3/5" aria-required="required" required />
 
             </div>
 
             <div class="flex items-center  justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Destino:</label>
-                <InputText v-model="formData.destino" class="w-3/5" />
+                <InputText v-model="formData.destino" class="w-3/5" :invalid="camposIncompletos.destino && !formData.destino" />
             </div>
 
            
@@ -85,7 +85,7 @@
 
         </div>
     </Form>
-
+    <Toast />
 </template>
 
 <script>
@@ -96,6 +96,8 @@ import InputText from 'primevue/inputtext';
 import { reactive, ref, watch } from 'vue';
 import { defineComponent } from 'vue';
 import { fechaActual } from '../../utils/funcionesFecha.js'
+import Toast from 'primevue/toast';
+import { useToast } from 'primevue/usetoast';
 
 
 export default defineComponent({
@@ -104,7 +106,8 @@ export default defineComponent({
         InputNumber,
         DatePicker,
         InputText,
-        Button
+        Button,
+        Toast
     },
     props: {
         numeroInformeMovimiento: {
@@ -121,6 +124,11 @@ export default defineComponent({
     emits: ['guardarMovimiento', 'cancelarIngresoSalida'],
     setup(props, { emit }) {
          const movimiento = ref({ ...props.articuloSeleccionado });
+        const toast = useToast();
+         const camposIncompletos = ref({
+            origen: null,
+            destino: null
+         })
 
         const formData = reactive({
             id: props.articuloSeleccionado.id,
@@ -145,6 +153,17 @@ export default defineComponent({
         });
 
         const guardarMovimiento = () => {   
+
+            if(!formData.origen){
+                camposIncompletos.value.origen = true;
+                toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de origen.", life: 5000 });
+                return;
+            }
+            if(!formData.destino){
+                camposIncompletos.value.destino = true;
+                toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de destino.", life: 5000 });
+                return;
+            }
 
             emit('guardarMovimiento', { ...formData })
         }
@@ -180,7 +199,8 @@ export default defineComponent({
             guardarMovimiento,
             movimiento,
             fechaActual,
-            cancelarIngresoSalida
+            cancelarIngresoSalida,
+            camposIncompletos
         }
     },
 
