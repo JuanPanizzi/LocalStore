@@ -267,7 +267,7 @@ export default defineComponent({
       }
 
       const response = await guardarMovimiento(datosFormulario);
-      console.log('response en crear movimiento', response)
+      // console.log('response en crear movimiento', response)
       if (response.success) {
 
         console.log('response.data movmiento generado', response.data)
@@ -312,7 +312,6 @@ export default defineComponent({
       const response = await obtenerArticulos();
       if (response.success) {
         dataArticulos.value = response.data;
-        console.log('dataArticulos.value', dataArticulos.value)
       } else {
         console.log('no se pudieron obtener los articulos')
         console.log(response.error)
