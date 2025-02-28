@@ -5,7 +5,7 @@ export async function obtenerMovimientos() {
 
   try {
 
-      const result = db.prepare(`
+    const result = db.prepare(`
       SELECT * FROM movimientos_materiales
       ORDER BY 
         CAST(SUBSTR(numero_movimiento, 1, INSTR(numero_movimiento || '-', '-') - 1) AS INTEGER) DESC, 
@@ -86,7 +86,7 @@ export const guardarMovimiento = async (movimiento) => {
   const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, id: articulo_id } = movimiento;
 
 
-console.log('movimiento', movimiento)
+  // console.log('movimiento', movimiento)
   try {
 
     db.prepare("BEGIN TRANSACTION").run(); // Iniciar la transacción
@@ -99,39 +99,38 @@ console.log('movimiento', movimiento)
     }
 
     let nuevaCantidad = articulo.cantidad;
-    console.log('articulo.cantidad', articulo.cantidad)
+
     // Determinar nueva cantidad según el tipo de movimiento
     if (tipo_movimiento === "INGRESO") {
-      nuevaCantidad += cantidad;
+      nuevaCantidad += 1; // Sumar 1
     } else if (tipo_movimiento === "SALIDA") {
-      if (articulo.cantidad < cantidad) {
+      if (articulo.cantidad < 1) {
         db.prepare("ROLLBACK").run(); // Revertir cambios si no hay suficiente stock
         return { success: false, error: "Stock insuficiente para realizar la salida" };
       }
-      nuevaCantidad -= cantidad;
+      nuevaCantidad -= 1; // Restar 1
     } else {
       db.prepare("ROLLBACK").run(); // Revertir si el tipo de movimiento es inválido
       return { success: false, error: "Tipo de movimiento inválido" };
     }
 
-     // Actualizar la cantidad del artículo en la base de datos
-     const updateStmt = db.prepare("UPDATE articulos SET cantidad = ? WHERE id = ?");
-     const updateResult = updateStmt.run(nuevaCantidad, articulo_id);
+    // Actualizar la cantidad del artículo en la base de datos
+    const updateStmt = db.prepare("UPDATE articulos SET cantidad = ? WHERE id = ?");
+    const updateResult = updateStmt.run(nuevaCantidad, articulo_id);
 
-
-     if (updateResult.changes === 0) {
+    if (updateResult.changes === 0) {
       db.prepare("ROLLBACK").run(); // Revertir si la actualización falla
       return { success: false, error: "No se pudo actualizar la cantidad del artículo" };
     }
 
-    
+
 
 
     const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id)
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
     const result = stmt.run(
-      numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id
+      numero_movimiento, fecha, tipo_movimiento, origen, destino, nuevaCantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, articulo_id
     )
 
     if (result.changes === 0) {
@@ -149,7 +148,7 @@ console.log('movimiento', movimiento)
       tipo_movimiento,
       origen,
       destino,
-      cantidad,
+      cantidad: nuevaCantidad,
       permiso_trabajo_asociado,
       informe_asociado,
       orden_trabajo_asociada,
