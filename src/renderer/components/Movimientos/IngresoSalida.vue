@@ -27,7 +27,7 @@
                 <InputText v-model="formData.marca" class="w-3/5" readonly />
             </div>
             <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo:</p>
+                <p class="mr-2  w-2/5 text-left  font-semibold">Modelo / Serie:</p>
                 <InputText v-model="formData.modelo_serie" class="w-3/5" readonly />
             </div>
             
@@ -36,12 +36,12 @@
                 <InputNumber v-model="formData.cantidad" class="w-3/5" readonly />
             </div>
             <div class="flex  items-center justify-between">
-                <label class="mr-2  w-2/5  text-left font-semibold">Movimiento</label>
+                <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
                 <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
-                <InputText v-model="formData.origen" class="w-3/5" aria-required="required" />
+                <InputText v-model="formData.origen" class="w-3/5" aria-required="required" required />
 
             </div>
 
