@@ -89,8 +89,26 @@ export const guardarMovimiento = async (movimiento) => {
   // console.log('movimiento', movimiento)
   try {
 
+
+    const registroExistente = db.prepare(`
+      SELECT * FROM movimientos_materiales WHERE numero_movimiento = ?
+    `).get(numero_movimiento);
+
+
+
+    if (registroExistente) {
+      return { success: false, error: 'numero de informe repetido' };
+    }
+
+
+
     db.prepare("BEGIN TRANSACTION").run(); // Iniciar la transacción
 
+
+
+
+
+    
     // Verificar si el artículo existe
     const articulo = db.prepare("SELECT cantidad FROM articulos WHERE id = ?").get(articulo_id);
     if (!articulo) {

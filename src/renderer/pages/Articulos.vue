@@ -152,10 +152,10 @@ export default defineComponent({
       console.log('datosFormulario', datosFormulario) 
       
       if(!registroGuardado.value){
-        toast.add({ severity: 'error', summary: 'Registro sin guardar', detail: 'Debes guardar el movimiento antes de generar el pdf, intente nuevamente', life: 6000 });
+        toast.add({ severity: 'error', summary: 'Registro sin guardar', detail: 'Debes guardar el movimiento antes de generar el PDF, intente nuevamente', life: 6000 });
         return;
       }
-      generarPdf(datosFormulario)
+      generarPdf(datosFormulario);
      }
     
 
@@ -288,6 +288,7 @@ export default defineComponent({
         // console.log('response.data movmiento generado', response.data)
         //dataArticulos.value.push(response.data);
         const movimientoArticulo = response.data;
+        
         const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
 
         if (indexArticulo == -1) {
@@ -306,7 +307,6 @@ export default defineComponent({
       } else {
 
         if (response.error == 'El artículo no existe') {
-
           showIngresoSalida.value.show = false;
           toast.add({ severity: 'error', summary: 'Error', detail: 'El artículo no existe en la base de datos', life: 3000 });
           return;
@@ -316,7 +316,11 @@ export default defineComponent({
           toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 5000 });
           return;
 
-        } 
+        } else if (response.error == 'numero de informe repetido'){
+          toast.add({ severity: 'error', summary: 'Informe Existente', detail: 'Ya existe un registro con este n° de informe, por favor reinicia el formulario para crear uno nuevo', life: 5000 });
+          return;
+
+        }
 
         showIngresoSalida.value.show = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
