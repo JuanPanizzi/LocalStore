@@ -227,7 +227,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS SUPERIORES
-        doc.rect(3, 30, 204, 150)
+        doc.rect(3, 30, 204, 140)
 
         //RECTANGULO GENERAL 
         // Definir las dimensiones del documento (tamaño carta en puntos)
@@ -305,34 +305,34 @@ export function useMovimientos() {
 
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`PERMISO DE TRABAJO ASOCIADO:`, 7, 115)
-        doc.rect(67, 111, 137, 5)
+        doc.text(`PERMISO DE TRABAJO ASOCIADO:`, 7, 110)
+        doc.rect(67, 106, 137, 5)
         doc.setFont('helvetica', 'normal');
-        doc.text(`${permiso_trabajo_asociado || ''}`, 69, 115);
+        doc.text(`${permiso_trabajo_asociado || ''}`, 69, 110);
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`ORDEN DE TRABAJO ASOCIADA:`, 7, 125)
-        doc.rect(67, 121, 137, 5)
+        doc.text(`ORDEN DE TRABAJO ASOCIADA:`, 7, 120)
+        doc.rect(67, 116, 137, 5)
         doc.setFont('helvetica', 'normal');
-        doc.text(`${orden_trabajo_asociada || ''}`, 69, 125)
+        doc.text(`${orden_trabajo_asociada || ''}`, 69, 120)
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`INFORME ASOCIADO:`, 7, 135)
-        doc.rect(67, 131, 137, 5)
+        doc.text(`INFORME ASOCIADO:`, 7, 130)
+        doc.rect(67, 126, 137, 5)
         doc.setFont('helvetica', 'normal');
-        doc.text(`${informe_asociado || ''}`, 69, 135)
+        doc.text(`${informe_asociado || ''}`, 69, 130)
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`REMITO:`, 7, 160)
+        doc.text(`REMITO:`, 7, 150)
+        doc.rect(67, 146, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${remito || ''}`, 69, 150)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`N° DE ALMACENES:`, 7, 160)
         doc.rect(67, 156, 137, 5)
         doc.setFont('helvetica', 'normal');
-        doc.text(`${remito || ''}`, 69, 160)
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`N° DE ALMACENES:`, 7, 170)
-        doc.rect(67, 166, 137, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${numero_almacenes || ''}`, 69, 170)
+        doc.text(`${numero_almacenes || ''}`, 69, 160)
 
 
         //SEGUNDO CUADRO DE INPUTS
