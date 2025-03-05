@@ -214,7 +214,6 @@ export function useMovimientos() {
 
     const generarPdf = (datosFormulario) => {
 
-        console.log('datosFormulario', datosFormulario);
 
         const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario
 
@@ -343,11 +342,11 @@ export function useMovimientos() {
 
         // Ajustar el texto dentro del rectángulo
         doc.setFont('helvetica', 'normal');
-        const maxWidth = 185; // Ancho máximo del texto dentro del rectángulo
-        const textLines = doc.splitTextToSize(observaciones.value || '', maxWidth);
+        const maxWidth = 188; // Ancho máximo del texto dentro del rectángulo
+        const textLines = doc.splitTextToSize(observaciones || '', maxWidth);
 
         // // Imprimir el texto multilínea
-        doc.text(textLines, 10, 165);
+        doc.text(textLines, 10, 191);
 
 
 
@@ -366,7 +365,7 @@ export function useMovimientos() {
             doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('REGISTRO DE MOVIMIENTO', 28, 16);
+            doc.text('REGISTRO DE MOVIMIENTO DE MATERIAL / REPUESTO', 22, 16);
 
             const today = new Date();
             const yyyy = today.getFullYear();
