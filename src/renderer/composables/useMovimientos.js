@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx-js-style";
 import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
-import logo from '../../resources/pdfLogo.jpeg'
+import logo from '../../resources/pdflogo.png'
 import { formatearFecha } from '../utils/funcionesFecha'
 import jsPDF from 'jspdf';
 
@@ -366,7 +366,7 @@ export function useMovimientos() {
             doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('REGISTRO DE REQUERIMIENTOS', 28, 16);
+            doc.text('REGISTRO DE MOVIMIENTO', 28, 16);
 
             const today = new Date();
             const yyyy = today.getFullYear();
