@@ -233,7 +233,7 @@ export default defineComponent({
             cancelarIngresoSalida,
             camposIncompletos,
             camposRequeridos,
-            nuevoPdf,
+            nuevoPdf
         }
     },
 

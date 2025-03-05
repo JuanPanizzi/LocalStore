@@ -150,6 +150,11 @@ export default defineComponent({
 
     const nuevoPdf = (datosFormulario) => {
       console.log('datosFormulario', datosFormulario) 
+      
+      if(!registroGuardado.value){
+        toast.add({ severity: 'error', summary: 'Registro sin guardar', detail: 'Debes guardar el movimiento antes de generar el pdf, intente nuevamente', life: 6000 });
+        return;
+      }
       generarPdf(datosFormulario)
      }
     
@@ -295,8 +300,9 @@ export default defineComponent({
         articuloParaModificar.cantidad += showIngresoSalida.value.accion === 'INGRESO' ? 1 : -1;
 
 
-        showIngresoSalida.value.show = false;
+        // showIngresoSalida.value.show = false;
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
+        registroGuardado.value = true;
       } else {
 
         if (response.error == 'El artículo no existe') {
@@ -314,6 +320,7 @@ export default defineComponent({
 
         showIngresoSalida.value.show = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
+        registroGuardado.value = false;
       }
     }
 
