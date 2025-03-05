@@ -117,7 +117,7 @@ export default defineComponent({
 
   setup() {
     const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
-    const { guardarMovimiento, generarPdf } = useMovimientos()
+    const { guardarMovimiento, generarPdf } = useMovimientos();
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
@@ -158,11 +158,16 @@ export default defineComponent({
       generarPdf(datosFormulario);
      }
     
+     const reiniciarFormulario = () => { 
+      registroGuardado.value = false;
+
+      }
 
     const handleIngresoSalida = async (show, accion, articulo) => {
 
       if(!show){
-        showIngresoSalida.value.show = false
+        registroGuardado.value = false;
+        showIngresoSalida.value.show = false;
         return
       }
 
@@ -368,7 +373,8 @@ export default defineComponent({
       formatFechaToYYYYMMDD,
       registroGuardado,
       generarPdf,
-      nuevoPdf
+      nuevoPdf,
+      reiniciarFormulario
 
     }
   }
