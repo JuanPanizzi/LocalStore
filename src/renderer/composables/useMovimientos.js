@@ -213,7 +213,7 @@ export function useMovimientos() {
 
 
     const generarPdf = (datosFormulario) => {
-
+ return new Promise((resolve, reject) => {
         // console.log('datosFormulario useMovimientos', datosFormulario)
 
         const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario;
@@ -357,12 +357,11 @@ export function useMovimientos() {
 
 
 
-
-
-
         const appLogo = new Image();
         appLogo.src = logo;
-        appLogo.onload = () => {
+
+        let response;
+        appLogo.onload = async () => {
             doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
@@ -374,9 +373,27 @@ export function useMovimientos() {
             const dd = String(today.getDate()).padStart(2, '0');
             const nombrePdf = `MOVINV-${yyyy}-${mm}-${dd}.pdf`;
 
-            doc.save(`${nombrePdf}`);
+            // doc.save(`${nombrePdf}`);
+
+            // Obtenemos el contenido del PDF como ArrayBuffer
+            const pdfArrayBuffer = doc.output('arraybuffer');
+
+            try {
+                const result = await window.electronAPI.guardarPdf(pdfArrayBuffer);
+                resolve(result); // Resolvemos la promesa con el resultado obtenido
+              } catch (error) {
+                reject(error);
+              }
+           
         }
-    }
+        appLogo.onerror = (err) => {
+            reject(err);
+          };
+
+
+          
+    })
+}
 
     const obtenerUltimoMovimiento = async () => {
         try {

@@ -19,4 +19,5 @@ contextBridge.exposeInMainWorld('electronAPI', {
   seleccionarImagen: ()=> ipcRenderer.invoke('seleccionar-imagen-articulo'),
   actualizarArticulo: (articuloActualizado) => ipcRenderer.invoke('actualizar-articulo', articuloActualizado),
   obtenerUltimoMovimiento: ()=> ipcRenderer.invoke('obtener-ultimo-movimiento'),
+  guardarPdf: (pdfData: ArrayBuffer) => ipcRenderer.invoke('guardar-pdf', pdfData)
 });

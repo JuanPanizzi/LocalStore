@@ -63,14 +63,10 @@
     <!-- Dialog para ingresar o dar salida a un artículo -->
     <Dialog v-model:visible="showIngresoSalida.show" modal
       :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-      <IngresoSalida 
-      :ingresoSalida="showIngresoSalida.accion" 
-      :articuloSeleccionado="articuloSeleccionado"
-      :numeroInformeMovimiento="numeroInformeMovimiento" 
-      @guardarMovimiento="crearMovimiento"
-      @cancelarIngresoSalida="handleIngresoSalida(false)" 
-      @reiniciarFormulario="reiniciarIngresoSalida"
-      @nuevoPdf="nuevoPdf" />
+      <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
+        @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
+        @nuevoPdf="nuevoPdf" />
     </Dialog>
   </section>
 
@@ -149,14 +145,32 @@ export default defineComponent({
       showForm.value = show;
     }
 
-    const nuevoPdf = (datosFormulario) => {
+    const nuevoPdf = async (datosFormulario) => {
       console.log('datosFormulario', datosFormulario)
 
       if (!registroGuardado.value) {
         toast.add({ severity: 'error', summary: 'Registro sin guardar', detail: 'Debes guardar el movimiento antes de generar el PDF, intente nuevamente', life: 6000 });
         return;
       }
-      generarPdf(datosFormulario);
+      try {
+        const respuestaPdf = await generarPdf(datosFormulario);
+        console.log('respuestaPdf', respuestaPdf)
+        if(respuestaPdf.success){
+          handleIngresoSalida(false);
+          toast.add({ severity: 'success', summary: 'Éxito', detail: 'PDF guardado correctamente', life: 6000 });
+        
+        }else{
+          toast.add({ severity: 'warn', summary: 'Pdf sin guardar', detail: 'No has guardado el PDF', life: 6000 });
+
+        }
+
+        console.log('respuestaPdf', respuestaPdf);
+        // Puedes mostrar un alert o realizar otra acción en base a la respuesta
+      } catch (error) {
+        toast.add({ severity: 'warn', summary: 'Pdf sin guardar', detail: 'No has guardado el PDF', life: 6000 });
+        
+        console.error('Error al generar el PDF:', error);
+      }
     }
 
     const reiniciarIngresoSalida = async () => {
