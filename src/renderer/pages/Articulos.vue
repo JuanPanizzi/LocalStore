@@ -63,8 +63,13 @@
     <!-- Dialog para ingresar o dar salida a un artículo -->
     <Dialog v-model:visible="showIngresoSalida.show" modal
       :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-      <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" @cancelarIngresoSalida = "handleIngresoSalida(false)"  />
+      <IngresoSalida 
+      :ingresoSalida="showIngresoSalida.accion" 
+      :articuloSeleccionado="articuloSeleccionado"
+      :numeroInformeMovimiento="numeroInformeMovimiento" 
+      @guardarMovimiento="crearMovimiento" 
+      @cancelarIngresoSalida = "handleIngresoSalida(false)"
+      @nuevoPdf = "nuevoPdf"  />
     </Dialog>
   </section>
 
@@ -112,7 +117,7 @@ export default defineComponent({
 
   setup() {
     const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
-    const { guardarMovimiento } = useMovimientos()
+    const { guardarMovimiento, generarPdf } = useMovimientos()
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
@@ -129,6 +134,7 @@ export default defineComponent({
     const showDialogEditar = ref(false);
     const showIngresoSalida = ref({ show: false, accion: '' });
     const articuloSeleccionado = ref(null);
+    const registroGuardado = ref(false);
 
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -142,6 +148,10 @@ export default defineComponent({
       showForm.value = show;
     }
 
+    const nuevoPdf = (datosFormulario) => {
+      console.log('datosFormulario', datosFormulario) 
+      generarPdf(datosFormulario)
+     }
     
 
     const handleIngresoSalida = async (show, accion, articulo) => {
@@ -270,7 +280,7 @@ export default defineComponent({
       // console.log('response en crear movimiento', response)
       if (response.success) {
 
-        console.log('response.data movmiento generado', response.data)
+        // console.log('response.data movmiento generado', response.data)
         //dataArticulos.value.push(response.data);
         const movimientoArticulo = response.data;
         const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
@@ -344,7 +354,10 @@ export default defineComponent({
       crearMovimiento,
       articuloEdicion,
       articuloSeleccionado,
-      formatFechaToYYYYMMDD
+      formatFechaToYYYYMMDD,
+      registroGuardado,
+      generarPdf,
+      nuevoPdf
 
     }
   }

@@ -88,7 +88,7 @@
         </div>
         <div class="mt-8 flex items-center justify-end">
             <Button label="Generar PDF " icon="pi pi-file-pdf" class="mr-2" severity="danger"
-                :disabled="!camposRequeridos" @click="generarPdf(formData)" />
+                :disabled="!camposRequeridos" @click="nuevoPdf" />
             <Button label="Cancelar" icon="pi pi-refresh" class="mr-2" severity="danger"
                 @click="cancelarIngresoSalida" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
@@ -108,7 +108,7 @@ import { defineComponent } from 'vue';
 import { fechaActual } from '../../utils/funcionesFecha.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import { useMovimientos } from '../../composables/useMovimientos.js'
+
 
 export default defineComponent({
     name: 'IngresoSalida',
@@ -134,7 +134,6 @@ export default defineComponent({
     emits: ['guardarMovimiento', 'cancelarIngresoSalida'],
     setup(props, { emit }) {
 
-        const {generarPdf} = useMovimientos();
 
         const movimiento = ref({ ...props.articuloSeleccionado });
         const toast = useToast();
@@ -179,6 +178,10 @@ export default defineComponent({
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
+
+        const nuevoPdf = (datosFormulario) => { 
+            emit('nuevoPdf', {...formData})
+         }
 
         const guardarMovimiento = () => {
 
@@ -230,7 +233,7 @@ export default defineComponent({
             cancelarIngresoSalida,
             camposIncompletos,
             camposRequeridos,
-            generarPdf,
+            nuevoPdf,
         }
     },
 
