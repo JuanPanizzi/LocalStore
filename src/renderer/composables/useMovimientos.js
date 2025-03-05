@@ -271,18 +271,25 @@ export function useMovimientos() {
         // doc.text(`${cantidad}`, 49, 40)
 
 
-
-
         doc.setFont('helvetica', 'bold');
-        doc.text(`ORIGEN:`, 7, 50)
+        doc.text(`MATERIAL / REPUESTO:`, 7, 50)
         doc.rect(47, 46, 157, 5)
         doc.setFont('helvetica', 'normal');
-        doc.text(`${origen}`, 49, 50)
+        doc.text(`${material_repuesto}`, 49, 50)
+
+        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`MARCA:`, 7, 60)
+        doc.rect(47, 56, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${marca}`, 49, 60)
+
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`DESTINO.:`, 104, 60)
+        doc.text(`MODELO / SERIE:`, 7, 70)
+        doc.rect(47, 66, 157, 5)
         doc.setFont('helvetica', 'normal');
-        // doc.text(`${destino}`, 49, 50)
+        doc.text(`${modelo_serie}`, 49, 70)
 
 
 
@@ -290,7 +297,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS INFERIORES
-         doc.rect(3, 81, 204, 100)
+        //  doc.rect(3, 81, 204, 100)
 
         // doc.setFont('helvetica', 'bold');
         // doc.text(`PLANTA: `, 7, 70);
