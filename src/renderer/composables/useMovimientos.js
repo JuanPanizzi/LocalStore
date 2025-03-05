@@ -227,7 +227,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS SUPERIORES
-        doc.rect(3, 30, 204, 130)
+        doc.rect(3, 30, 204, 150)
 
         //RECTANGULO GENERAL 
         // Definir las dimensiones del documento (tamaño carta en puntos)
@@ -254,7 +254,7 @@ export function useMovimientos() {
 
         doc.setFont('helvetica', 'bold');
         doc.rect(173, 17, 30, 5) //rectangulo n° req
-        doc.text(`N° INFORME:`, 139, 21)
+        doc.text(`N° INFORME:`, 151, 21)
         doc.setFont('helvetica', 'normal');
         doc.text(`${numero_movimiento}`, 176, 21)
 
@@ -277,7 +277,7 @@ export function useMovimientos() {
         doc.setFont('helvetica', 'normal');
         doc.text(`${material_repuesto}`, 49, 50)
 
-        
+
         doc.setFont('helvetica', 'bold');
         doc.text(`MARCA:`, 7, 60)
         doc.rect(47, 56, 157, 5)
@@ -322,7 +322,17 @@ export function useMovimientos() {
         doc.setFont('helvetica', 'normal');
         doc.text(`${informe_asociado || ''}`, 69, 135)
 
-        
+        doc.setFont('helvetica', 'bold');
+        doc.text(`REMITO:`, 7, 160)
+        doc.rect(67, 156, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${remito || ''}`, 69, 160)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`N° DE ALMACENES:`, 7, 170)
+        doc.rect(67, 166, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${numero_almacenes || ''}`, 69, 170)
 
 
         //SEGUNDO CUADRO DE INPUTS
@@ -381,11 +391,11 @@ export function useMovimientos() {
 
 
         doc.setFont('helvetica', 'bold');
-        doc.text('Firma por Contratista', 6, 290)
-        doc.rect(5, 260, 55, 25)  //Tecnico Contratista
+        doc.text('Responsable de Inventario', 6, 290)
+        doc.rect(5, 260, 55, 25)
 
-        doc.text('Firma por Inspección Y.P.F.', 151, 290)
-        doc.rect(150, 260, 55, 25) //Inspector Mantenimiento
+
+
 
 
 
@@ -397,9 +407,13 @@ export function useMovimientos() {
             doc.setFont('helvetica', 'bold');
             doc.text('REGISTRO DE REQUERIMIENTOS', 28, 16);
 
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const nombrePdf = `MOVINV-${yyyy}-${mm}-${dd}.pdf`;
 
-
-            doc.save(`MOVINV-${numero_movimiento}.pdf`);
+            doc.save(`${nombrePdf}`);
         }
     }
 
