@@ -67,9 +67,10 @@
       :ingresoSalida="showIngresoSalida.accion" 
       :articuloSeleccionado="articuloSeleccionado"
       :numeroInformeMovimiento="numeroInformeMovimiento" 
-      @guardarMovimiento="crearMovimiento" 
-      @cancelarIngresoSalida = "handleIngresoSalida(false)"
-      @nuevoPdf = "nuevoPdf"  />
+      @guardarMovimiento="crearMovimiento"
+      @cancelarIngresoSalida="handleIngresoSalida(false)" 
+      @reiniciarFormulario="reiniciarIngresoSalida"
+      @nuevoPdf="nuevoPdf" />
     </Dialog>
   </section>
 
@@ -116,8 +117,8 @@ export default defineComponent({
   },
 
   setup() {
-    const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
-    const { guardarMovimiento, generarPdf } = useMovimientos();
+    const { obtenerArticulos, crearArticulo, eliminarArticulo } = useArticulos();
+    const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
@@ -149,23 +150,45 @@ export default defineComponent({
     }
 
     const nuevoPdf = (datosFormulario) => {
-      console.log('datosFormulario', datosFormulario) 
-      
-      if(!registroGuardado.value){
+      console.log('datosFormulario', datosFormulario)
+
+      if (!registroGuardado.value) {
         toast.add({ severity: 'error', summary: 'Registro sin guardar', detail: 'Debes guardar el movimiento antes de generar el PDF, intente nuevamente', life: 6000 });
         return;
       }
       generarPdf(datosFormulario);
-     }
-    
-     const reiniciarFormulario = () => { 
+    }
+
+    const reiniciarIngresoSalida = async () => {
+
       registroGuardado.value = false;
 
+
+      const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
+      if (!ultimoNumMovimiento) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
+        return;
       }
+
+      // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
+      const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
+
+      if (isNaN(formatUltimoMovimiento)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
+        return;
+      }
+
+      //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
+      numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
+
+
+
+
+    }
 
     const handleIngresoSalida = async (show, accion, articulo) => {
 
-      if(!show){
+      if (!show) {
         registroGuardado.value = false;
         showIngresoSalida.value.show = false;
         return
@@ -293,7 +316,7 @@ export default defineComponent({
         // console.log('response.data movmiento generado', response.data)
         //dataArticulos.value.push(response.data);
         const movimientoArticulo = response.data;
-        
+
         const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
 
         if (indexArticulo == -1) {
@@ -321,7 +344,7 @@ export default defineComponent({
           toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 5000 });
           return;
 
-        } else if (response.error == 'numero de informe repetido'){
+        } else if (response.error == 'numero de informe repetido') {
           toast.add({ severity: 'error', summary: 'Informe Existente', detail: 'Ya existe un registro con este n° de informe, por favor reinicia el formulario para crear uno nuevo', life: 5000 });
           return;
 
@@ -374,7 +397,7 @@ export default defineComponent({
       registroGuardado,
       generarPdf,
       nuevoPdf,
-      reiniciarFormulario
+      reiniciarIngresoSalida
 
     }
   }

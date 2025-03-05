@@ -378,9 +378,16 @@ export function useMovimientos() {
         }
     }
 
-
-
-
+    const obtenerUltimoMovimiento = async () => {
+        try {
+            const response = await window.electronAPI.obtenerUltimoMovimiento();
+            if (response.success) {
+                return { success: true, data: response.data };
+            }
+        } catch (error) {
+            return { success: false }
+        }
+    }
 
 
     return {
@@ -388,7 +395,8 @@ export function useMovimientos() {
         guardarExcelMovimientos,
         obtenerMovimientos,
         guardarMovimiento,
-        generarPdf
+        generarPdf,
+        obtenerUltimoMovimiento
     }
 
 }

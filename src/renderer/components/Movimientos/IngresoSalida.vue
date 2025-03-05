@@ -89,7 +89,7 @@
         <div class="mt-8 flex items-center justify-end">
             <div class="flex items-center justify-start  mr-auto">
                 <Button label="Reiniciar" icon="pi pi-refresh" class="mr-auto" severity="secondary"
-                @click="cancelarIngresoSalida" />
+                @click="reiniciarFormulario" />
             </div>
             <div class="flex items-center">
 
@@ -186,7 +186,11 @@ export default defineComponent({
             formData.numero_movimiento = nuevoValor;
         });
 
-        const nuevoPdf = (datosFormulario) => { 
+        const reiniciarFormulario = () => { 
+            emit('reiniciarFormulario')
+         }
+
+        const nuevoPdf = () => { 
             emit('nuevoPdf', {...formData})
          }
 
@@ -240,7 +244,8 @@ export default defineComponent({
             cancelarIngresoSalida,
             camposIncompletos,
             camposRequeridos,
-            nuevoPdf
+            nuevoPdf,
+            reiniciarFormulario
         }
     },
 

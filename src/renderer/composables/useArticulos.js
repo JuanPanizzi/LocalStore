@@ -83,24 +83,14 @@ export function useArticulos(){
         }
     }
 
-    const obtenerUltimoMovimiento = async () => {
-        try {
-            const response = await window.electronAPI.obtenerUltimoMovimiento();
-            if(response.success){
-                return {success: true, data: response.data };
-            }
-        } catch (error) {
-            return {success: false}
-        }
-    }
-
+   
     return {
         obtenerArticulos,
         crearArticulo,
         eliminarArticulo,
         seleccionarImagen,
         actualizarArticulo,
-        obtenerUltimoMovimiento
+       
     }
 
 
