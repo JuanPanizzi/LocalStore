@@ -214,7 +214,7 @@ export function useMovimientos() {
 
     const generarPdf = (datosFormulario) => {
 
-        // console.log('datosFormulario', datosFormulario);
+        console.log('datosFormulario', datosFormulario);
 
         const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario
 
@@ -227,7 +227,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS SUPERIORES
-        doc.rect(3, 30, 204, 140)
+        doc.rect(3, 30, 204, 210)
 
         //RECTANGULO GENERAL 
         // Definir las dimensiones del documento (tamaño carta en puntos)
@@ -335,58 +335,19 @@ export function useMovimientos() {
         doc.text(`${numero_almacenes || ''}`, 69, 160)
 
 
-        //SEGUNDO CUADRO DE INPUTS
-
-
-        //RECTANGULO INPUTS INFERIORES
-        //  doc.rect(3, 81, 204, 100)
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`PLANTA: `, 7, 70);
-        // doc.rect(47, 66, 157, 5) //rec codigo informe
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${plantaSeleccionada.value.nombre}`, 49, 70)
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`SECTOR:`, 7, 80)
-        // doc.rect(47, 76, 157, 5)
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${sector.value}`, 49, 80)
-
-        // // doc.setFont('helvetica', 'bold');
-        // // doc.text(`CANTIDAD:`, 7, 100)
-        // // doc.rect(47, 96, 157, 5)
-        // // doc.setFont('helvetica', 'normal');
-        // // doc.text(`${cantidad?.value}`, 49, 100)
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`INSUMO / MATERIAL:`, 7, 110)
-        // doc.rect(47, 106, 157, 5)
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${insumoMaterial.value}`, 49, 110)
-
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`ESTADO:`, 7, 120)
-        // doc.rect(47, 116, 157, 5)
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${estado.value}`, 49, 120)
-
-
-
         // RECTÁNGULO OBSERVACIONES
-        // doc.setFont('helvetica', 'bold');
-        // doc.rect(3, 129, 204, 80);
-        // doc.text(`OBSERVACIÓN: `, 7, 137);
-        // doc.rect(7, 140, 196, 60);
+        doc.setFont('helvetica', 'bold');
+        // doc.rect(3, 190, 204, 80);
+        doc.text(`OBSERVACIONES: `, 7, 180);
+        doc.rect(7, 185, 196, 50);
 
         // Ajustar el texto dentro del rectángulo
         doc.setFont('helvetica', 'normal');
         const maxWidth = 185; // Ancho máximo del texto dentro del rectángulo
-        // const textLines = doc.splitTextToSize(observacion.value || '', maxWidth);
+        const textLines = doc.splitTextToSize(observaciones.value || '', maxWidth);
 
         // // Imprimir el texto multilínea
-        // doc.text(textLines, 10, 144);
+        doc.text(textLines, 10, 165);
 
 
 
