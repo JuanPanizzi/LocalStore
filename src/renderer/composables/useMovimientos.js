@@ -214,7 +214,7 @@ export function useMovimientos() {
 
     const generarPdf = (datosFormulario) => {
 
-        console.log('datosFormulario', datosFormulario);
+        // console.log('datosFormulario', datosFormulario);
 
         const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario
 
@@ -260,9 +260,18 @@ export function useMovimientos() {
 
         doc.setFont('helvetica', 'bold');
         doc.text(`TIPO DE MOVIMIENTO: `, 7, 40);
-        doc.rect(47, 36, 157, 5) //rec codigo informe
+        doc.rect(47, 36, 60, 5) //rec codigo informe
         doc.setFont('helvetica', 'normal');
         doc.text(`${tipo_movimiento}`, 49, 40)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`CANTIDAD: `, 120, 40);
+        doc.rect(144, 36, 60, 5) //rec codigo informe
+        doc.setFont('helvetica', 'normal');
+        // doc.text(`${cantidad}`, 49, 40)
+
+
+
 
         doc.setFont('helvetica', 'bold');
         doc.text(`ORIGEN:`, 7, 50)
