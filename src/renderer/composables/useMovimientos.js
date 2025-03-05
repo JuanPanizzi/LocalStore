@@ -227,7 +227,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS SUPERIORES
-        doc.rect(3, 30, 204, 98)
+        doc.rect(3, 30, 204, 130)
 
         //RECTANGULO GENERAL 
         // Definir las dimensiones del documento (tamaño carta en puntos)
@@ -268,7 +268,7 @@ export function useMovimientos() {
         doc.text(`CANTIDAD: `, 120, 40);
         doc.rect(144, 36, 60, 5) //rec codigo informe
         doc.setFont('helvetica', 'normal');
-        // doc.text(`${cantidad}`, 49, 40)
+        doc.text(`${cantidad}`, 146, 40)
 
 
         doc.setFont('helvetica', 'bold');
@@ -291,6 +291,38 @@ export function useMovimientos() {
         doc.setFont('helvetica', 'normal');
         doc.text(`${modelo_serie}`, 49, 70)
 
+        doc.setFont('helvetica', 'bold');
+        doc.text(`ORIGEN:`, 7, 80)
+        doc.rect(47, 76, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${origen}`, 49, 80)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`DESTINO:`, 7, 90)
+        doc.rect(47, 86, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${destino}`, 49, 90)
+
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`PERMISO DE TRABAJO ASOCIADO:`, 7, 115)
+        doc.rect(67, 111, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${permiso_trabajo_asociado || ''}`, 69, 115);
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`ORDEN DE TRABAJO ASOCIADA:`, 7, 125)
+        doc.rect(67, 121, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${orden_trabajo_asociada || ''}`, 69, 125)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`INFORME ASOCIADO:`, 7, 135)
+        doc.rect(67, 131, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${informe_asociado || ''}`, 69, 135)
+
+        
 
 
         //SEGUNDO CUADRO DE INPUTS
