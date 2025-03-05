@@ -87,11 +87,18 @@
 
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <Button label="Generar PDF " icon="pi pi-file-pdf" class="mr-2" severity="danger"
-                :disabled="!camposRequeridos" @click="generarPdf(formData)" />
-            <Button label="Cancelar" icon="pi pi-refresh" class="mr-2" severity="danger"
+            <div class="flex items-center justify-start  mr-auto">
+                <Button label="Reiniciar" icon="pi pi-refresh" class="mr-auto" severity="secondary"
+                @click="reiniciarFormulario" />
+            </div>
+            <div class="flex items-center">
+
+                <Button label="Generar PDF " icon="pi pi-file-pdf" class="" severity="info"
+                :disabled="!camposRequeridos" @click="nuevoPdf" />
+                <Button label="Cancelar" icon="pi pi-times" class="mx-2" severity="danger"
                 @click="cancelarIngresoSalida" />
-            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
+                <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
+            </div>
 
         </div>
     </Form>
@@ -108,7 +115,7 @@ import { defineComponent } from 'vue';
 import { fechaActual } from '../../utils/funcionesFecha.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
-import { useMovimientos } from '../../composables/useMovimientos.js'
+
 
 export default defineComponent({
     name: 'IngresoSalida',
@@ -134,7 +141,6 @@ export default defineComponent({
     emits: ['guardarMovimiento', 'cancelarIngresoSalida'],
     setup(props, { emit }) {
 
-        const {generarPdf} = useMovimientos();
 
         const movimiento = ref({ ...props.articuloSeleccionado });
         const toast = useToast();
@@ -179,6 +185,14 @@ export default defineComponent({
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
+
+        const reiniciarFormulario = () => { 
+            emit('reiniciarFormulario')
+         }
+
+        const nuevoPdf = () => { 
+            emit('nuevoPdf', {...formData})
+         }
 
         const guardarMovimiento = () => {
 
@@ -230,7 +244,8 @@ export default defineComponent({
             cancelarIngresoSalida,
             camposIncompletos,
             camposRequeridos,
-            generarPdf,
+            nuevoPdf,
+            reiniciarFormulario
         }
     },
 

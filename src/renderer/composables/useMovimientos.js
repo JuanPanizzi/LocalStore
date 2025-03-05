@@ -1,7 +1,7 @@
 import * as XLSX from "xlsx-js-style";
 import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
-import logo from '../../resources/pdfLogo.jpeg'
+import logo from '../../resources/pdflogo.png'
 import { formatearFecha } from '../utils/funcionesFecha'
 import jsPDF from 'jspdf';
 
@@ -213,10 +213,10 @@ export function useMovimientos() {
 
 
     const generarPdf = (datosFormulario) => {
+ return new Promise((resolve, reject) => {
+        // console.log('datosFormulario useMovimientos', datosFormulario)
 
-        console.log('datosFormulario', datosFormulario);
-
-        const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario
+        const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario;
 
         // if (!registroGuardado.value) {
         //     toast.add({ severity: 'warn', summary: 'Error', detail: 'Debe guardar el registro antes de generar el PDF', life: 3000 });
@@ -227,7 +227,7 @@ export function useMovimientos() {
 
 
         //RECTANGULO INPUTS SUPERIORES
-        doc.rect(3, 30, 204, 98)
+        doc.rect(3, 30, 204, 210)
 
         //RECTANGULO GENERAL 
         // Definir las dimensiones del documento (tamaño carta en puntos)
@@ -254,110 +254,157 @@ export function useMovimientos() {
 
         doc.setFont('helvetica', 'bold');
         doc.rect(173, 17, 30, 5) //rectangulo n° req
-        doc.text(`N° INFORME:`, 139, 21)
+        doc.text(`N° INFORME:`, 151, 21)
         doc.setFont('helvetica', 'normal');
         doc.text(`${numero_movimiento}`, 176, 21)
 
         doc.setFont('helvetica', 'bold');
         doc.text(`TIPO DE MOVIMIENTO: `, 7, 40);
-        doc.rect(47, 36, 157, 5) //rec codigo informe
+        doc.rect(47, 36, 60, 5) //rec codigo informe
         doc.setFont('helvetica', 'normal');
         doc.text(`${tipo_movimiento}`, 49, 40)
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`ORIGEN:`, 7, 50)
-        doc.rect(47, 46, 157, 5)
+        doc.text(`CANTIDAD: `, 120, 40);
+        doc.rect(144, 36, 60, 5) //rec codigo informe
         doc.setFont('helvetica', 'normal');
-        doc.text(`${origen}`, 49, 50)
+        doc.text(`${cantidad}`, 146, 40)
+
 
         doc.setFont('helvetica', 'bold');
-        doc.text(`DESTINO.:`, 104, 60)
+        doc.text(`MATERIAL / REPUESTO:`, 7, 50)
+        doc.rect(47, 46, 157, 5)
         doc.setFont('helvetica', 'normal');
-        // doc.text(`${destino}`, 49, 50)
+        doc.text(`${material_repuesto}`, 49, 50)
 
 
-
-        //SEGUNDO CUADRO DE INPUTS
-
-
-        //RECTANGULO INPUTS INFERIORES
-         doc.rect(3, 81, 204, 100)
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`PLANTA: `, 7, 70);
-        // doc.rect(47, 66, 157, 5) //rec codigo informe
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${plantaSeleccionada.value.nombre}`, 49, 70)
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`SECTOR:`, 7, 80)
-        // doc.rect(47, 76, 157, 5)
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${sector.value}`, 49, 80)
-
-        // // doc.setFont('helvetica', 'bold');
-        // // doc.text(`CANTIDAD:`, 7, 100)
-        // // doc.rect(47, 96, 157, 5)
-        // // doc.setFont('helvetica', 'normal');
-        // // doc.text(`${cantidad?.value}`, 49, 100)
-
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`INSUMO / MATERIAL:`, 7, 110)
-        // doc.rect(47, 106, 157, 5)
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${insumoMaterial.value}`, 49, 110)
+        doc.setFont('helvetica', 'bold');
+        doc.text(`MARCA:`, 7, 60)
+        doc.rect(47, 56, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${marca}`, 49, 60)
 
 
-        // doc.setFont('helvetica', 'bold');
-        // doc.text(`ESTADO:`, 7, 120)
-        // doc.rect(47, 116, 157, 5)
-        // doc.setFont('helvetica', 'normal');
-        // doc.text(`${estado.value}`, 49, 120)
+        doc.setFont('helvetica', 'bold');
+        doc.text(`MODELO / SERIE:`, 7, 70)
+        doc.rect(47, 66, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${modelo_serie}`, 49, 70)
 
+        doc.setFont('helvetica', 'bold');
+        doc.text(`ORIGEN:`, 7, 80)
+        doc.rect(47, 76, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${origen}`, 49, 80)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`DESTINO:`, 7, 90)
+        doc.rect(47, 86, 157, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${destino}`, 49, 90)
+
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`PERMISO DE TRABAJO ASOCIADO:`, 7, 110)
+        doc.rect(67, 106, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${permiso_trabajo_asociado || ''}`, 69, 110);
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`ORDEN DE TRABAJO ASOCIADA:`, 7, 120)
+        doc.rect(67, 116, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${orden_trabajo_asociada || ''}`, 69, 120)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`INFORME ASOCIADO:`, 7, 130)
+        doc.rect(67, 126, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${informe_asociado || ''}`, 69, 130)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`REMITO:`, 7, 150)
+        doc.rect(67, 146, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${remito || ''}`, 69, 150)
+
+        doc.setFont('helvetica', 'bold');
+        doc.text(`N° DE ALMACENES:`, 7, 160)
+        doc.rect(67, 156, 137, 5)
+        doc.setFont('helvetica', 'normal');
+        doc.text(`${numero_almacenes || ''}`, 69, 160)
 
 
         // RECTÁNGULO OBSERVACIONES
-        // doc.setFont('helvetica', 'bold');
-        // doc.rect(3, 129, 204, 80);
-        // doc.text(`OBSERVACIÓN: `, 7, 137);
-        // doc.rect(7, 140, 196, 60);
+        doc.setFont('helvetica', 'bold');
+        // doc.rect(3, 190, 204, 80);
+        doc.text(`OBSERVACIONES: `, 7, 180);
+        doc.rect(7, 185, 196, 50);
 
         // Ajustar el texto dentro del rectángulo
         doc.setFont('helvetica', 'normal');
-        const maxWidth = 185; // Ancho máximo del texto dentro del rectángulo
-        // const textLines = doc.splitTextToSize(observacion.value || '', maxWidth);
+        const maxWidth = 188; // Ancho máximo del texto dentro del rectángulo
+        const textLines = doc.splitTextToSize(observaciones || '', maxWidth);
 
         // // Imprimir el texto multilínea
-        // doc.text(textLines, 10, 144);
+        doc.text(textLines, 10, 191);
 
 
 
         doc.setFont('helvetica', 'bold');
-        doc.text('Firma por Contratista', 6, 290)
-        doc.rect(5, 260, 55, 25)  //Tecnico Contratista
-
-        doc.text('Firma por Inspección Y.P.F.', 151, 290)
-        doc.rect(150, 260, 55, 25) //Inspector Mantenimiento
+        doc.text('Responsable de Inventario', 6, 290)
+        doc.rect(5, 260, 55, 25)
 
 
 
         const appLogo = new Image();
         appLogo.src = logo;
-        appLogo.onload = () => {
+
+        let response;
+        appLogo.onload = async () => {
             doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('REGISTRO DE REQUERIMIENTOS', 28, 16);
+            doc.text('REGISTRO DE MOVIMIENTO DE MATERIAL / REPUESTO', 22, 16);
+
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const nombrePdf = `MOVINV-${yyyy}-${mm}-${dd}.pdf`;
+
+            // doc.save(`${nombrePdf}`);
+
+            // Obtenemos el contenido del PDF como ArrayBuffer
+            const pdfArrayBuffer = doc.output('arraybuffer');
+
+            try {
+                const result = await window.electronAPI.guardarPdf(pdfArrayBuffer);
+                resolve(result); // Resolvemos la promesa con el resultado obtenido
+              } catch (error) {
+                reject(error);
+              }
+           
+        }
+        appLogo.onerror = (err) => {
+            reject(err);
+          };
 
 
+          
+    })
+}
 
-            doc.save(`MOVINV-${numero_movimiento}.pdf`);
+    const obtenerUltimoMovimiento = async () => {
+        try {
+            const response = await window.electronAPI.obtenerUltimoMovimiento();
+            if (response.success) {
+                return { success: true, data: response.data };
+            }
+        } catch (error) {
+            return { success: false }
         }
     }
-
-
-
-
 
 
     return {
@@ -365,7 +412,8 @@ export function useMovimientos() {
         guardarExcelMovimientos,
         obtenerMovimientos,
         guardarMovimiento,
-        generarPdf
+        generarPdf,
+        obtenerUltimoMovimiento
     }
 
 }

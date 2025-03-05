@@ -64,7 +64,9 @@
     <Dialog v-model:visible="showIngresoSalida.show" modal
       :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
       <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento" @cancelarIngresoSalida = "handleIngresoSalida(false)"  />
+        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
+        @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
+        @nuevoPdf="nuevoPdf" />
     </Dialog>
   </section>
 
@@ -111,8 +113,8 @@ export default defineComponent({
   },
 
   setup() {
-    const { obtenerArticulos, crearArticulo, eliminarArticulo, obtenerUltimoMovimiento } = useArticulos();
-    const { guardarMovimiento } = useMovimientos()
+    const { obtenerArticulos, crearArticulo, eliminarArticulo } = useArticulos();
+    const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
     const dataArticulos = ref(null);
     const toast = useToast();
     const confirm = useConfirm();
@@ -129,6 +131,7 @@ export default defineComponent({
     const showDialogEditar = ref(false);
     const showIngresoSalida = ref({ show: false, accion: '' });
     const articuloSeleccionado = ref(null);
+    const registroGuardado = ref(false);
 
     const filters = ref({
       global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -142,12 +145,66 @@ export default defineComponent({
       showForm.value = show;
     }
 
-    
+    const nuevoPdf = async (datosFormulario) => {
+      console.log('datosFormulario', datosFormulario)
+
+      if (!registroGuardado.value) {
+        toast.add({ severity: 'error', summary: 'Registro sin guardar', detail: 'Debes guardar el movimiento antes de generar el PDF, intente nuevamente', life: 6000 });
+        return;
+      }
+      try {
+        const respuestaPdf = await generarPdf(datosFormulario);
+        console.log('respuestaPdf', respuestaPdf)
+        if(respuestaPdf.success){
+          handleIngresoSalida(false);
+          toast.add({ severity: 'success', summary: 'Éxito', detail: 'PDF guardado correctamente', life: 6000 });
+        
+        }else{
+          toast.add({ severity: 'warn', summary: 'Pdf sin guardar', detail: 'No has guardado el PDF', life: 6000 });
+
+        }
+
+        console.log('respuestaPdf', respuestaPdf);
+        // Puedes mostrar un alert o realizar otra acción en base a la respuesta
+      } catch (error) {
+        toast.add({ severity: 'warn', summary: 'Pdf sin guardar', detail: 'No has guardado el PDF', life: 6000 });
+        
+        console.error('Error al generar el PDF:', error);
+      }
+    }
+
+    const reiniciarIngresoSalida = async () => {
+
+      registroGuardado.value = false;
+
+
+      const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
+      if (!ultimoNumMovimiento) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
+        return;
+      }
+
+      // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
+      const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
+
+      if (isNaN(formatUltimoMovimiento)) {
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
+        return;
+      }
+
+      //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
+      numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
+
+
+
+
+    }
 
     const handleIngresoSalida = async (show, accion, articulo) => {
 
-      if(!show){
-        showIngresoSalida.value.show = false
+      if (!show) {
+        registroGuardado.value = false;
+        showIngresoSalida.value.show = false;
         return
       }
 
@@ -270,9 +327,10 @@ export default defineComponent({
       // console.log('response en crear movimiento', response)
       if (response.success) {
 
-        console.log('response.data movmiento generado', response.data)
+        // console.log('response.data movmiento generado', response.data)
         //dataArticulos.value.push(response.data);
         const movimientoArticulo = response.data;
+
         const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
 
         if (indexArticulo == -1) {
@@ -285,12 +343,12 @@ export default defineComponent({
         articuloParaModificar.cantidad += showIngresoSalida.value.accion === 'INGRESO' ? 1 : -1;
 
 
-        showIngresoSalida.value.show = false;
+        // showIngresoSalida.value.show = false;
         toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
+        registroGuardado.value = true;
       } else {
 
         if (response.error == 'El artículo no existe') {
-
           showIngresoSalida.value.show = false;
           toast.add({ severity: 'error', summary: 'Error', detail: 'El artículo no existe en la base de datos', life: 3000 });
           return;
@@ -300,10 +358,15 @@ export default defineComponent({
           toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 5000 });
           return;
 
-        } 
+        } else if (response.error == 'numero de informe repetido') {
+          toast.add({ severity: 'error', summary: 'Informe Existente', detail: 'Ya existe un registro con este n° de informe, por favor reinicia el formulario para crear uno nuevo', life: 5000 });
+          return;
+
+        }
 
         showIngresoSalida.value.show = false;
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
+        registroGuardado.value = false;
       }
     }
 
@@ -344,7 +407,11 @@ export default defineComponent({
       crearMovimiento,
       articuloEdicion,
       articuloSeleccionado,
-      formatFechaToYYYYMMDD
+      formatFechaToYYYYMMDD,
+      registroGuardado,
+      generarPdf,
+      nuevoPdf,
+      reiniciarIngresoSalida
 
     }
   }

@@ -1231,8 +1231,7 @@ export default defineComponent({
       doc.text(`ESTADO:`, 7, 120)
       doc.rect(47, 116, 157, 5)
       doc.setFont('helvetica', 'normal');
-      doc.text(`${estado.value}`, 49, 120)
-
+      doc.text(`${estado.value}`, 49, 120);
 
 
       // RECTÁNGULO OBSERVACIONES
