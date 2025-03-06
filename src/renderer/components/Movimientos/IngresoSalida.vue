@@ -87,15 +87,15 @@
 
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <div class="flex items-center justify-start  mr-auto">
+            <!-- <div class="flex items-center justify-start  mr-auto">
                 <Button label="Reiniciar" icon="pi pi-refresh" class="mr-auto" severity="secondary"
                 @click="reiniciarFormulario" />
-            </div>
+            </div>  -->
             <div class="flex items-center">
 
                 <Button label="Generar PDF " icon="pi pi-file-pdf" class="" severity="info"
                 :disabled="!camposRequeridos" @click="nuevoPdf" />
-                <Button label="Cancelar" icon="pi pi-times" class="mx-2" severity="danger"
+                <Button label="Regresar" icon="pi pi-refresh" class="mx-2" severity="danger"
                 @click="cancelarIngresoSalida" />
                 <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
             </div>
