@@ -5,7 +5,7 @@
     showGridlines style="max-width: 90vw" class="mx-auto">
         <!-- <Column field="numero_movimiento" header="ID"></Column> -->
         <!-- <Column field="fecha" header="FECHA"></Column> -->
-        <Column header="Date" filterField="fecha" dataType="date" style="min-width: 10rem"  :showFilterOperator="false" 
+        <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"  :showFilterOperator="false" 
         :showFilterMatchModes="true" 
       :showAddButton="true"        
       :filterMatchModeOptions="[
