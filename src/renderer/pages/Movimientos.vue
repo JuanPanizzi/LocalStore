@@ -140,3 +140,8 @@ export default defineComponent({
 })
 
 </script>
+<style>
+.p-datatable-filter-remove-rule-button {
+  display: none !important;
+}
+</style>
