@@ -6,12 +6,12 @@
         <!-- <Column field="numero_movimiento" header="ID"></Column> -->
         <!-- <Column field="fecha" header="FECHA"></Column> -->
         <Column header="Date" filterField="fecha" dataType="date" style="min-width: 10rem"  :showFilterOperator="false" 
-        :showFilterMatchModes="true"
+        :showFilterMatchModes="true" 
       :showAddButton="true"        
       :filterMatchModeOptions="[
-        { label: 'Date is before', value: 'dateBefore' },
-        { label: 'Date is after', value: 'dateAfter' }
-      ]"
+    { label: 'Fecha Inicio',  value: 'dateAfter' },
+    { label: 'Fecha Fin', value: 'dateBefore' }
+  ]"
         >
                 <template #body="{ data }">
                     {{data.fecha }}
@@ -68,9 +68,20 @@ export default defineComponent({
     },
 
     setup() {
+      // const filters = ref({
+      //   fecha: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+      // });
       const filters = ref({
-        fecha: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
-      });
+      fecha: {
+        operator: FilterOperator.AND,
+        constraints: [
+          // Primera regla: "Date is after"
+          { value: null, matchMode: FilterMatchMode.DATE_AFTER },
+          // Segunda regla: "Date is before"
+          { value: null, matchMode: FilterMatchMode.DATE_BEFORE }
+        ]
+      }
+    });
         const dataMovimientos = ref(null);
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
