@@ -1,10 +1,29 @@
 <template>
 <section class="p-5 bg-[#0F172A]">
 
-    <DataTable  :value="dataMovimientos" paginator :rows="5" tableStyle="min-width: 50rem"
+    <DataTable  v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5" tableStyle="min-width: 50rem"
     showGridlines style="max-width: 90vw" class="mx-auto">
-        <Column field="numero_movimiento" header="ID"></Column>
-        <Column field="fecha" header="FECHA"></Column>
+        <!-- <Column field="numero_movimiento" header="ID"></Column> -->
+        <!-- <Column field="fecha" header="FECHA"></Column> -->
+        <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"  :showFilterOperator="false" 
+        :showFilterMatchModes="true" 
+      :showAddButton="true"        
+      :filterMatchModeOptions="[
+    { label: 'Fecha Inicio',  value: 'dateAfter' },
+    { label: 'Fecha Fin', value: 'dateBefore' }
+  ]"
+        >
+                <template #body="{ data }">
+                    {{data.fecha }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <DatePicker v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
+                </template>
+            </Column>
+
+        <Column field="material_repuesto" header="MATERIAL / REPUESTO"></Column>
+        <Column field="marca" header="MARCA"></Column>
+        <Column field="modelo_serie" header="MODELO"></Column>
         <Column field="tipo_movimiento" header="MOVIMIENTO"></Column>
         <Column field="origen" header="ORIGEN"></Column>
         <Column field="destino" header="DESTINO"></Column>
@@ -14,9 +33,6 @@
         <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
         <Column field="remito" header="REMITO"></Column>
         <Column field="numero_almacenes" header="N° ALMACENES"></Column>
-        <Column field="material_repuesto" header="MATERIAL / REPUESTO"></Column>
-        <Column field="marca" header="MARCA"></Column>
-        <Column field="modelo_serie" header="MODELO"></Column>
         <Column field="observaciones" header="OBSERVACIONES"></Column>
     </DataTable>
     
@@ -36,6 +52,8 @@ import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useMovimientos} from '../composables/useMovimientos';
 import FileUpload from 'primevue/fileupload';
+import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
+import DatePicker from 'primevue/datepicker';
 
 
 export default defineComponent({
@@ -45,11 +63,25 @@ export default defineComponent({
         Column,
         DataTable,
         Toast,
-        FileUpload
+        FileUpload,
+        DatePicker
     },
 
     setup() {
-
+      // const filters = ref({
+      //   fecha: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+      // });
+      const filters = ref({
+      fecha: {
+        operator: FilterOperator.AND,
+        constraints: [
+          // Primera regla: "Date is after"
+          { value: null, matchMode: FilterMatchMode.DATE_AFTER },
+          // Segunda regla: "Date is before"
+          { value: null, matchMode: FilterMatchMode.DATE_BEFORE }
+        ]
+      }
+    });
         const dataMovimientos = ref(null);
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
@@ -81,7 +113,13 @@ export default defineComponent({
             const response = await obtenerMovimientos();
 
             if(response.success){
-                dataMovimientos.value = response.data;
+                // dataMovimientos.value = response.data;
+              dataMovimientos.value = response.data.map(mov => ({
+                ...mov,
+                fecha: new Date(mov.fecha)
+              }))
+
+
             }else{
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });
             }
@@ -94,6 +132,7 @@ export default defineComponent({
             dataMovimientos,
             guardarExcelMovimientos,
             obtenerMovimientos,
+            filters
 
             
         }
@@ -101,3 +140,8 @@ export default defineComponent({
 })
 
 </script>
+<style>
+.p-datatable-filter-remove-rule-button {
+  display: none !important;
+}
+</style>
