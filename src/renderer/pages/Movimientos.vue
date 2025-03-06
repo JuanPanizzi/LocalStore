@@ -5,7 +5,7 @@
     showGridlines style="max-width: 90vw" class="mx-auto">
         <!-- <Column field="numero_movimiento" header="ID"></Column> -->
         <!-- <Column field="fecha" header="FECHA"></Column> -->
-        <Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
+        <Column header="Date" filterField="fecha" dataType="date" style="min-width: 10rem" :showFilterOperator="false">
                 <template #body="{ data }">
                     {{data.fecha }}
                 </template>
@@ -46,6 +46,7 @@ import { useToast } from 'primevue/usetoast';
 import { useMovimientos} from '../composables/useMovimientos';
 import FileUpload from 'primevue/fileupload';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
+import DatePicker from 'primevue/datepicker';
 
 
 export default defineComponent({
@@ -55,12 +56,13 @@ export default defineComponent({
         Column,
         DataTable,
         Toast,
-        FileUpload
+        FileUpload,
+        DatePicker
     },
 
     setup() {
       const filters = ref({
-        date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+        fecha: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
       });
         const dataMovimientos = ref(null);
         const toast = useToast()
@@ -93,7 +95,13 @@ export default defineComponent({
             const response = await obtenerMovimientos();
 
             if(response.success){
-                dataMovimientos.value = response.data;
+                // dataMovimientos.value = response.data;
+              dataMovimientos.value = response.data.map(mov => ({
+                ...mov,
+                fecha: new Date(mov.fecha)
+              }))
+
+
             }else{
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });
             }
