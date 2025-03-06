@@ -360,12 +360,13 @@ export function useMovimientos() {
         const appLogo = new Image();
         appLogo.src = logo;
 
-        let response;
+        
         appLogo.onload = async () => {
             doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
             doc.setFontSize(12);
             doc.setFont('helvetica', 'bold');
-            doc.text('REGISTRO DE MOVIMIENTO DE MATERIAL / REPUESTO', 22, 16);
+            doc.text('REGISTRO DE MOVIMIENTO', 22, 13);
+            doc.text('DE MATERIAL / REPUESTO', 22, 19);
 
             const today = new Date();
             const yyyy = today.getFullYear();
