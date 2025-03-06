@@ -1,10 +1,19 @@
 <template>
 <section class="p-5 bg-[#0F172A]">
 
-    <DataTable  :value="dataMovimientos" paginator :rows="5" tableStyle="min-width: 50rem"
+    <DataTable  v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5" tableStyle="min-width: 50rem"
     showGridlines style="max-width: 90vw" class="mx-auto">
         <!-- <Column field="numero_movimiento" header="ID"></Column> -->
-        <Column field="fecha" header="FECHA"></Column>
+        <!-- <Column field="fecha" header="FECHA"></Column> -->
+        <Column header="Date" filterField="date" dataType="date" style="min-width: 10rem">
+                <template #body="{ data }">
+                    {{data.fecha }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <DatePicker v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
+                </template>
+            </Column>
+
         <Column field="material_repuesto" header="MATERIAL / REPUESTO"></Column>
         <Column field="marca" header="MARCA"></Column>
         <Column field="modelo_serie" header="MODELO"></Column>
@@ -36,6 +45,7 @@ import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useMovimientos} from '../composables/useMovimientos';
 import FileUpload from 'primevue/fileupload';
+import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 
 
 export default defineComponent({
@@ -49,7 +59,9 @@ export default defineComponent({
     },
 
     setup() {
-
+      const filters = ref({
+        date: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.DATE_IS }] },
+      });
         const dataMovimientos = ref(null);
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
@@ -94,6 +106,7 @@ export default defineComponent({
             dataMovimientos,
             guardarExcelMovimientos,
             obtenerMovimientos,
+            filters
 
             
         }
