@@ -245,9 +245,21 @@ export default defineComponent({
     }
     const editarArticulo = async (articulo) => {
 
-      console.log('articulo que llega desde dialog editar', articulo);
       const response = await actualizarArticulo(articulo);
-      console.log('response en editar articulo', response)
+      
+      if(response.success){
+        
+        const indexArticulo = dataArticulos.value.findIndex(art => art.id == response.data.id);
+
+        dataArticulos.value.splice(indexArticulo, 1, response.data);
+        showDialogEditar.value = false;
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo editado correctamente', life: 5000 });
+      }else{
+        showDialogEditar.value = false;
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo, intente nuevamente', life: 5000 });
+      }
+
+      
 
     }
     const abrirDialogEditar = (articulo) => {

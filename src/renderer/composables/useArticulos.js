@@ -46,7 +46,7 @@ export function useArticulos(){
           }else{
 
             if(response.error == 'No se encontró el articulo'){
-                return {sucess: false, error: response.error}
+                return {success: false, error: response.error}
             }
 
           }
@@ -60,9 +60,8 @@ export function useArticulos(){
         console.log('articulo que llega', articulo)
         try {
             const response = await window.electronAPI.actualizarArticulo(articulo);
-            console.log('response actualizarArticulo', response)
-            if(response.sucess){
-                return {succes: true, data: response.data}
+            if(response.success){
+                return {success: true, data: response.data}
             }
         } catch (error) {
             return {success: false}
