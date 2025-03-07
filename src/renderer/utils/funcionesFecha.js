@@ -102,3 +102,8 @@ export const formatearFecha = (fecha) => {
   const fechaFormateada = `${dia}/${mes}/${año}`;
   return fechaFormateada;
 }
+
+export const stringToDate = (fechaStr) => {
+    const partes = fechaStr.split("-"); // Divide la fecha en partes [YYYY, MM, DD]
+    return new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); 
+ }

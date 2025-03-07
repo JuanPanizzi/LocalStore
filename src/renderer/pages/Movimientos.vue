@@ -12,10 +12,11 @@
                     { label: 'Fecha Fin', value: 'dateBefore' }
                 ]">
                 <template #body="{ data }">
-                    {{ data.fecha }}
+                    <!-- {{ data.fecha }} -->
+                    {{ formatearFecha(data.fecha) }}
                 </template>
                 <template #filter="{ filterModel }">
-                    <DatePicker v-model="filterModel.value" dateFormat="mm/dd/yy" placeholder="mm/dd/yyyy" />
+                    <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy" />
                 </template>
             </Column>
 
@@ -99,7 +100,7 @@ import { useMovimientos } from '../composables/useMovimientos';
 import FileUpload from 'primevue/fileupload';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import DatePicker from 'primevue/datepicker';
-
+import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
 
 export default defineComponent({
     name: 'Movimientos',
@@ -165,10 +166,17 @@ export default defineComponent({
 
             if (response.success) {
                 // dataMovimientos.value = response.data;
-                dataMovimientos.value = response.data.map(mov => ({
+                dataMovimientos.value = response.data.map(mov => 
+                // console.log('mov', mov)
+                
+                (
+                    
+                {
                     ...mov,
-                    fecha: new Date(mov.fecha)
-                }))
+                    fecha: stringToDate(mov.fecha)
+                })
+            
+            )
 
 
             } else {
@@ -183,7 +191,9 @@ export default defineComponent({
             dataMovimientos,
             guardarExcelMovimientos,
             obtenerMovimientos,
-            filters
+            filters,
+            formatearFecha,
+            stringToDate
 
 
         }
