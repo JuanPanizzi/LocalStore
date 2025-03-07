@@ -92,6 +92,7 @@
         </div>
         <Toast />
     </section>
+    <DialogEditarMov />
 </template>
 <script>
 import Button from 'primevue/button';
