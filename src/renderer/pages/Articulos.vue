@@ -1,9 +1,10 @@
 <template>
   <section class="p-5 bg-[#0F172A]">
+    <h1 class="font-bold text-xl text-[#0EA5E9]">Artículos</h1>
 
-    <div class="max-w-[90vw] mx-auto my-5">
+    <div class="max-w-[90vw] flex justify-end mx-auto my-5">
 
-      <Button outlined label="Crear Artículo" @click="handleForm(true)" />
+      <Button label="Crear Artículo" icon="pi pi-plus" @click="handleForm(true)" />
 
     </div>
     <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
@@ -34,7 +35,7 @@
       <Column header="INGRESO / SALIDA">
         <template #body="slotProps">
           <div class="flex justify-center">
-            <Button icon="pi pi-plus" severity="success"
+            <Button icon="pi pi-sign-in" severity="success"
               @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
             <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
               @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
@@ -58,7 +59,7 @@
       <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
     </Dialog>
 
-    <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" />
+    <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" @actualizarArticulo="editarArticulo" />
 
     <!-- Dialog para ingresar o dar salida a un artículo -->
     <Dialog v-model:visible="showIngresoSalida.show" modal
@@ -113,7 +114,7 @@ export default defineComponent({
   },
 
   setup() {
-    const { obtenerArticulos, crearArticulo, eliminarArticulo } = useArticulos();
+    const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo } = useArticulos();
     const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
     const dataArticulos = ref(null);
     const toast = useToast();
@@ -154,11 +155,11 @@ export default defineComponent({
       try {
         const pdfGuardado = await generarPdf(datosFormulario);
 
-        if(pdfGuardado.success){
+        if (pdfGuardado.success) {
           handleIngresoSalida(false);
           toast.add({ severity: 'success', summary: 'Éxito', detail: 'PDF guardado correctamente', life: 6000 });
-        
-        }else{
+
+        } else {
           toast.add({ severity: 'warn', summary: 'Pdf sin guardar', detail: 'No se ha generadoo el PDF', life: 6000 });
         }
 
@@ -242,7 +243,25 @@ export default defineComponent({
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 5000 });
       }
     }
+    const editarArticulo = async (articulo) => {
 
+      const response = await actualizarArticulo(articulo);
+      
+      if(response.success){
+        
+        const indexArticulo = dataArticulos.value.findIndex(art => art.id == response.data.id);
+
+        dataArticulos.value.splice(indexArticulo, 1, response.data);
+        showDialogEditar.value = false;
+        toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo editado correctamente', life: 5000 });
+      }else{
+        showDialogEditar.value = false;
+        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo, intente nuevamente', life: 5000 });
+      }
+
+      
+
+    }
     const abrirDialogEditar = (articulo) => {
 
       articuloEdicion.value = { ...articulo };
@@ -405,7 +424,9 @@ export default defineComponent({
       registroGuardado,
       generarPdf,
       nuevoPdf,
-      reiniciarIngresoSalida
+      reiniciarIngresoSalida,
+      actualizarArticulo,
+      editarArticulo
 
     }
   }
