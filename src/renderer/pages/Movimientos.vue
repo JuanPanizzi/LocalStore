@@ -1,6 +1,6 @@
 <template>
-    <!-- <section class="p-5 bg-[#0F172A]"> -->
-        <section class="p-5">
+    <section class="p-5 bg-[#0F172A]">
+        <!-- <section class="p-5"> -->
             <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
 
         <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
