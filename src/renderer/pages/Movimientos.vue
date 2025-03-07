@@ -1,13 +1,22 @@
 <template>
     <section class="p-5 bg-[#0F172A]">
         <!-- <section class="p-5"> -->
-            <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
+        <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
 
         <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
             tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-20"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
+            <Column header="">
+                <template #body="slotProps">
+                    <div class="flex justify-center">
+                        <Button outlined icon="pi pi-pencil" @click="" />
+                        <!-- <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"@click="confirmarEliminacion(slotProps.data)" /> -->
+                    </div>
+                </template>
+            </Column>
+
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
                 :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[
                     { label: 'Fecha Inicio', value: 'dateAfter' },
@@ -22,10 +31,8 @@
                 </template>
             </Column>
 
-            <Column class="min-w-[12rem]" field="material_repuesto" header="MATERIAL / REPUESTO" 
-            :showFilterOperator="false" 
-            :showFilterMatchModes="false" 
-            :showAddButton="false">
+            <Column class="min-w-[12rem]" field="material_repuesto" header="MATERIAL / REPUESTO"
+                :showFilterOperator="false" :showFilterMatchModes="false" :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.material_repuesto }}
                 </template>
@@ -33,10 +40,8 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="marca" header="MARCA"
-            :showFilterOperator="false" 
-            :showFilterMatchModes="false" 
-            :showAddButton="false">
+            <Column field="marca" header="MARCA" :showFilterOperator="false" :showFilterMatchModes="false"
+                :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.marca }}
                 </template>
@@ -44,9 +49,8 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="modelo_serie" header="MODELO"  :showFilterOperator="false" 
-            :showFilterMatchModes="false" 
-            :showAddButton="false">
+            <Column field="modelo_serie" header="MODELO" :showFilterOperator="false" :showFilterMatchModes="false"
+                :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.modelo_serie }}
                 </template>
@@ -55,9 +59,8 @@
                 </template>
             </Column>
             <Column field="tipo_movimiento" header="MOVIMIENTO"></Column>
-            <Column field="origen" header="ORIGEN" :showFilterOperator="false" 
-            :showFilterMatchModes="false" 
-            :showAddButton="false">
+            <Column field="origen" header="ORIGEN" :showFilterOperator="false" :showFilterMatchModes="false"
+                :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.origen }}
                 </template>
@@ -65,9 +68,8 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="destino" header="DESTINO" :showFilterOperator="false" 
-            :showFilterMatchModes="false" 
-            :showAddButton="false">
+            <Column field="destino" header="DESTINO" :showFilterOperator="false" :showFilterMatchModes="false"
+                :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.destino }}
                 </template>
@@ -125,7 +127,7 @@ export default defineComponent({
             modelo_serie: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
             origen: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
             destino: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
-            
+
             fecha: {
                 operator: FilterOperator.AND,
                 constraints: [
@@ -168,17 +170,17 @@ export default defineComponent({
 
             if (response.success) {
                 // dataMovimientos.value = response.data;
-                dataMovimientos.value = response.data.map(mov => 
+                dataMovimientos.value = response.data.map(mov =>
                 // console.log('mov', mov)
-                
+
                 (
-                    
-                {
-                    ...mov,
-                    fecha: stringToDate(mov.fecha)
-                })
-            
-            )
+
+                    {
+                        ...mov,
+                        fecha: stringToDate(mov.fecha)
+                    })
+
+                )
 
 
             } else {
@@ -207,11 +209,13 @@ export default defineComponent({
 .p-datatable-filter-remove-rule-button {
     display: none !important;
 }
-.p-datatable-column-filter-button{
-  color: #ffffff !important;
-  background-color: #0EA5E9 !important;
+
+.p-datatable-column-filter-button {
+    color: #ffffff !important;
+    background-color: #0EA5E9 !important;
 
 }
+
 /* .p-button-text.p-button-secondary {
 } */
 /* .p-button-text.p-button-secondary:hover{
