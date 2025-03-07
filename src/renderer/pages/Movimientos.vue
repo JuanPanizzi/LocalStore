@@ -1,7 +1,7 @@
 <template>
     <!-- <section class="p-5 bg-[#0F172A]"> -->
         <section class="p-5">
-            <h1 class="font-bold text-xl">Movimientos de Materiales</h1>
+            <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
 
         <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
             tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-20"
@@ -22,7 +22,7 @@
                 </template>
             </Column>
 
-            <Column field="material_repuesto" header="MATERIAL / REPUESTO" 
+            <Column class="min-w-[12rem]" field="material_repuesto" header="MATERIAL / REPUESTO" 
             :showFilterOperator="false" 
             :showFilterMatchModes="false" 
             :showAddButton="false">
@@ -206,5 +206,15 @@ export default defineComponent({
 <style>
 .p-datatable-filter-remove-rule-button {
     display: none !important;
+}
+.p-datatable-column-filter-button{
+  color: #ffffff !important;
+}
+.p-button-text.p-button-secondary {
+    background-color: #0EA5E9 !important;
+}
+.p-button-text.p-button-secondary:hover{
+    scale: 105%;
+    transition: all ease 0.1s;
 }
 </style>
