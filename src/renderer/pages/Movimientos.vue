@@ -209,12 +209,13 @@ export default defineComponent({
 }
 .p-datatable-column-filter-button{
   color: #ffffff !important;
+  background-color: #0EA5E9 !important;
+
 }
-.p-button-text.p-button-secondary {
-    background-color: #0EA5E9 !important;
-}
-.p-button-text.p-button-secondary:hover{
+/* .p-button-text.p-button-secondary {
+} */
+/* .p-button-text.p-button-secondary:hover{
     scale: 105%;
     transition: all ease 0.1s;
-}
+} */
 </style>

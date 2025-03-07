@@ -35,7 +35,7 @@
       <Column header="INGRESO / SALIDA">
         <template #body="slotProps">
           <div class="flex justify-center">
-            <Button icon="pi pi-sign-in" severity="success"
+            <Button  icon="pi pi-sign-in" severity="success"
               @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
             <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
               @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
