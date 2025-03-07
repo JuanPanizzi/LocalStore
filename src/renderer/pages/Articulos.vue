@@ -1,6 +1,8 @@
 <template>
   <section class="p-5 ">
-    <div class="max-w-[90vw] mx-auto my-5">
+    <h1 class="font-bold text-xl">Artículos</h1>
+    
+    <div class="max-w-[90vw] flex justify-end mx-auto my-5">
 
       <Button  label="Crear Artículo" icon="pi pi-plus" @click="handleForm(true)" />
 
