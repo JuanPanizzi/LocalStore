@@ -30,11 +30,48 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="marca" header="MARCA"></Column>
-            <Column field="modelo_serie" header="MODELO"></Column>
+            <Column field="marca" header="MARCA"
+            :showFilterOperator="false" 
+            :showFilterMatchModes="false" 
+            :showAddButton="false">
+                <template #body="{ data }">
+                    {{ data.marca }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
+                </template>
+            </Column>
+            <Column field="modelo_serie" header="MODELO"  :showFilterOperator="false" 
+            :showFilterMatchModes="false" 
+            :showAddButton="false">
+                <template #body="{ data }">
+                    {{ data.modelo_serie }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
+                </template>
+            </Column>
             <Column field="tipo_movimiento" header="MOVIMIENTO"></Column>
-            <Column field="origen" header="ORIGEN"></Column>
-            <Column field="destino" header="DESTINO"></Column>
+            <Column field="origen" header="ORIGEN" :showFilterOperator="false" 
+            :showFilterMatchModes="false" 
+            :showAddButton="false">
+                <template #body="{ data }">
+                    {{ data.origen }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
+                </template>
+            </Column>
+            <Column field="destino" header="DESTINO" :showFilterOperator="false" 
+            :showFilterMatchModes="false" 
+            :showAddButton="false">
+                <template #body="{ data }">
+                    {{ data.destino }}
+                </template>
+                <template #filter="{ filterModel }">
+                    <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
+                </template>
+            </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
@@ -81,6 +118,11 @@ export default defineComponent({
         // });
         const filters = ref({
             material_repuesto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            marca: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            modelo_serie: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            origen: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            destino: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            
             fecha: {
                 operator: FilterOperator.AND,
                 constraints: [
