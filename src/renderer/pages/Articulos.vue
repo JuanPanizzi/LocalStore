@@ -1,9 +1,8 @@
 <template>
-  <section class="p-5 bg-[#0F172A]">
-
+  <section class="p-5 ">
     <div class="max-w-[90vw] mx-auto my-5">
 
-      <Button outlined label="Crear Artículo" @click="handleForm(true)" />
+      <Button  label="Crear Artículo" icon="pi pi-plus" @click="handleForm(true)" />
 
     </div>
     <DataTable v-if="!showIngresoSalida.show" v-model:filters="filters" :value="dataArticulos" paginator :rows="5"
@@ -34,7 +33,7 @@
       <Column header="INGRESO / SALIDA">
         <template #body="slotProps">
           <div class="flex justify-center">
-            <Button icon="pi pi-plus" severity="success"
+            <Button icon="pi pi-sign-in" severity="success"
               @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
             <Button icon="pi pi-sign-out" severity="danger" class="mx-2"
               @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />

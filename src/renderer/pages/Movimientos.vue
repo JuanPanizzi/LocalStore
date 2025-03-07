@@ -1,8 +1,10 @@
 <template>
-    <section class="p-5 bg-[#0F172A]">
+    <!-- <section class="p-5 bg-[#0F172A]"> -->
+        <section class="p-5">
+            <h1 class="font-bold text-xl">Movimientos de Materiales</h1>
 
-        <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5"
-            tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto"
+        <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
+            tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-20"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
