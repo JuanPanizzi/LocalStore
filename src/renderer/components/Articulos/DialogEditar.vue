@@ -4,7 +4,7 @@
         <div class="grid grid-cols-2 gap-4">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5 mr-4  text-left font-semibold">Material / Repuesto:</label>
-                <InputText v-model="formData.material" class="w-4/5 " aria-required="required" />
+                <InputText v-model="formData.material_repuesto" class="w-4/5 " aria-required="required" />
             </div>
             <div class=" flex items-center justify-between">
                 <label class="legend w-1/5 mr-4 text-left font-semibold">Marca:</label>
@@ -13,7 +13,7 @@
 
             <div class="flex items-center  justify-between ">
                 <label class="legend w-1/5 mr-4 text-left font-semibold">Modelo:</label>
-                <InputText v-model="formData.modelo" class="w-4/5" />
+                <InputText v-model="formData.modelo_serie" class="w-4/5" />
             </div>
             <div class=" flex justify-between items-center">
                 <label class="legend w-1/5 mr-4 text-left font-semibold">Cantidad:</label>
@@ -29,7 +29,7 @@
             
             <div class="mt-8 col-span-2 flex items-center justify-end">
             <Button label="Cancelar" icon="pi " class="mr-2" severity="danger" @click="cerrarDialog" />
-            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="editarArticulo" />
+            <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="actualizarArticulo" />
             </div>
 
 
@@ -56,10 +56,10 @@ export default defineComponent({
         Toast
     },
 
+    emits: ['actualizarArticulo'],
+    setup(props, { emit } ) {
 
-    setup(props) {
-
-        const { seleccionarImagen, actualizarArticulo } = useArticulos();
+        const { seleccionarImagen } = useArticulos();
 
         const formData = reactive({ ...props.articuloEdicion })
         const dialogVisible = ref(true);
@@ -69,13 +69,8 @@ export default defineComponent({
             dialogVisible.value = false;
         }
 
-        const editarArticulo = async () => {
-            const response = await actualizarArticulo(formData)
-            if(response.success){
-                console.log('response editar art', response);
-            }else{
-                console.log('response editar success: false', response)
-            }
+        const actualizarArticulo = async () => {
+                emit('actualizarArticulo', {...formData})
         }
 
         const elegirImagen = async ( ) =>{
@@ -105,8 +100,7 @@ export default defineComponent({
             cerrarDialog,
             seleccionarImagen,
             elegirImagen,
-            editarArticulo,
-            actualizarArticulo
+            actualizarArticulo,
         }
     },
     props: {
