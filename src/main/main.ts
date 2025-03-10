@@ -28,7 +28,7 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(), 'preload.js'),
+      preload: join(app.getAppPath(),  'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -40,6 +40,9 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     const rendererPort = process.argv[2];
     mainWindow.loadURL(`http://localhost:${rendererPort}`);
+
+    
+    
   }
   else {
     mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
