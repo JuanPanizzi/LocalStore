@@ -17,22 +17,21 @@
                 <Tag v-for="(filter, index) in activeFilters" :key="index" :value="`${filter.field}: ${filter.value}`"
                     severity="secondary" class="p-2" icon="pi pi-filter" />
             </div>
-            <Button label="Limpiar filtros" @click="clearFilters" class="mt-2" size="small" />
+            <Button label="Limpiar filtros" icon="pi pi-refresh" @click="clearFilters" class="mt-2" size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
             paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
-            class="mx-auto mt-28"
+            class="mx-auto mt-24"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
-            <Column header="">
+            <!-- <Column header="">
                 <template #body="slotProps">
                     <div class="flex justify-center">
                         <Button outlined icon="pi pi-pencil" @click="" />
-                        <!-- <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"@click="confirmarEliminacion(slotProps.data)" /> -->
                     </div>
                 </template>
-            </Column>
+            </Column> -->
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
                 :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[

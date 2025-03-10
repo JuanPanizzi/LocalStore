@@ -417,7 +417,7 @@ export function useMovimientos() {
             doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
-            doc.text(`HISTORIAL ARTÍCULO ${movimientos[0].marca.toUpperCase()}-${movimientos[0].modelo_serie.toUpperCase()}`, doc.internal.pageSize.width / 2, 15, { align: "center" });
+            doc.text(`HISTORIAL ARTÍCULO ${movimientos[0].marca.toUpperCase()} ${movimientos[0].modelo_serie.toUpperCase()}`, doc.internal.pageSize.width / 2, 15, { align: "center" });
 
             doc.setFontSize(10);
 
