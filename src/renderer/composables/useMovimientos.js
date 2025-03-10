@@ -213,182 +213,182 @@ export function useMovimientos() {
 
 
     const generarPdf = (datosFormulario) => {
- return new Promise((resolve, reject) => {
-        // console.log('datosFormulario useMovimientos', datosFormulario)
+        return new Promise((resolve, reject) => {
+            // console.log('datosFormulario useMovimientos', datosFormulario)
 
-        const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario;
+            const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario;
 
-        // if (!registroGuardado.value) {
-        //     toast.add({ severity: 'warn', summary: 'Error', detail: 'Debe guardar el registro antes de generar el PDF', life: 3000 });
-        //     return
-        // }
+            // if (!registroGuardado.value) {
+            //     toast.add({ severity: 'warn', summary: 'Error', detail: 'Debe guardar el registro antes de generar el PDF', life: 3000 });
+            //     return
+            // }
 
-        const doc = new jsPDF('p', 'mm', 'a4');
-
-
-        //RECTANGULO INPUTS SUPERIORES
-        doc.rect(3, 30, 204, 210)
-
-        //RECTANGULO GENERAL 
-        // Definir las dimensiones del documento (tamaño carta en puntos)
-        const pageWidth = doc.internal.pageSize.getWidth();
-        const pageHeight = doc.internal.pageSize.getHeight();
-        // Margen deseado
-        const margin = 2; // en puntos
-        // Dibujar el rectángulo de los márgenes
-        doc.rect(
-            margin,                // Coordenada X inicial
-            margin,                // Coordenada Y inicial
-            pageWidth - 2 * margin, // Ancho del rectángulo
-            pageHeight - 2 * margin // Alto del rectángulo
-        );
-
-        doc.setFontSize(9)
-        doc.setFont('helvetica', 'bold');
-        doc.rect(173, 6, 30, 5) //rectangulo fecha
-        doc.text(`FECHA: `, 159, 10);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${formatearFecha(fecha)}`, 176, 10);
-        // doc.text(`${fecha}`, 176, 10);
+            const doc = new jsPDF('p', 'mm', 'a4');
 
 
-        doc.setFont('helvetica', 'bold');
-        doc.rect(173, 17, 30, 5) //rectangulo n° req
-        doc.text(`N° INFORME:`, 151, 21)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${numero_movimiento}`, 176, 21)
+            //RECTANGULO INPUTS SUPERIORES
+            doc.rect(3, 30, 204, 210)
 
-        doc.setFont('helvetica', 'bold');
-        doc.text(`TIPO DE MOVIMIENTO: `, 7, 40);
-        doc.rect(47, 36, 60, 5) //rec codigo informe
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${tipo_movimiento}`, 49, 40)
+            //RECTANGULO GENERAL 
+            // Definir las dimensiones del documento (tamaño carta en puntos)
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const pageHeight = doc.internal.pageSize.getHeight();
+            // Margen deseado
+            const margin = 2; // en puntos
+            // Dibujar el rectángulo de los márgenes
+            doc.rect(
+                margin,                // Coordenada X inicial
+                margin,                // Coordenada Y inicial
+                pageWidth - 2 * margin, // Ancho del rectángulo
+                pageHeight - 2 * margin // Alto del rectángulo
+            );
 
-        doc.setFont('helvetica', 'bold');
-        doc.text(`CANTIDAD: `, 120, 40);
-        doc.rect(144, 36, 60, 5) //rec codigo informe
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${cantidad}`, 146, 40)
-
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`MATERIAL / REPUESTO:`, 7, 50)
-        doc.rect(47, 46, 157, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${material_repuesto}`, 49, 50)
-
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`MARCA:`, 7, 60)
-        doc.rect(47, 56, 157, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${marca}`, 49, 60)
-
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`MODELO / SERIE:`, 7, 70)
-        doc.rect(47, 66, 157, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${modelo_serie}`, 49, 70)
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`ORIGEN:`, 7, 80)
-        doc.rect(47, 76, 157, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${origen}`, 49, 80)
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`DESTINO:`, 7, 90)
-        doc.rect(47, 86, 157, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${destino}`, 49, 90)
-
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`PERMISO DE TRABAJO ASOCIADO:`, 7, 110)
-        doc.rect(67, 106, 137, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${permiso_trabajo_asociado || ''}`, 69, 110);
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`ORDEN DE TRABAJO ASOCIADA:`, 7, 120)
-        doc.rect(67, 116, 137, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${orden_trabajo_asociada || ''}`, 69, 120)
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`INFORME ASOCIADO:`, 7, 130)
-        doc.rect(67, 126, 137, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${informe_asociado || ''}`, 69, 130)
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`REMITO:`, 7, 150)
-        doc.rect(67, 146, 137, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${remito || ''}`, 69, 150)
-
-        doc.setFont('helvetica', 'bold');
-        doc.text(`N° DE ALMACENES:`, 7, 160)
-        doc.rect(67, 156, 137, 5)
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${numero_almacenes || ''}`, 69, 160)
-
-
-        // RECTÁNGULO OBSERVACIONES
-        doc.setFont('helvetica', 'bold');
-        // doc.rect(3, 190, 204, 80);
-        doc.text(`OBSERVACIONES: `, 7, 180);
-        doc.rect(7, 185, 196, 50);
-
-        // Ajustar el texto dentro del rectángulo
-        doc.setFont('helvetica', 'normal');
-        const maxWidth = 188; // Ancho máximo del texto dentro del rectángulo
-        const textLines = doc.splitTextToSize(observaciones || '', maxWidth);
-
-        // // Imprimir el texto multilínea
-        doc.text(textLines, 10, 191);
-
-
-
-        doc.setFont('helvetica', 'bold');
-        doc.text('Responsable de Inventario', 6, 290)
-        doc.rect(5, 260, 55, 25)
-
-
-
-        const appLogo = new Image();
-        appLogo.src = logo;
-
-        
-        appLogo.onload = async () => {
-            doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
-            doc.setFontSize(12);
+            doc.setFontSize(9)
             doc.setFont('helvetica', 'bold');
-            doc.text('REGISTRO DE MOVIMIENTO', 22, 13);
-            doc.text('DE MATERIAL / REPUESTO', 22, 19);
-
-            // doc.save(`${nombrePdf}`);
-
-            // Obtenemos el contenido del PDF como ArrayBuffer
-            const pdfArrayBuffer = doc.output('arraybuffer');
-
-            try {
-                const result = await window.electronAPI.guardarPdf(pdfArrayBuffer);
-                resolve(result); // Resolvemos la promesa con el resultado obtenido
-              } catch (error) {
-                reject(error);
-              }
-           
-        }
-        appLogo.onerror = (err) => {
-            reject(err);
-          };
+            doc.rect(173, 6, 30, 5) //rectangulo fecha
+            doc.text(`FECHA: `, 159, 10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${formatearFecha(fecha)}`, 176, 10);
+            // doc.text(`${fecha}`, 176, 10);
 
 
-          
-    })
-}
+            doc.setFont('helvetica', 'bold');
+            doc.rect(173, 17, 30, 5) //rectangulo n° req
+            doc.text(`N° INFORME:`, 151, 21)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${numero_movimiento}`, 176, 21)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`TIPO DE MOVIMIENTO: `, 7, 40);
+            doc.rect(47, 36, 60, 5) //rec codigo informe
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${tipo_movimiento}`, 49, 40)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`CANTIDAD: `, 120, 40);
+            doc.rect(144, 36, 60, 5) //rec codigo informe
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${cantidad}`, 146, 40)
+
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`MATERIAL / REPUESTO:`, 7, 50)
+            doc.rect(47, 46, 157, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${material_repuesto}`, 49, 50)
+
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`MARCA:`, 7, 60)
+            doc.rect(47, 56, 157, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${marca}`, 49, 60)
+
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`MODELO / SERIE:`, 7, 70)
+            doc.rect(47, 66, 157, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${modelo_serie}`, 49, 70)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`ORIGEN:`, 7, 80)
+            doc.rect(47, 76, 157, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${origen}`, 49, 80)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`DESTINO:`, 7, 90)
+            doc.rect(47, 86, 157, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${destino}`, 49, 90)
+
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`PERMISO DE TRABAJO ASOCIADO:`, 7, 110)
+            doc.rect(67, 106, 137, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${permiso_trabajo_asociado || ''}`, 69, 110);
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`ORDEN DE TRABAJO ASOCIADA:`, 7, 120)
+            doc.rect(67, 116, 137, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${orden_trabajo_asociada || ''}`, 69, 120)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`INFORME ASOCIADO:`, 7, 130)
+            doc.rect(67, 126, 137, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${informe_asociado || ''}`, 69, 130)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`REMITO:`, 7, 150)
+            doc.rect(67, 146, 137, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${remito || ''}`, 69, 150)
+
+            doc.setFont('helvetica', 'bold');
+            doc.text(`N° DE ALMACENES:`, 7, 160)
+            doc.rect(67, 156, 137, 5)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${numero_almacenes || ''}`, 69, 160)
+
+
+            // RECTÁNGULO OBSERVACIONES
+            doc.setFont('helvetica', 'bold');
+            // doc.rect(3, 190, 204, 80);
+            doc.text(`OBSERVACIONES: `, 7, 180);
+            doc.rect(7, 185, 196, 50);
+
+            // Ajustar el texto dentro del rectángulo
+            doc.setFont('helvetica', 'normal');
+            const maxWidth = 188; // Ancho máximo del texto dentro del rectángulo
+            const textLines = doc.splitTextToSize(observaciones || '', maxWidth);
+
+            // // Imprimir el texto multilínea
+            doc.text(textLines, 10, 191);
+
+
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('Responsable de Inventario', 6, 290)
+            doc.rect(5, 260, 55, 25)
+
+
+
+            const appLogo = new Image();
+            appLogo.src = logo;
+
+
+            appLogo.onload = async () => {
+                doc.addImage(appLogo, 'PNG', 4, 7, 15, 15);
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text('REGISTRO DE MOVIMIENTO', 22, 13);
+                doc.text('DE MATERIAL / REPUESTO', 22, 19);
+
+                // doc.save(`${nombrePdf}`);
+
+                // Obtenemos el contenido del PDF como ArrayBuffer
+                const pdfArrayBuffer = doc.output('arraybuffer');
+
+                try {
+                    const result = await window.electronAPI.guardarPdf(pdfArrayBuffer);
+                    resolve(result); // Resolvemos la promesa con el resultado obtenido
+                } catch (error) {
+                    reject(error);
+                }
+
+            }
+            appLogo.onerror = (err) => {
+                reject(err);
+            };
+
+
+
+        })
+    }
 
     const obtenerUltimoMovimiento = async () => {
         try {
@@ -403,116 +403,120 @@ export function useMovimientos() {
 
 
     const generarListadoPDF = (movimientos) => {
-console.log('movimientos', movimientos)
-        // if (!movimientos.value || movimientos.value.length === 0) {
-        //   toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
-        //   return;
-        // }
-  
+        if (!movimientos || movimientos.length === 0) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
+            return;
+        }
+
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
-  
+
         // Agregar logo
         const appLogo = new Image();
         appLogo.src = logo;
         appLogo.onload = () => {
-          doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
-          doc.setFontSize(16);
-          doc.setFont("helvetica", "bold");
-          doc.text("REGISTRO DE CORRECTIVOS", doc.internal.pageSize.width / 2, 15, { align: "center" });
-          doc.setFontSize(10);
-  
-        //   if (tipoFiltradoPdf.value) {
-        //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
-        //   }
-  
-          // Definir columnas y títulos
-          const columnas = [
-            { title: "FECHA", dataKey: "fecha" },
-            { title: "MATERIAL / REPUESTO", dataKey: "material_repuesto" },
-            { title: "MARCA", dataKey: "marca" },
-            { title: "MODELO / SERIE", dataKey: "modelo_serie" },
-            { title: "MOVIMIENTO", dataKey: "tipo_movimiento" },
-            { title: "Origen", dataKey: "origen" },
-            { title: "Destino", dataKey: "destino" },
-            { title: "Cantidad", dataKey: "cantidad" },
-            { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
-            { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
-            { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
-            { title: "REMITO", dataKey: "remito" },
-            { title: "N° ALMACENES", dataKey: "numero_almacenes" },
-            { title: "Observaciones", dataKey: "observaciones" },
-       
-          ];
-  
-  
-          // Función para limpiar caracteres problemáticos en "documento_intervencion", "modelo", "marca"
-          const limpiarTexto = (texto) => {
-            if (!texto) return "-";
-            return texto
-              .normalize("NFKD") // Normaliza caracteres Unicode
-              .replace(/[\u2010-\u2015]/g, "-") // Reemplaza guiones especiales con un guion normal
-              .replace(/\s+/g, " ") // Reemplaza múltiples espacios con un solo espacio
-              .trim(); // Elimina espacios innecesarios al inicio y al final
-          };
-  
-          
-  
-          // Mapear los datos y limpiar el campo "documento_intervencion", "modelo", "marca"
-          const filas = movimientos.map(item => {
-            return columnas.reduce((obj, col) => {
-              let valor = item[col.dataKey];
-  
-              // Aplicar la función de limpieza solo en "documento_intervencion", "modelo", "marca"
-              if (col.dataKey === "material_repuesto" || col.dataKey === "modelo_serie" || col.dataKey === "marca") {
-                valor = limpiarTexto(valor);
-              }
-  
-              // Asegurar que el valor 0 no sea reemplazado por "-"
-              obj[col.dataKey] = (valor !== undefined && valor !== null) ? valor : "-";
-              return obj;
-            }, {});
-          });
-  
-  
-  
-          // Configurar tabla con mejores ajustes
-          autoTable(doc, {
-            startY: 40,
-            head: [columnas.map(col => col.title)],
-            body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
-            styles: { fontSize: 6, cellPadding: 1 },
-            headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
-            columnStyles: {
-              0: { cellWidth: 15 }, //Fecha
-              1: { cellWidth: 19 }, //material / repuesto
-              2: { cellWidth: 20 }, //marca
-              3: { cellWidth: 17 },//modelo
-              4: { cellWidth: 17 }, // movimiento
-              5: { cellWidth: 17 }, // origen
-              6: { cellWidth: 17 }, // destino
-              7: { cellWidth: 17 }, // cantidad
-              8: { cellWidth: 17 }, // pt asociado
-              9: { cellWidth: 17 }, //  ot asociado 
-              10: { cellWidth: 17 }, // informe asociado
-              11: { cellWidth: 17 }, // remito
-              12: { cellWidth: 16 }, // n° almacenes
-              13: { cellWidth: 16 }, // observaciones
-            },
-            margin: { left: 1, right: 1 },
-            theme: "grid"
-          });
-  
-          // Guardar PDF
-          const today = new Date();
-          const yyyy = today.getFullYear();
-          const mm = String(today.getMonth() + 1).padStart(2, '0');
-          const dd = String(today.getDate()).padStart(2, '0');
-          // const nombrePdf = tipoFiltradoPdf.value ? `INFCOR-${yyyy}-${mm}-${dd}-FILTRADO-POR-${tipoFiltradoPdf.value}.pdf` : `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
-          const nombrePdf = `INFMOV-${yyyy}-${mm}-${dd}.pdf`;
-  
-          doc.save(nombrePdf);
+            doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "bold");
+            doc.text(`HISTORIAL ARTÍCULO ${movimientos[0].marca.toUpperCase()}-${movimientos[0].modelo_serie.toUpperCase()}`, doc.internal.pageSize.width / 2, 15, { align: "center" });
+            doc.setFontSize(10);
+
+            //   if (tipoFiltradoPdf.value) {
+            //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
+            //   }
+
+            // Definir columnas y títulos
+            const columnas = [
+                { title: "FECHA", dataKey: "fecha" },
+                { title: "MATERIAL / REPUESTO", dataKey: "material_repuesto" },
+                { title: "MARCA", dataKey: "marca" },
+                { title: "MODELO / SERIE", dataKey: "modelo_serie" },
+                { title: "MOVIMIENTO", dataKey: "tipo_movimiento" },
+                { title: "Origen", dataKey: "origen" },
+                { title: "Destino", dataKey: "destino" },
+                { title: "Cantidad", dataKey: "cantidad" },
+                { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
+                { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
+                { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
+                { title: "REMITO", dataKey: "remito" },
+                { title: "N° ALMACENES", dataKey: "numero_almacenes" },
+                { title: "Observaciones", dataKey: "observaciones" },
+
+            ];
+
+
+            // Función para limpiar caracteres problemáticos en "documento_intervencion", "modelo", "marca"
+            const limpiarTexto = (texto) => {
+                if (!texto) return "-";
+                return texto
+                    .normalize("NFKD") // Normaliza caracteres Unicode
+                    .replace(/[\u2010-\u2015]/g, "-") // Reemplaza guiones especiales con un guion normal
+                    .replace(/\s+/g, " ") // Reemplaza múltiples espacios con un solo espacio
+                    .trim(); // Elimina espacios innecesarios al inicio y al final
+            };
+
+
+
+            // Mapear los datos y limpiar el campo "documento_intervencion", "modelo", "marca"
+            const filas = movimientos.map(item => {
+                return columnas.reduce((obj, col) => {
+                    let valor = item[col.dataKey];
+
+                    // Si es el campo "fecha", formatearlo
+                    if (col.dataKey === "fecha" && valor) {
+                        valor = formatearFecha(valor);
+                    }
+
+                    // Aplicar la función de limpieza solo en "documento_intervencion", "modelo", "marca"
+                    if (col.dataKey === "material_repuesto" || col.dataKey === "modelo_serie" || col.dataKey === "marca") {
+                        valor = limpiarTexto(valor);
+                    }
+
+                    // Asegurar que el valor 0 no sea reemplazado por "-"
+                    obj[col.dataKey] = (valor !== undefined && valor !== null) ? valor : "-";
+                    return obj;
+                }, {});
+            });
+
+
+
+            // Configurar tabla con mejores ajustes
+            autoTable(doc, {
+                startY: 40,
+                head: [columnas.map(col => col.title)],
+                body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
+                styles: { fontSize: 8, cellPadding: 1 },
+                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
+                columnStyles: {
+                    0: { cellWidth: 15 }, //Fecha
+                    1: { cellWidth: 20 }, //material / repuesto
+                    2: { cellWidth: 20 }, //marca
+                    3: { cellWidth: 25 },//modelo
+                    4: { cellWidth: 20 }, // movimiento
+                    5: { cellWidth: 20 }, // origen
+                    6: { cellWidth: 20 }, // destino
+                    7: { cellWidth: 20 }, // cantidad
+                    8: { cellWidth: 20 }, // pt asociado
+                    9: { cellWidth: 25 }, //  ot asociado 
+                    10: { cellWidth: 25 }, // informe asociado
+                    11: { cellWidth: 20 }, // remito
+                    12: { cellWidth: 20 }, // n° almacenes
+                    13: { cellWidth: 25 }, // observaciones
+                },
+                margin: { left: 1, right: 1 },
+                theme: "grid"
+            });
+
+            // Guardar PDF
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            // const nombrePdf = tipoFiltradoPdf.value ? `INFCOR-${yyyy}-${mm}-${dd}-FILTRADO-POR-${tipoFiltradoPdf.value}.pdf` : `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
+            const nombrePdf = `INFMOV-${yyyy}-${mm}-${dd}.pdf`;
+
+            doc.save(nombrePdf);
         };
-      };
+    };
 
 
     return {
@@ -522,7 +526,8 @@ console.log('movimientos', movimientos)
         guardarMovimiento,
         generarPdf,
         obtenerUltimoMovimiento,
-        generarListadoPDF
+        generarListadoPDF,
+        formatearFecha
     }
 
 }

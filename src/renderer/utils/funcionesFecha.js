@@ -62,6 +62,17 @@ export function formatFechaDate(dateString) {
   return `${anio}-${mes}-${dia}`;
 }
 
+// convierte objeto date a dd/mm/aaaa
+export const formatearFecha = (fecha) => {
+
+  const fechaDate = new Date(fecha);
+  const año = fechaDate.getFullYear();
+  const mes = String(fechaDate.getMonth() + 1).padStart(2, '0');
+  const dia = String(fechaDate.getDate()).padStart(2, '0');
+
+  const fechaFormateada = `${dia}/${mes}/${año}`;
+  return fechaFormateada;
+}
 
 export function validarFormatoFecha(fecha) {
   // Si el valor es un objeto Date, lo consideramos válido
@@ -91,17 +102,6 @@ export const fechaActual = () => {
   return new Date(now.getFullYear(), now.getMonth(), now.getDate()); //  Fija la hora en 00:00:00
 };
 
-// convierte objeto date a dd/mm/aaaa
-export const formatearFecha = (fecha) => {
-
-  const fechaDate = new Date(fecha);
-  const dia = String(fechaDate.getDate()).padStart(2, '0');
-  const mes = String(fechaDate.getMonth() + 1).padStart(2, '0');
-  const año = fechaDate.getFullYear();
-
-  const fechaFormateada = `${dia}/${mes}/${año}`;
-  return fechaFormateada;
-}
 
 export const stringToDate = (fechaStr) => {
     const partes = fechaStr.split("-"); // Divide la fecha en partes [YYYY, MM, DD]
