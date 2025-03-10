@@ -402,13 +402,127 @@ export function useMovimientos() {
     }
 
 
+    const generarListadoPDF = (movimientos) => {
+
+        if (!movimientos.value || movimientos.value.length === 0) {
+          toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
+          return;
+        }
+  
+        const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
+  
+        // Agregar logo
+        const appLogo = new Image();
+        appLogo.src = logo;
+        appLogo.onload = () => {
+          doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
+          doc.setFontSize(16);
+          doc.setFont("helvetica", "bold");
+          doc.text("REGISTRO DE CORRECTIVOS", doc.internal.pageSize.width / 2, 15, { align: "center" });
+          doc.setFontSize(10);
+  
+          if (tipoFiltradoPdf.value) {
+            doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
+          }
+  
+          // Definir columnas y títulos
+          const columnas = [
+            { title: "FECHA", dataKey: "fecha" },
+            { title: "MATERIAL / REPUESTO", dataKey: "material_repuesto" },
+            { title: "MARCA", dataKey: "marca" },
+            { title: "MODELO / SERIE", dataKey: "modelo_serie" },
+            { title: "MOVIMIENTO", dataKey: "tipo_movimiento" },
+            { title: "Origen", dataKey: "origen" },
+            { title: "Destino", dataKey: "destino" },
+            { title: "Cantidad", dataKey: "cantidad" },
+            { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
+            { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
+            { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
+            { title: "REMITO", dataKey: "remito" },
+            { title: "N° ALMACENES", dataKey: "numero_almacenes" },
+            { title: "Observaciones", dataKey: "observaciones" },
+       
+          ];
+  
+  
+          // Función para limpiar caracteres problemáticos en "documento_intervencion", "modelo", "marca"
+          const limpiarTexto = (texto) => {
+            if (!texto) return "-";
+            return texto
+              .normalize("NFKD") // Normaliza caracteres Unicode
+              .replace(/[\u2010-\u2015]/g, "-") // Reemplaza guiones especiales con un guion normal
+              .replace(/\s+/g, " ") // Reemplaza múltiples espacios con un solo espacio
+              .trim(); // Elimina espacios innecesarios al inicio y al final
+          };
+  
+          
+  
+          // Mapear los datos y limpiar el campo "documento_intervencion", "modelo", "marca"
+          const filas = movimientos.value.map(item => {
+            return columnas.reduce((obj, col) => {
+              let valor = item[col.dataKey];
+  
+              // Aplicar la función de limpieza solo en "documento_intervencion", "modelo", "marca"
+              if (col.dataKey === "documento_intervencion" || col.dataKey === "modelo" || col.dataKey === "marca") {
+                valor = limpiarTexto(valor);
+              }
+  
+              // Asegurar que el valor 0 no sea reemplazado por "-"
+              obj[col.dataKey] = (valor !== undefined && valor !== null) ? valor : "-";
+              return obj;
+            }, {});
+          });
+  
+  
+  
+          // Configurar tabla con mejores ajustes
+          autoTable(doc, {
+            startY: 40,
+            head: [columnas.map(col => col.title)],
+            body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
+            styles: { fontSize: 6, cellPadding: 1 },
+            headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
+            columnStyles: {
+              0: { cellWidth: 15 }, //Fecha
+              1: { cellWidth: 19 }, //material / repuesto
+              2: { cellWidth: 20 }, //marca
+              3: { cellWidth: 17 },//modelo
+              4: { cellWidth: 17 }, // movimiento
+              5: { cellWidth: 17 }, // origen
+              6: { cellWidth: 17 }, // destino
+              7: { cellWidth: 17 }, // cantidad
+              8: { cellWidth: 17 }, // pt asociado
+              9: { cellWidth: 17 }, //  ot asociado 
+              10: { cellWidth: 17 }, // informe asociado
+              11: { cellWidth: 17 }, // remito
+              12: { cellWidth: 16 }, // n° almacenes
+              13: { cellWidth: 16 }, // observaciones
+            },
+            margin: { left: 1, right: 1 },
+            theme: "grid"
+          });
+  
+          // Guardar PDF
+          const today = new Date();
+          const yyyy = today.getFullYear();
+          const mm = String(today.getMonth() + 1).padStart(2, '0');
+          const dd = String(today.getDate()).padStart(2, '0');
+          // const nombrePdf = tipoFiltradoPdf.value ? `INFCOR-${yyyy}-${mm}-${dd}-FILTRADO-POR-${tipoFiltradoPdf.value}.pdf` : `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
+          const nombrePdf = `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
+  
+          doc.save(nombrePdf);
+        };
+      };
+
+
     return {
         importarExcel,
         guardarExcelMovimientos,
         obtenerMovimientos,
         guardarMovimiento,
         generarPdf,
-        obtenerUltimoMovimiento
+        obtenerUltimoMovimiento,
+        generarListadoPDF
     }
 
 }

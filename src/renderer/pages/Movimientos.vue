@@ -66,7 +66,7 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="modelo_serie" header="MODELO" :showFilterOperator="false" :showFilterMatchModes="false"
+            <Column field="modelo_serie" header="MODELO / SERIE" :showFilterOperator="false" :showFilterMatchModes="false"
                 :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.modelo_serie }}
@@ -104,6 +104,8 @@
         </DataTable>
 
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
+            <Button label="PDF Historial de Movimientos" />
+            <Button label="PDF Historial de Artículo" class="mx-2" severity="info" outlined :disabled="!articuloSeleccionado" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
                 @select="seleccionarExcel" />
         </div>
@@ -145,8 +147,8 @@ export default defineComponent({
         // });
         const filters = ref({
             material_repuesto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
-            marca: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
-            modelo_serie: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            marca: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            modelo_serie: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
             origen: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
             destino: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
 
@@ -161,7 +163,8 @@ export default defineComponent({
             }
         });
         const dataMovimientos = ref(null);
-
+        const articuloSeleccionado = ref(false);
+        
         const activeFilters = computed(() => {
             const active = [];
             for (const field in filters.value) {
