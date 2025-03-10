@@ -28,7 +28,7 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(),  'preload.js'),
+      preload: join(app.getAppPath(), 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -46,7 +46,7 @@ function createWindow() {
     // mainWindow.loadFile(join(__dirname, 'renderer', 'index.html'));
 
   }
-
+  
   // Después de 5 segundos, ocultar el splash y mostrar la ventana principal
   setTimeout(() => {
     // splash.close();

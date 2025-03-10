@@ -8,56 +8,61 @@
         "oneClick": false,
         "perMachine": false,
         "allowToChangeInstallationDirectory": true,
-        "shortcutName": "LOCAL STORE" 
+        "shortcutName": "local-store"
     },
     "win": {
-      "icon": "buildResources/icono.ico",
-      "target": "nsis"
-    }, 
+        "icon": "buildResources/icono.ico",
+        "target": "nsis"
+    },
     "extraFiles": [
         {
-            "from": "src/main/database/ls_database.db",
-            "to": "main/database/ls_database.db"
-          }
-      
+            "from": "ls_database.db",
+            "to": ""
+        }
     ],
     "files": [
         {
             "from": "build/main",
             "to": "main",
-            "filter": ["**/*"]
+            "filter": [
+                "**/*"
+            ]
         },
         {
             "from": "build/renderer",
             "to": "renderer",
-            "filter": ["**/*"]
+            "filter": [
+                "**/*"
+            ]
         },
         {
             "from": "src/main/static",
             "to": "static",
-            "filter": ["**/*"]
-        }, 
+            "filter": [
+                "**/*"
+            ]
+        },
         {
             "from": "src/renderer/static",
             "to": "static",
-            "filter": ["**/*"]
+            "filter": [
+                "**/*"
+            ]
         },
-        
-        
-	"!build",
-	"!dist",
-	"!scripts",
-	"!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
-	"!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
-	"!**/node_modules/*.d.ts",
-	"!**/node_modules/.bin",
-	"!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
-	"!.editorconfig",
-	"!**/._*",
-	"!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
-	"!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
-	"!**/{appveyor.yml,.travis.yml,circle.yml}",
-	"!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
+        "!build",
+        "!dist",
+        "!scripts",
+        "!**/node_modules/*/{CHANGELOG.md,README.md,README,readme.md,readme}",
+        "!**/node_modules/*/{test,__tests__,tests,powered-test,example,examples}",
+        "!**/node_modules/*.d.ts",
+        "!**/node_modules/.bin",
+        "!**/*.{iml,o,hprof,orig,pyc,pyo,rbc,swp,csproj,sln,xproj}",
+        "!.editorconfig",
+        "!**/._*",
+        "!**/{.DS_Store,.git,.hg,.svn,CVS,RCS,SCCS,.gitignore,.gitattributes}",
+        "!**/{__pycache__,thumbs.db,.flowconfig,.idea,.vs,.nyc_output}",
+        "!**/{appveyor.yml,.travis.yml,circle.yml}",
+        "!**/{npm-debug.log,yarn.lock,.yarn-integrity,.yarn-metadata.json}",
         "package.json"
     ]
 }
