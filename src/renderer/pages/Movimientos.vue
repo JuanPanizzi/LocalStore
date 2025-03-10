@@ -1,7 +1,7 @@
 <template>
     <section class="p-5 bg-[#0F172A]">
         <!-- <section class="p-5"> -->
-            <!-- {{ dataMovimientosFiltrada }} -->
+        <!-- {{ dataMovimientosFiltrada }} -->
 
         <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
 
@@ -106,7 +106,7 @@
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
             <Button label="PDF Historial de Movimientos" />
             <Button label="PDF Historial de Artículo" class="mx-2" severity="info" outlined
-                 @click="generarPdfArticulo(dataMovimientosFiltrada)" />
+                @click="generarPdfArticulo(dataMovimientosFiltrada)" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
                 @select="seleccionarExcel" />
         </div>
@@ -241,9 +241,30 @@ export default defineComponent({
         };
 
         const generarPdfArticulo = (movimientos) => {
+
+            // 1. Verificamos si marca está seteado
+            const marcaValue = filters.value.marca.constraints[0].value;
+            // 2. Verificamos si modelo_serie está seteado
+            const modeloValue = filters.value.modelo_serie.constraints[0].value;
+
+            const marcaExiste = marcaValue && marcaValue.trim().length > 0;
+            const modeloExiste = modeloValue && modeloValue.trim().length > 0;
+
+            if (!marcaExiste || !modeloExiste) {
+                toast.add({ severity: 'error', summary: 'Marca y/o Modelo inexistente', detail: 'Debes elegir una marca y un modelo para seleccionar el artículo, intente nuevamente', life: 5000 });
+                return;
+            }
+
+            // 3. Verificamos si hay resultados en la tabla filtrada
+            const resultados = dataMovimientosFiltrada.value && dataMovimientosFiltrada.value.length > 0;
+            if (!resultados) {
+                toast.add({ severity: 'error', summary: 'Sin resultados', detail: 'No existen resultados para los filtros aplicados, intente nuevamente', life: 5000 });
+                return;
+            }
+
             
             generarListadoPDF(movimientos)
-         }
+        }
 
         const handleFilter = (event) => {
             console.log('Datos filtrados:', event.filteredValue)
