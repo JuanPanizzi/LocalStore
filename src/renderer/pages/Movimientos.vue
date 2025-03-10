@@ -1,6 +1,6 @@
 <template>
-    <!-- <section class="p-5 bg-[#0F172A]"> -->
-        <section class="p-5">
+    <section class="p-5 bg-[#0F172A]">
+        <!-- <section class="p-5"> -->
 
 
 
@@ -22,7 +22,7 @@
         </div>
         <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5"
             tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-28"
-            :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
+            :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']" >
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
             <Column header="">
@@ -36,8 +36,8 @@
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
                 :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[
-                    { label: 'Fecha Inicio', value: 'dateAfter' },
-                    { label: 'Fecha Fin', value: 'dateBefore' }
+                    { label: 'Fechas Posteriores a:', value: 'dateAfter' },
+                    { label: 'Fechas Anteriores a:', value: 'dateBefore' }
                 ]">
                 <template #body="{ data }">
                     <!-- {{ data.fecha }} -->
@@ -172,9 +172,9 @@ export default defineComponent({
                         // Si el campo es "fecha", mostramos etiquetas personalizadas según el matchMode
                         if (field === 'fecha') {
                             if (constraint.matchMode === FilterMatchMode.DATE_AFTER) {
-                                label = 'Fecha de inicio';
+                                label = 'Fechas Posteriores a';
                             } else if (constraint.matchMode === FilterMatchMode.DATE_BEFORE) {
-                                label = 'Fecha de fin';
+                                label = 'Fechas Anteriores a';
                             }
                             active.push({
                                 field: label,

@@ -104,6 +104,7 @@ app.use(PrimeVue, {
         }
     },
     locale: {
+      addRule: 'Agregar Condición',
       clear: 'Reiniciar',
       // Puedes agregar otras traducciones según lo necesites:
       apply: 'Aplicar',
