@@ -5,23 +5,19 @@
 
 
         <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
-
-        <!-- Sección para mostrar filtros activos -->
+        
+        <!-- Sección para mostrar los filtros activos -->
         <div class="active-filters" v-if="activeFilters.length">
-            <h3>Filtros aplicados:</h3>
-            <ul>
-                <li v-for="(filter, index) in activeFilters" :key="index">
-                    <strong>{{ filter.field }}:</strong>
-                    <!-- Aquí puedes formatear el valor del filtro según el matchMode o tipo -->
-                    {{ filter.value }}
-                </li>
-            </ul>
-            <!-- Botón para limpiar filtros, si lo requieres -->
-            <Button label="Limpiar filtros" @click="clearFilters" />
-        </div>
-
-        <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
-            tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-20"
+            <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag>
+      <ul>
+        <li v-for="(filter, index) in activeFilters" :key="index">
+          <strong>{{ filter.field }}:</strong> {{ filter.value }}
+        </li>
+      </ul>
+      <Button label="Limpiar filtros" @click="clearFilters" />
+    </div>
+        <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5"
+            tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-28"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
@@ -123,6 +119,7 @@ import FileUpload from 'primevue/fileupload';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import DatePicker from 'primevue/datepicker';
 import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
+import Tag from 'primevue/tag';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -132,7 +129,8 @@ export default defineComponent({
         DataTable,
         Toast,
         FileUpload,
-        DatePicker
+        DatePicker,
+        Tag
     },
 
     setup() {
@@ -159,37 +157,38 @@ export default defineComponent({
         const dataMovimientos = ref(null);
 
         const activeFilters = computed(() => {
-  const active = [];
-  for (const field in filters.value) {
-    const filterObj = filters.value[field];
-    filterObj.constraints.forEach(constraint => {
-      if (constraint.value !== null && constraint.value !== undefined && constraint.value !== '') {
-        let label = field;
-        if (field === 'fecha') {
-          // Asignamos un label específico para cada regla
-          if (constraint.matchMode === FilterMatchMode.DATE_AFTER) {
-            label = 'Fecha de inicio';
-          } else if (constraint.matchMode === FilterMatchMode.DATE_BEFORE) {
-            label = 'Fecha de fin';
-          }
-          // Formateamos el valor usando la función creada
-          active.push({
-            field: label,
-            value: formatearFecha(constraint.value),
-            matchMode: constraint.matchMode
-          });
-        } else {
-          active.push({
-            field: label,
-            value: constraint.value,
-            matchMode: constraint.matchMode
-          });
-        }
-      }
-    });
-  }
-  return active;
-});
+            const active = [];
+            for (const field in filters.value) {
+                const filterObj = filters.value[field];
+                filterObj.constraints.forEach(constraint => {
+                    if (constraint.value !== null && constraint.value !== undefined && constraint.value !== '') {
+                        let label = '';
+                        // Si el campo es "fecha", mostramos etiquetas personalizadas según el matchMode
+                        if (field === 'fecha') {
+                            if (constraint.matchMode === FilterMatchMode.DATE_AFTER) {
+                                label = 'Fecha de inicio';
+                            } else if (constraint.matchMode === FilterMatchMode.DATE_BEFORE) {
+                                label = 'Fecha de fin';
+                            }
+                            active.push({
+                                field: label,
+                                value: formatearFecha(constraint.value),
+                                matchMode: constraint.matchMode
+                            });
+                        } else {
+                            // Para los demás campos, usamos el mapeo definido
+                            label = fieldLabels[field] || field;
+                            active.push({
+                                field: label,
+                                value: constraint.value,
+                                matchMode: constraint.matchMode
+                            });
+                        }
+                    }
+                });
+            }
+            return active;
+        });
 
         // Función para limpiar todos los filtros
         function clearFilters() {
@@ -199,7 +198,13 @@ export default defineComponent({
                 });
             }
         }
-
+        const fieldLabels = {
+            material_repuesto: "Material / Repuesto",
+            marca: "Marca",
+            modelo_serie: "Modelo / Serie",
+            origen: "Origen",
+            destino: "Destino"
+        }
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
 
