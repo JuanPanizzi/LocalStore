@@ -157,34 +157,49 @@ export default defineComponent({
             }
         });
         const dataMovimientos = ref(null);
-        
+
         const activeFilters = computed(() => {
   const active = [];
   for (const field in filters.value) {
     const filterObj = filters.value[field];
-    // Recorremos las constraints de cada filtro
     filterObj.constraints.forEach(constraint => {
       if (constraint.value !== null && constraint.value !== undefined && constraint.value !== '') {
-        active.push({
-          field,
-          value: constraint.value,
-          matchMode: constraint.matchMode
-        });
+        let label = field;
+        if (field === 'fecha') {
+          // Asignamos un label específico para cada regla
+          if (constraint.matchMode === FilterMatchMode.DATE_AFTER) {
+            label = 'Fecha de inicio';
+          } else if (constraint.matchMode === FilterMatchMode.DATE_BEFORE) {
+            label = 'Fecha de fin';
+          }
+          // Formateamos el valor usando la función creada
+          active.push({
+            field: label,
+            value: formatearFecha(constraint.value),
+            matchMode: constraint.matchMode
+          });
+        } else {
+          active.push({
+            field: label,
+            value: constraint.value,
+            matchMode: constraint.matchMode
+          });
+        }
       }
     });
   }
   return active;
 });
 
-// Función para limpiar todos los filtros
-function clearFilters() {
-  for (const field in filters.value) {
-    filters.value[field].constraints.forEach(constraint => {
-      constraint.value = null;
-    });
-  }
-}
-        
+        // Función para limpiar todos los filtros
+        function clearFilters() {
+            for (const field in filters.value) {
+                filters.value[field].constraints.forEach(constraint => {
+                    constraint.value = null;
+                });
+            }
+        }
+
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
 
