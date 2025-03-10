@@ -107,6 +107,12 @@ async function start() {
     const path = Path.join(__dirname, '..', 'src', 'main');
     Chokidar.watch(path, {
         cwd: path,
+        // ignored: [
+            // Ignora la carpeta de la base de datos
+            //'**/database/**'
+            // o directamente el archivo de la base de datos
+            //  '../ls_database.db'
+        //   ]
     }).on('change', (path) => {
         console.log(Chalk.blueBright(`[electron] `) + `Change in ${path}. reloading... 🚀`);
 
