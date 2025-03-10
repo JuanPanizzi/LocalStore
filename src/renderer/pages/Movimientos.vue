@@ -1,8 +1,7 @@
 <template>
     <section class="p-5 bg-[#0F172A]">
         <!-- <section class="p-5"> -->
-
-
+            <!-- {{ dataMovimientosFiltrada }} -->
 
         <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
 
@@ -20,9 +19,10 @@
             </div>
             <Button label="Limpiar filtros" @click="clearFilters" class="mt-2" size="small" />
         </div>
-        <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5"
-            tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-28"
-            :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']" >
+        <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
+            paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
+            class="mx-auto mt-28"
+            :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
             <Column header="">
@@ -66,8 +66,8 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="modelo_serie" header="MODELO / SERIE" :showFilterOperator="false" :showFilterMatchModes="false"
-                :showAddButton="false">
+            <Column field="modelo_serie" header="MODELO / SERIE" :showFilterOperator="false"
+                :showFilterMatchModes="false" :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.modelo_serie }}
                 </template>
@@ -105,7 +105,8 @@
 
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
             <Button label="PDF Historial de Movimientos" />
-            <Button label="PDF Historial de Artículo" class="mx-2" severity="info" outlined :disabled="!articuloSeleccionado" />
+            <Button label="PDF Historial de Artículo" class="mx-2" severity="info" outlined
+                :disabled="!articuloSeleccionado" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
                 @select="seleccionarExcel" />
         </div>
@@ -163,8 +164,9 @@ export default defineComponent({
             }
         });
         const dataMovimientos = ref(null);
+        const dataMovimientosFiltrada = ref(null);
         const articuloSeleccionado = ref(false);
-        
+
         const activeFilters = computed(() => {
             const active = [];
             for (const field in filters.value) {
@@ -238,7 +240,12 @@ export default defineComponent({
             }
         };
 
+        const handleFilter = (event) => {
+            console.log('Datos filtrados:', event.filteredValue)
+            dataMovimientosFiltrada.value = event.filteredValue
 
+
+        }
         onMounted(async () => {
 
             const response = await obtenerMovimientos();
@@ -268,13 +275,15 @@ export default defineComponent({
             seleccionarExcel,
             importarExcel,
             dataMovimientos,
+            dataMovimientosFiltrada,
             guardarExcelMovimientos,
             obtenerMovimientos,
             filters,
             formatearFecha,
             stringToDate,
             activeFilters,
-            clearFilters
+            clearFilters,
+            handleFilter
 
 
         }
