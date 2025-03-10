@@ -1,7 +1,24 @@
 <template>
     <section class="p-5 bg-[#0F172A]">
         <!-- <section class="p-5"> -->
+
+
+
         <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
+
+        <!-- Sección para mostrar filtros activos -->
+        <div class="active-filters" v-if="activeFilters.length">
+            <h3>Filtros aplicados:</h3>
+            <ul>
+                <li v-for="(filter, index) in activeFilters" :key="index">
+                    <strong>{{ filter.field }}:</strong>
+                    <!-- Aquí puedes formatear el valor del filtro según el matchMode o tipo -->
+                    {{ filter.value }}
+                </li>
+            </ul>
+            <!-- Botón para limpiar filtros, si lo requieres -->
+            <Button label="Limpiar filtros" @click="clearFilters" />
+        </div>
 
         <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
             tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-20"
@@ -98,7 +115,7 @@
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useMovimientos } from '../composables/useMovimientos';
@@ -140,6 +157,34 @@ export default defineComponent({
             }
         });
         const dataMovimientos = ref(null);
+        
+        const activeFilters = computed(() => {
+  const active = [];
+  for (const field in filters.value) {
+    const filterObj = filters.value[field];
+    // Recorremos las constraints de cada filtro
+    filterObj.constraints.forEach(constraint => {
+      if (constraint.value !== null && constraint.value !== undefined && constraint.value !== '') {
+        active.push({
+          field,
+          value: constraint.value,
+          matchMode: constraint.matchMode
+        });
+      }
+    });
+  }
+  return active;
+});
+
+// Función para limpiar todos los filtros
+function clearFilters() {
+  for (const field in filters.value) {
+    filters.value[field].constraints.forEach(constraint => {
+      constraint.value = null;
+    });
+  }
+}
+        
         const toast = useToast()
         const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
 
@@ -198,7 +243,9 @@ export default defineComponent({
             obtenerMovimientos,
             filters,
             formatearFecha,
-            stringToDate
+            stringToDate,
+            activeFilters,
+            clearFilters
 
 
         }
