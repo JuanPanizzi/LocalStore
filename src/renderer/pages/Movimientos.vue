@@ -1,6 +1,6 @@
 <template>
-    <section class="p-5 bg-[#0F172A]">
-        <!-- <section class="p-5"> -->
+    <!-- <section class="p-5 bg-[#0F172A]"> -->
+        <section class="p-5">
         <!-- {{ dataMovimientosFiltrada }} -->
 
         <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
@@ -44,7 +44,7 @@
                     {{ formatearFecha(data.fecha) }}
                 </template>
                 <template #filter="{ filterModel }">
-                    <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy" />
+                    <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />
                 </template>
             </Column>
 
@@ -104,11 +104,11 @@
         </DataTable>
 
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
-            <Button label="PDF Historial de Movimientos" />
-            <Button label="PDF Historial de Artículo" class="mx-2" severity="info" outlined
+            <!-- <Button label="PDF Historial de Movimientos" @click="generarPdfArticulo(dataMovimientosFiltrada)" severity="danger" icon="pi pi-file-pdf" outlined /> -->
+            <Button label="PDF Historial de Artículo" class="mx-2" severity="danger" icon="pi pi-file-pdf" outlined
                 @click="generarPdfArticulo(dataMovimientosFiltrada)" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
-                @select="seleccionarExcel" />
+                @select="seleccionarExcel"   />
         </div>
         <Toast />
     </section>
@@ -251,7 +251,7 @@ export default defineComponent({
             const modeloExiste = modeloValue && modeloValue.trim().length > 0;
 
             if (!marcaExiste || !modeloExiste) {
-                toast.add({ severity: 'error', summary: 'Marca y/o Modelo inexistente', detail: 'Debes elegir una marca y un modelo para seleccionar el artículo, intente nuevamente', life: 5000 });
+                toast.add({ severity: 'error', summary: 'Marca y/o Modelo inexistente', detail: 'Debes elegir en los filtros una marca y un modelo para seleccionar el artículo, intente nuevamente', life: 5000 });
                 return;
             }
 
@@ -262,7 +262,7 @@ export default defineComponent({
                 return;
             }
 
-            
+
             generarListadoPDF(movimientos)
         }
 

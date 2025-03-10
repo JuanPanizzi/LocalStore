@@ -418,6 +418,7 @@ export function useMovimientos() {
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
             doc.text(`HISTORIAL ARTÍCULO ${movimientos[0].marca.toUpperCase()}-${movimientos[0].modelo_serie.toUpperCase()}`, doc.internal.pageSize.width / 2, 15, { align: "center" });
+
             doc.setFontSize(10);
 
             //   if (tipoFiltradoPdf.value) {
@@ -487,7 +488,7 @@ export function useMovimientos() {
                 styles: { fontSize: 8, cellPadding: 1 },
                 headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
                 columnStyles: {
-                    0: { cellWidth: 15 }, //Fecha
+                    0: { cellWidth: 20 }, //Fecha
                     1: { cellWidth: 20 }, //material / repuesto
                     2: { cellWidth: 20 }, //marca
                     3: { cellWidth: 25 },//modelo
@@ -496,10 +497,10 @@ export function useMovimientos() {
                     6: { cellWidth: 20 }, // destino
                     7: { cellWidth: 20 }, // cantidad
                     8: { cellWidth: 20 }, // pt asociado
-                    9: { cellWidth: 25 }, //  ot asociado 
+                    9: { cellWidth: 24 }, //  ot asociado 
                     10: { cellWidth: 25 }, // informe asociado
-                    11: { cellWidth: 20 }, // remito
-                    12: { cellWidth: 20 }, // n° almacenes
+                    11: { cellWidth: 17 }, // remito
+                    12: { cellWidth: 19 }, // n° almacenes
                     13: { cellWidth: 25 }, // observaciones
                 },
                 margin: { left: 1, right: 1 },
