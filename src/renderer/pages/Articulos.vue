@@ -51,7 +51,13 @@
           </div>
         </template>
       </Column>
-
+      <Column header="HISTORIAL">
+        <template #body="slotProps">
+          <div class="flex justify-center">
+            <Button icon="pi pi-calendar-clock "  />
+          </div>
+        </template>
+    </Column>
     </DataTable>
 
     <!-- Dialog crear articulo -->
