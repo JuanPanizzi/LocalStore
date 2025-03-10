@@ -28,7 +28,7 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(),  'preload.js'),
+      preload: join(app.getAppPath(), 'main', 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -43,13 +43,15 @@ function createWindow() {
   }
   else {
     mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
+    // mainWindow.loadFile(join(__dirname, 'renderer', 'index.html'));
+
   }
 
   // Después de 5 segundos, ocultar el splash y mostrar la ventana principal
   setTimeout(() => {
     // splash.close();
     mainWindow.show();
-  }, 1000);
+  }, 5000);
 
   const template = [
     {

@@ -1,7 +1,12 @@
 import Database from 'better-sqlite3';
 import path from 'path';
+import { app } from 'electron';
+//const dbPath = path.join(__dirname, '../../ls_database.db');
+const dbPath = app.isPackaged
+  ? path.join(process.resourcesPath, 'ls_database.db')
+  : path.join(__dirname, '../../ls_database.db');
 
-const dbPath = path.join(__dirname, '../../ls_database.db');
+
 
 let db;
 
