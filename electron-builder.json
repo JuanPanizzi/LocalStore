@@ -15,10 +15,10 @@
       "target": "nsis"
     }, 
     "extraFiles": [
-      {
-        "from": "ls_database.db",
-        "to": ""
-      }
+        {
+            "from": "src/main/database/ls_database.db",
+            "to": "main/database/ls_database.db"
+          }
       
     ],
     "files": [
