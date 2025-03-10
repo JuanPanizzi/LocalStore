@@ -463,7 +463,7 @@ export function useMovimientos() {
               let valor = item[col.dataKey];
   
               // Aplicar la función de limpieza solo en "documento_intervencion", "modelo", "marca"
-              if (col.dataKey === "documento_intervencion" || col.dataKey === "modelo" || col.dataKey === "marca") {
+              if (col.dataKey === "material_repuesto" || col.dataKey === "modelo_serie" || col.dataKey === "marca") {
                 valor = limpiarTexto(valor);
               }
   
@@ -508,7 +508,7 @@ export function useMovimientos() {
           const mm = String(today.getMonth() + 1).padStart(2, '0');
           const dd = String(today.getDate()).padStart(2, '0');
           // const nombrePdf = tipoFiltradoPdf.value ? `INFCOR-${yyyy}-${mm}-${dd}-FILTRADO-POR-${tipoFiltradoPdf.value}.pdf` : `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
-          const nombrePdf = `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
+          const nombrePdf = `INFMOV-${yyyy}-${mm}-${dd}.pdf`;
   
           doc.save(nombrePdf);
         };
