@@ -1,21 +1,25 @@
 <template>
-    <section class="p-5 bg-[#0F172A]">
-        <!-- <section class="p-5"> -->
+    <!-- <section class="p-5 bg-[#0F172A]"> -->
+        <section class="p-5">
 
 
 
-        <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
-        
+        <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
+
         <!-- Sección para mostrar los filtros activos -->
-        <div class="active-filters" v-if="activeFilters.length">
-            <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag>
-      <ul>
-        <li v-for="(filter, index) in activeFilters" :key="index">
-          <strong>{{ filter.field }}:</strong> {{ filter.value }}
-        </li>
-      </ul>
-      <Button label="Limpiar filtros" @click="clearFilters" />
-    </div>
+        <!-- <Button label="Limpiar filtros" @click="clearFilters" /> -->
+        <!-- Filtros activos usando el componente Badge -->
+        <!-- <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag> -->
+
+        <div v-if="activeFilters.length" class="mb-4">
+            <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 "></Tag>
+
+            <div class="flex flex-wrap gap-2">
+                <Tag v-for="(filter, index) in activeFilters" :key="index" :value="`${filter.field}: ${filter.value}`"
+                    severity="secondary" class="p-2" icon="pi pi-filter" />
+            </div>
+            <Button label="Limpiar filtros" @click="clearFilters" class="mt-2" size="small" />
+        </div>
         <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="5"
             tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-28"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
@@ -120,6 +124,7 @@ import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import DatePicker from 'primevue/datepicker';
 import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
 import Tag from 'primevue/tag';
+import Badge from 'primevue/badge';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -130,7 +135,8 @@ export default defineComponent({
         Toast,
         FileUpload,
         DatePicker,
-        Tag
+        Tag,
+        Badge
     },
 
     setup() {
