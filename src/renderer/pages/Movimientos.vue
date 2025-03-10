@@ -106,7 +106,7 @@
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
             <Button label="PDF Historial de Movimientos" />
             <Button label="PDF Historial de Artículo" class="mx-2" severity="info" outlined
-                :disabled="!articuloSeleccionado" />
+                 @click="generarPdfArticulo(dataMovimientosFiltrada)" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
                 @select="seleccionarExcel" />
         </div>
@@ -217,7 +217,7 @@ export default defineComponent({
             destino: "Destino"
         }
         const toast = useToast()
-        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
+        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF } = useMovimientos();
 
         const seleccionarExcel = async (event) => {
             const response = await importarExcel(event);
@@ -240,11 +240,14 @@ export default defineComponent({
             }
         };
 
+        const generarPdfArticulo = (movimientos) => {
+            
+            generarListadoPDF(movimientos)
+         }
+
         const handleFilter = (event) => {
             console.log('Datos filtrados:', event.filteredValue)
             dataMovimientosFiltrada.value = event.filteredValue
-
-
         }
         onMounted(async () => {
 
@@ -283,7 +286,9 @@ export default defineComponent({
             stringToDate,
             activeFilters,
             clearFilters,
-            handleFilter
+            handleFilter,
+            generarListadoPDF,
+            generarPdfArticulo
 
 
         }

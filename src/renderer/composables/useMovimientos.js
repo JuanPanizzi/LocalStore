@@ -4,7 +4,7 @@ import { useToast } from "primevue/usetoast";
 import logo from '../../resources/pdflogo.png'
 import { formatearFecha } from '../utils/funcionesFecha'
 import jsPDF from 'jspdf';
-
+import autoTable from "jspdf-autotable";
 export function useMovimientos() {
 
 
@@ -403,11 +403,11 @@ export function useMovimientos() {
 
 
     const generarListadoPDF = (movimientos) => {
-
-        if (!movimientos.value || movimientos.value.length === 0) {
-          toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
-          return;
-        }
+console.log('movimientos', movimientos)
+        // if (!movimientos.value || movimientos.value.length === 0) {
+        //   toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
+        //   return;
+        // }
   
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
   
@@ -421,9 +421,9 @@ export function useMovimientos() {
           doc.text("REGISTRO DE CORRECTIVOS", doc.internal.pageSize.width / 2, 15, { align: "center" });
           doc.setFontSize(10);
   
-          if (tipoFiltradoPdf.value) {
-            doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
-          }
+        //   if (tipoFiltradoPdf.value) {
+        //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
+        //   }
   
           // Definir columnas y títulos
           const columnas = [
@@ -458,7 +458,7 @@ export function useMovimientos() {
           
   
           // Mapear los datos y limpiar el campo "documento_intervencion", "modelo", "marca"
-          const filas = movimientos.value.map(item => {
+          const filas = movimientos.map(item => {
             return columnas.reduce((obj, col) => {
               let valor = item[col.dataKey];
   
