@@ -92,6 +92,7 @@
 
 // export default db;
 
+import sqlite3 from 'better-sqlite3';
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
@@ -105,14 +106,16 @@ if (app.isPackaged) {
   console.log('DB Path final =>', dbPath);
 } else {
   // En desarrollo, usa la ruta dentro de src (ajústala según tu estructura)
-  dbPath = path.join(process.cwd(), 'src', 'main', 'database', 'ls_database.db');
+  //dbPath = path.join(process.cwd(), 'src', 'main', 'database', 'ls_database.db');
+  dbPath = 'ls_database.db'
+  
   console.log('DB Path final development =>', dbPath);
 }
 
 let db: Database.Database;
 
 try {
-  db = new Database(dbPath);
+  db = new sqlite3(dbPath);
   console.log('✅ Conexión exitosa a la base de datos SQLite.');
 } catch (error) {
   console.error('❌ Error al conectar a la base de datos SQLite:', error);
