@@ -2,7 +2,6 @@ import * as XLSX from "xlsx-js-style";
 import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha, formatearFecha } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
 import logo from '../../resources/pdflogo.png'
-import { formatearFecha } from '../utils/funcionesFecha'
 import jsPDF from 'jspdf';
 import autoTable from "jspdf-autotable";
 export function useMovimientos() {
@@ -622,7 +621,6 @@ export function useMovimientos() {
         generarPdf,
         obtenerUltimoMovimiento,
         generarListadoPDF,
-        formatearFecha,
         formatearFecha,
         exportarExcel
     }
