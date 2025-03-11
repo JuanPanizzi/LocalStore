@@ -21,24 +21,77 @@ export async function obtenerMovimientos() {
 }
 
 
+// export async function guardarExcelMovimientos(data) {
+
+//   try {
+
+
+//     // Eliminar todos los registros existentes
+//     db.prepare(`DELETE FROM movimientos_materiales`).run();
+
+//     // Preparar la inserción de nuevos datos (no se esta pasando documento_referencia ni observaciones)
+//     const insert = db.prepare(`
+//       INSERT INTO movimientos_materiales 
+//       (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes,  numero_movimiento, modelo_serie) 
+//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? )
+//     `);
+
+//     // fecha // tipo_movimiento // origen // destino // material_repuesto // marca // articulo_id // cantidad // permiso_trabajo_asociado
+//     // informe_asociado // orden_trabajo_asociada // remito // numero_almacenes // numero_serie // numero_movimiento 
+//     // modelo_serie
+
+//     const insertMany = db.transaction((movimientos) => {
+//       for (const movimiento of movimientos) {
+//         insert.run(
+//           movimiento.fecha,
+//           movimiento.tipo_movimiento,
+//           movimiento.origen,
+//           movimiento.destino,
+//           movimiento.material_repuesto,
+//           movimiento.marca,
+//           movimiento.articulo_id,
+//           movimiento.cantidad,
+//           movimiento.permiso_trabajo_asociado,
+//           movimiento.informe_asociado,
+//           movimiento.orden_trabajo_asociada,
+//           movimiento.remito,
+//           movimiento.numero_almacenes,
+//           movimiento.numero_movimiento,
+//           movimiento.modelo_serie
+//         );
+//       }
+//     });
+
+//     insertMany(data);
+
+//     // Obtener los datos insertados junto con el ID generado
+//     const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
+
+//     if (insertedData.length === 0) {
+//       return { success: false, error: "No se insertaron los datos" };
+//     }
+
+//     return { success: true, data: insertedData };
+
+
+//   } catch (error) {
+
+//     console.error('[!] Hubo un error  al reemplazar datos:', error);
+//     return { success: false, error: error };
+//   }
+// }
+
 export async function guardarExcelMovimientos(data) {
-
   try {
-
-
-    // Eliminar todos los registros existentes
+    // 1. Eliminar los registros existentes en movimientos_materiales
     db.prepare(`DELETE FROM movimientos_materiales`).run();
 
-    // Preparar la inserción de nuevos datos (no se esta pasando documento_referencia ni observaciones)
+    // 2. Preparar la inserción de nuevos datos en movimientos_materiales
     const insert = db.prepare(`
       INSERT INTO movimientos_materiales 
-      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes,  numero_movimiento, modelo_serie) 
+      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? )
     `);
-
-    // fecha // tipo_movimiento // origen // destino // material_repuesto // marca // articulo_id // cantidad // permiso_trabajo_asociado
-    // informe_asociado // orden_trabajo_asociada // remito // numero_almacenes // numero_serie // numero_movimiento 
-    // modelo_serie
 
     const insertMany = db.transaction((movimientos) => {
       for (const movimiento of movimientos) {
@@ -64,22 +117,71 @@ export async function guardarExcelMovimientos(data) {
 
     insertMany(data);
 
-    // Obtener los datos insertados junto con el ID generado
+    // 3. Obtener los datos insertados (para enviar al frontend)
     const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
-
     if (insertedData.length === 0) {
       return { success: false, error: "No se insertaron los datos" };
     }
 
-    return { success: true, data: insertedData };
+    // 4. Agrupar por artículo para obtener el último movimiento de cada uno
+    const ultimosMovimientos = new Map();
+    data.forEach((movimiento) => {
+      // Clave única para cada artículo: combinación de marca y modelo_serie
+      const key = `${movimiento.marca}_${movimiento.modelo_serie}`;
+      if (!ultimosMovimientos.has(key)) {
+        ultimosMovimientos.set(key, movimiento);
+      } else {
+        console.log('movimiento,fecha', movimiento.fecha)
+        // Comparar fechas (se asume formato YYYY-MM-DD)
+        const fechaActual = new Date(movimiento.fecha);
+        console.log('fechaActual', fechaActual);
+        const fechaGuardada = new Date(ultimosMovimientos.get(key).fecha);
+        console.log('fechaGuardada', fechaGuardada);
 
+        if (fechaActual > fechaGuardada) {
+          ultimosMovimientos.set(key, movimiento);
+        }
+      }
+    });
 
+    // 5. Verificar existencia de cada artículo en la tabla articulos y procesar
+    let warnings: string[] = [];
+    ultimosMovimientos.forEach((movimiento, key) => {
+      // Se asume que la combinación marca/modelo_serie es única para cada artículo
+      const articuloExistente = db
+        .prepare("SELECT * FROM articulos WHERE marca = ? AND modelo_serie = ?")
+        .get(movimiento.marca, movimiento.modelo_serie);
+
+      if (!articuloExistente) {
+        // Insertar nuevo artículo con la cantidad del último movimiento
+        db.prepare(
+          "INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen) VALUES (?, ?, ?, ?, ?)"
+        ).run(
+          movimiento.material_repuesto,
+          movimiento.marca,
+          movimiento.modelo_serie,
+          movimiento.cantidad, // Se usa la cantidad del último movimiento
+          null
+        );
+      } else {
+        // Si el artículo existe, comparar la cantidad del último movimiento con la cantidad guardada
+        if (articuloExistente.cantidad !== movimiento.cantidad) {
+          warnings.push(
+            `El artículo (Marca: ${movimiento.marca}, Modelo/Serie: ${movimiento.modelo_serie}) tiene cantidad en BD: ${articuloExistente.cantidad} y el último movimiento en Excel indica: ${movimiento.cantidad}.`
+          );
+        }
+      }
+    });
+
+    // 6. Retornar el resultado junto con las advertencias (si existen)
+    return { success: true, data: insertedData, warnings };
   } catch (error) {
-
-    console.error('[!] Hubo un error  al reemplazar datos:', error);
+    console.error('[!] Hubo un error al reemplazar datos:', error);
     return { success: false, error: error };
   }
 }
+
+
 
 export const guardarMovimiento = async (movimiento) => {
 

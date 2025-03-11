@@ -140,7 +140,9 @@ export function useMovimientos() {
                         informe_asociado: normalizedRow["informe asociado"],
                         orden_trabajo_asociada: normalizedRow["ot asociada"],
                         remito: normalizedRow["remito"],
-                        numero_almacenes: normalizedRow["n° almacenes"]
+                        numero_almacenes: normalizedRow["n° almacenes"],
+                        observaciones: normalizedRow["observaciones"]
+
                     }
                 });
 
@@ -164,23 +166,18 @@ export function useMovimientos() {
                             ...row,
                             fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
                         }));
-
+                        
+                        // Mostrar advertencias si existen
+                        if (response.warnings && response.warnings.length > 0) {
+                            response.warnings.forEach((msg) => {
+                                toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 6000 });
+                            });
+                        }
+                        
                         resolve({ success: true, data: movimientos });
 
                     } else {
                         reject({ success: false });
-                        //    throw new Error(); 
-                        // if (response.error == 'Campos incompletos') {
-                        //     if (response.campoIncompleto == 'Campo desconocido') {
-
-                        //         return {success: false, campoIncompleto: 'columna desconocida'}
-
-                        //     } else {
-
-                        //         console.log(' fail')
-                        //         return {success: false, campoIncompleto: response.campoIncompleto}
-                        //     }
-                        // }
                     }
                 } catch (error) {
                     console.error(error);
@@ -200,6 +197,9 @@ export function useMovimientos() {
             const response = await window.electronAPI.guardarExcelMovimientos(data);
 
             if (response.success) {
+
+
+
 
                 return { success: true, data: response.data }
 
