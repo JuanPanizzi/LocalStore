@@ -15,7 +15,7 @@ function createWindow() {
   //   transparent: true,
   //   resizable: false, // Evita que se redimensione
   //   webPreferences: {
-  //     preload: join(app.getAppPath(),'main',  'preload.js'),
+  //     preload: join(app.getAppPath(), 'main',  'preload.js'),
   //     nodeIntegration: true,
   //     contextIsolation: true,
   //   }
@@ -27,12 +27,12 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(), 'main',  'preload.js'),
+      preload: join(app.getAppPath(), 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
   });
-  //mainWindow.maximize();
+  mainWindow.maximize();
   ipcMainProcess(mainWindow);
   // open dev tools
   // mainWindow.webContents.openDevTools();

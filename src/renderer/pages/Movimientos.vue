@@ -1,6 +1,6 @@
 <template>
-    <!-- <section class="p-5 bg-[#0F172A]"> -->
-        <section class="p-5">
+    <section class="p-5 bg-[#0F172A]">
+    <!-- <section class="p-5"> -->
         <!-- {{ dataMovimientosFiltrada }} -->
 
         <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
@@ -31,7 +31,8 @@
                         <Button outlined icon="pi pi-pencil" @click="" />
                     </div>
                 </template>
-            </Column> -->
+</Column> -->
+<Column field="numero_movimiento" header="ID"></Column>
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
                 :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[
@@ -107,7 +108,10 @@
             <Button label="PDF Historial de Artículo" class="mx-2" severity="danger" icon="pi pi-file-pdf" outlined
                 @click="generarPdfArticulo(dataMovimientosFiltrada)" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
-                @select="seleccionarExcel"   />
+                @select="seleccionarExcel" />
+            <Button label="Exportar Excel" icon="pi pi-file-export" class="ml-2" severity="success"
+                @click="exportarExcel(dataMovimientosFiltrada)" />
+
         </div>
         <Toast />
     </section>
@@ -216,7 +220,7 @@ export default defineComponent({
             destino: "Destino"
         }
         const toast = useToast()
-        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF } = useMovimientos();
+        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF, exportarExcel } = useMovimientos();
 
         const seleccionarExcel = async (event) => {
             const response = await importarExcel(event);
@@ -266,9 +270,15 @@ export default defineComponent({
         }
 
         const handleFilter = (event) => {
-            console.log('Datos filtrados:', event.filteredValue)
-            dataMovimientosFiltrada.value = event.filteredValue
+            //console.log('Datos filtrados:', event.filteredValue)
+            dataMovimientosFiltrada.value = event.filteredValue;
         }
+
+
+        const generarExcel = (datosFiltrados) => {
+            exportarExcel(datosFiltrados)
+        }
+
         onMounted(async () => {
 
             const response = await obtenerMovimientos();
@@ -308,7 +318,9 @@ export default defineComponent({
             clearFilters,
             handleFilter,
             generarListadoPDF,
-            generarPdfArticulo
+            generarPdfArticulo,
+            exportarExcel,
+            generarExcel
 
 
         }
