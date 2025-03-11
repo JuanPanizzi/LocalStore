@@ -523,7 +523,6 @@ export function useMovimientos() {
     const exportarExcel = (datosFiltrados) => {
         // Mapear los datos al formato requerido
         const formattedData = datosFiltrados.value.map((item) => ({
-          
           "Fecha": item.fecha ? formatFechaExcel(item.fecha) : "-",
           "ID": item.numero_movimiento || "-",
           "Movimiento": item.tipo_movimiento || "-",
@@ -538,6 +537,7 @@ export function useMovimientos() {
           "OT Asociada": item.orden_trabajo_asociada || "-",
           "Remito": item.remito || "-",
           "N° Almacenes": item.numero_almacenes || "-",
+          "Observaciones": item.observaciones || "-",
         }));
   
         // Crear una hoja de trabajo (worksheet)
@@ -600,14 +600,16 @@ export function useMovimientos() {
           { wch: 22 }, // OT Asociada
           { wch: 22 }, // Remito
           { wch: 20 }, // N° Almacenes
+          { wch: 20 }, // Observaciones
+
         ];
   
         // Crear un libro de trabajo (workbook)
         const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, "Correctivos");
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Historial de Movimientos");
   
         // Exportar el archivo Excel
-        XLSX.writeFile(workbook, "InformeCorrectivos.xlsx");
+        XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
       };
   
 
