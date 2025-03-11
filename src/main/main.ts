@@ -6,7 +6,6 @@ import { ipcMainProcess } from "./ipcMain";
 
 function createWindow() {
 
-
   // Crea la ventana splash
   // const splash = new BrowserWindow({
   //   width: 496,  // Igual al ancho del video
