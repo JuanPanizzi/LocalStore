@@ -98,13 +98,15 @@ import path from 'path';
 import fs from 'fs';
 import { app } from 'electron';
 
-let dbPath: string;
 
-if (app.isPackaged) {
-  dbPath = path.join(process.resourcesPath, 'ls_database.db');
-} else {
-  dbPath = 'ls_database.db'
-}
+// let dbPath: string;
+// if (app.isPackaged) {
+//   dbPath = path.join(process.resourcesPath, 'ls_database.db');
+// } else {
+//   dbPath = 'ls_database.db'
+// }
+
+const dbPath = process.env.NODE_ENV === "development" ? "ls_database.db" : path.join(process.resourcesPath, "ls_database.db")
 
 let db: Database.Database;
 
