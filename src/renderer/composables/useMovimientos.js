@@ -522,10 +522,7 @@ export function useMovimientos() {
 
     const exportarExcel = (datosFiltrados) => {
         // Mapear los datos al formato requerido}
-
-        const formattedData = datosFiltrados.map((item) => (
-            console.log(item.fecha),
-            {
+        const formattedData = datosFiltrados.map((item) => ({
             "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
             "ID": item.numero_movimiento || "-",
             "Movimiento": item.tipo_movimiento || "-",
