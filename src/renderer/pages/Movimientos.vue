@@ -1,33 +1,49 @@
 <template>
-    <section class="p-5 bg-[#0F172A]">
-        <!-- <section class="p-5"> -->
-        <h1 class="font-bold text-xl text-[#0EA5E9]">Movimientos de Materiales</h1>
+    <!-- <section class="p-5 bg-[#0F172A]"> -->
+        <section class="p-5">
+        <!-- {{ dataMovimientosFiltrada }} -->
 
-        <DataTable v-model:filters="filters" filterDisplay="menu" :value="dataMovimientos" paginator :rows="8"
-            tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw" class="mx-auto mt-20"
+        <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
+
+        <!-- Sección para mostrar los filtros activos -->
+        <!-- <Button label="Limpiar filtros" @click="clearFilters" /> -->
+        <!-- Filtros activos usando el componente Badge -->
+        <!-- <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag> -->
+
+        <div v-if="activeFilters.length" class="mb-4">
+            <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 "></Tag>
+
+            <div class="flex flex-wrap gap-2">
+                <Tag v-for="(filter, index) in activeFilters" :key="index" :value="`${filter.field}: ${filter.value}`"
+                    severity="secondary" class="p-2" icon="pi pi-filter" />
+            </div>
+            <Button label="Limpiar filtros" icon="pi pi-refresh" @click="clearFilters" class="mt-2" size="small" />
+        </div>
+        <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
+            paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
+            class="mx-auto mt-24"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
-            <Column header="">
+            <!-- <Column header="">
                 <template #body="slotProps">
                     <div class="flex justify-center">
                         <Button outlined icon="pi pi-pencil" @click="" />
-                        <!-- <Button outlined class="ml-2" icon="pi pi-trash" severity="danger"@click="confirmarEliminacion(slotProps.data)" /> -->
                     </div>
                 </template>
-            </Column>
+            </Column> -->
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
                 :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[
-                    { label: 'Fecha Inicio', value: 'dateAfter' },
-                    { label: 'Fecha Fin', value: 'dateBefore' }
+                    { label: 'Fechas Posteriores a:', value: 'dateAfter' },
+                    { label: 'Fechas Anteriores a:', value: 'dateBefore' }
                 ]">
                 <template #body="{ data }">
                     <!-- {{ data.fecha }} -->
                     {{ formatearFecha(data.fecha) }}
                 </template>
                 <template #filter="{ filterModel }">
-                    <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="dd/mm/yyyy" />
+                    <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />
                 </template>
             </Column>
 
@@ -49,8 +65,8 @@
                     <InputText v-model="filterModel.value" type="text" placeholder="Buscar" />
                 </template>
             </Column>
-            <Column field="modelo_serie" header="MODELO" :showFilterOperator="false" :showFilterMatchModes="false"
-                :showAddButton="false">
+            <Column field="modelo_serie" header="MODELO / SERIE" :showFilterOperator="false"
+                :showFilterMatchModes="false" :showAddButton="false">
                 <template #body="{ data }">
                     {{ data.modelo_serie }}
                 </template>
@@ -87,8 +103,11 @@
         </DataTable>
 
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
+            <!-- <Button label="PDF Historial de Movimientos" @click="generarPdfArticulo(dataMovimientosFiltrada)" severity="danger" icon="pi pi-file-pdf" outlined /> -->
+            <Button label="PDF Historial de Artículo" class="mx-2" severity="danger" icon="pi pi-file-pdf" outlined
+                @click="generarPdfArticulo(dataMovimientosFiltrada)" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
-                @select="seleccionarExcel" />
+                @select="seleccionarExcel"   />
         </div>
         <Toast />
     </section>
@@ -98,7 +117,7 @@
 import Button from 'primevue/button';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { defineComponent, onMounted, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref } from 'vue';
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
 import { useMovimientos } from '../composables/useMovimientos';
@@ -106,6 +125,8 @@ import FileUpload from 'primevue/fileupload';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import DatePicker from 'primevue/datepicker';
 import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
+import Tag from 'primevue/tag';
+import Badge from 'primevue/badge';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -115,7 +136,9 @@ export default defineComponent({
         DataTable,
         Toast,
         FileUpload,
-        DatePicker
+        DatePicker,
+        Tag,
+        Badge
     },
 
     setup() {
@@ -124,8 +147,8 @@ export default defineComponent({
         // });
         const filters = ref({
             material_repuesto: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
-            marca: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
-            modelo_serie: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
+            marca: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
+            modelo_serie: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.EQUALS }] },
             origen: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
             destino: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.CONTAINS }] },
 
@@ -140,8 +163,60 @@ export default defineComponent({
             }
         });
         const dataMovimientos = ref(null);
+        const dataMovimientosFiltrada = ref(null);
+        const articuloSeleccionado = ref(false);
+
+        const activeFilters = computed(() => {
+            const active = [];
+            for (const field in filters.value) {
+                const filterObj = filters.value[field];
+                filterObj.constraints.forEach(constraint => {
+                    if (constraint.value !== null && constraint.value !== undefined && constraint.value !== '') {
+                        let label = '';
+                        // Si el campo es "fecha", mostramos etiquetas personalizadas según el matchMode
+                        if (field === 'fecha') {
+                            if (constraint.matchMode === FilterMatchMode.DATE_AFTER) {
+                                label = 'Fechas Posteriores a';
+                            } else if (constraint.matchMode === FilterMatchMode.DATE_BEFORE) {
+                                label = 'Fechas Anteriores a';
+                            }
+                            active.push({
+                                field: label,
+                                value: formatearFecha(constraint.value),
+                                matchMode: constraint.matchMode
+                            });
+                        } else {
+                            // Para los demás campos, usamos el mapeo definido
+                            label = fieldLabels[field] || field;
+                            active.push({
+                                field: label,
+                                value: constraint.value,
+                                matchMode: constraint.matchMode
+                            });
+                        }
+                    }
+                });
+            }
+            return active;
+        });
+
+        // Función para limpiar todos los filtros
+        function clearFilters() {
+            for (const field in filters.value) {
+                filters.value[field].constraints.forEach(constraint => {
+                    constraint.value = null;
+                });
+            }
+        }
+        const fieldLabels = {
+            material_repuesto: "Material / Repuesto",
+            marca: "Marca",
+            modelo_serie: "Modelo / Serie",
+            origen: "Origen",
+            destino: "Destino"
+        }
         const toast = useToast()
-        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos } = useMovimientos();
+        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF } = useMovimientos();
 
         const seleccionarExcel = async (event) => {
             const response = await importarExcel(event);
@@ -164,7 +239,36 @@ export default defineComponent({
             }
         };
 
+        const generarPdfArticulo = (movimientos) => {
 
+            // 1. Verificamos si marca está seteado
+            const marcaValue = filters.value.marca.constraints[0].value;
+            // 2. Verificamos si modelo_serie está seteado
+            const modeloValue = filters.value.modelo_serie.constraints[0].value;
+
+            const marcaExiste = marcaValue && marcaValue.trim().length > 0;
+            const modeloExiste = modeloValue && modeloValue.trim().length > 0;
+
+            if (!marcaExiste || !modeloExiste) {
+                toast.add({ severity: 'error', summary: 'Marca y/o Modelo inexistente', detail: 'Debes elegir en los filtros una marca y un modelo para seleccionar el artículo, intente nuevamente', life: 5000 });
+                return;
+            }
+
+            // 3. Verificamos si hay resultados en la tabla filtrada
+            const resultados = dataMovimientosFiltrada.value && dataMovimientosFiltrada.value.length > 0;
+            if (!resultados) {
+                toast.add({ severity: 'error', summary: 'Sin resultados', detail: 'No existen resultados para los filtros aplicados, intente nuevamente', life: 5000 });
+                return;
+            }
+
+
+            generarListadoPDF(movimientos)
+        }
+
+        const handleFilter = (event) => {
+            console.log('Datos filtrados:', event.filteredValue)
+            dataMovimientosFiltrada.value = event.filteredValue
+        }
         onMounted(async () => {
 
             const response = await obtenerMovimientos();
@@ -194,11 +298,17 @@ export default defineComponent({
             seleccionarExcel,
             importarExcel,
             dataMovimientos,
+            dataMovimientosFiltrada,
             guardarExcelMovimientos,
             obtenerMovimientos,
             filters,
             formatearFecha,
-            stringToDate
+            stringToDate,
+            activeFilters,
+            clearFilters,
+            handleFilter,
+            generarListadoPDF,
+            generarPdfArticulo
 
 
         }

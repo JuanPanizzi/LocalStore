@@ -6,7 +6,6 @@ import { ipcMainProcess } from "./ipcMain";
 
 function createWindow() {
 
-
   // Crea la ventana splash
   // const splash = new BrowserWindow({
   //   width: 496,  // Igual al ancho del video
@@ -28,7 +27,7 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(),  'preload.js'),
+      preload: join(app.getAppPath(), 'main',  'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -40,16 +39,21 @@ function createWindow() {
   if (process.env.NODE_ENV === 'development') {
     const rendererPort = process.argv[2];
     mainWindow.loadURL(`http://localhost:${rendererPort}`);
+
+    
+    
   }
   else {
     mainWindow.loadFile(join(app.getAppPath(), 'renderer', 'index.html'));
-  }
+    // mainWindow.loadFile(join(__dirname, 'renderer', 'index.html'));
 
+  }
+  
   // Después de 5 segundos, ocultar el splash y mostrar la ventana principal
   setTimeout(() => {
     // splash.close();
     mainWindow.show();
-  }, 1000);
+  }, 5000);
 
   const template = [
     {
