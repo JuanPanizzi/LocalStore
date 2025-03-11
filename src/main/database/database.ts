@@ -101,15 +101,9 @@ import { app } from 'electron';
 let dbPath: string;
 
 if (app.isPackaged) {
-  // En producción, la base de datos se encuentra empaquetada en resources
   dbPath = path.join(process.resourcesPath, 'ls_database.db');
-  console.log('DB Path final =>', dbPath);
 } else {
-  // En desarrollo, usa la ruta dentro de src (ajústala según tu estructura)
-  //dbPath = path.join(process.cwd(), 'src', 'main', 'database', 'ls_database.db');
   dbPath = 'ls_database.db'
-  
-  console.log('DB Path final development =>', dbPath);
 }
 
 let db: Database.Database;
