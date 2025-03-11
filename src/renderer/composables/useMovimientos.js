@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx-js-style";
-import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha, formatFechaExcel } from '../utils/funcionesFecha';
+import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha, formatearFecha } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
 import logo from '../../resources/pdflogo.png'
 import { formatearFecha } from '../utils/funcionesFecha'
@@ -15,7 +15,7 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerMovimientos();
-            // console.log('response', response.data)
+            //console.log('response', response.data)
 
             if (response.success) {
                 // console.log('datos obtenidos correctamente', response.data)
@@ -523,8 +523,10 @@ export function useMovimientos() {
     const exportarExcel = (datosFiltrados) => {
         // Mapear los datos al formato requerido}
 
-        const formattedData = datosFiltrados.map((item) => ({
-            "Fecha": item.fecha || "-",
+        const formattedData = datosFiltrados.map((item) => (
+            console.log(item.fecha),
+            {
+            "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
             "ID": item.numero_movimiento || "-",
             "Movimiento": item.tipo_movimiento || "-",
             "Origen": item.origen || "-",
@@ -624,7 +626,7 @@ export function useMovimientos() {
         obtenerUltimoMovimiento,
         generarListadoPDF,
         formatearFecha,
-        formatFechaExcel,
+        formatearFecha,
         exportarExcel
     }
 
