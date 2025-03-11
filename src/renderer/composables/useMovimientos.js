@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx-js-style";
-import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha } from '../utils/funcionesFecha';
+import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha, formatFechaExcel } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
 import logo from '../../resources/pdflogo.png'
 import { formatearFecha } from '../utils/funcionesFecha'
@@ -519,6 +519,98 @@ export function useMovimientos() {
         };
     };
 
+    
+    const exportarExcel = (datosFiltrados) => {
+        // Mapear los datos al formato requerido
+        const formattedData = datosFiltrados.value.map((item) => ({
+          
+          "Fecha": item.fecha ? formatFechaExcel(item.fecha) : "-",
+          "ID": item.numero_movimiento || "-",
+          "Movimiento": item.tipo_movimiento || "-",
+          "Origen": item.origen || "-",
+          "Destino": item.destino || "-",
+          "Material/Repuesto": item.material_repuesto || "-",
+          "Marca": item.marca || "-",
+          "Modelo/Serie": item.modelo_serie || "-",
+          "Cantidad": item.cantidad || "-",
+          "PT Asociado": item.permiso_trabajo_asociado || "-",
+          "Informe Asociado": item.informe_asociado,
+          "OT Asociada": item.orden_trabajo_asociada || "-",
+          "Remito": item.remito || "-",
+          "N° Almacenes": item.numero_almacenes || "-",
+        }));
+  
+        // Crear una hoja de trabajo (worksheet)
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+  
+        // Estilo para el encabezado
+        const headerStyle = {
+          fill: {
+            patternType: "solid",
+            fgColor: { rgb: "FF4F81BD" }, // Fondo azul correcto
+          },
+          font: {
+            bold: true,
+            color: { rgb: "FFFFFFFF" }, // Texto blanco
+          },
+          alignment: {
+            horizontal: "center",
+            vertical: "center",
+          },
+        };
+  
+        // Estilo para las celdas de datos (centrado vertical y horizontal)
+        const dataStyle = {
+          alignment: {
+            horizontal: "center", // Centrado horizontal
+            vertical: "center",   // Centrado vertical
+          },
+        };
+  
+        // Aplicar estilos a los encabezados
+        const headers = Object.keys(formattedData[0]);
+        headers.forEach((header, index) => {
+          const cellAddress = XLSX.utils.encode_cell({ r: 0, c: index });
+          if (!worksheet[cellAddress]) return;
+          worksheet[cellAddress].s = headerStyle;
+        });
+  
+        // Aplicar estilo a las celdas de datos
+        formattedData.forEach((_, rowIndex) => {
+          headers.forEach((_, colIndex) => {
+            const cellAddress = XLSX.utils.encode_cell({ r: rowIndex + 1, c: colIndex }); // Las filas empiezan desde 1
+            if (!worksheet[cellAddress]) return;
+            worksheet[cellAddress].s = dataStyle;
+          });
+        });
+  
+        // Definir el ancho de las columnas
+        worksheet["!cols"] = [
+          { wch: 12 }, // Fecha
+          { wch: 39 }, // ID (numero_movimiento)
+          { wch: 18 }, // Movimiento
+          { wch: 52 }, // Origen
+          { wch: 59 }, // Destino
+          { wch: 40 }, // Material/Repuesto
+          { wch: 50 }, // Marca
+          { wch: 74 }, // Modelo/Serie
+          { wch: 15 }, // Cantidad
+          { wch: 15 }, // PT asociado
+          { wch: 30 }, // Informe Asociado
+          { wch: 22 }, // OT Asociada
+          { wch: 22 }, // Remito
+          { wch: 20 }, // N° Almacenes
+        ];
+  
+        // Crear un libro de trabajo (workbook)
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Correctivos");
+  
+        // Exportar el archivo Excel
+        XLSX.writeFile(workbook, "InformeCorrectivos.xlsx");
+      };
+  
+
 
     return {
         importarExcel,
@@ -528,7 +620,9 @@ export function useMovimientos() {
         generarPdf,
         obtenerUltimoMovimiento,
         generarListadoPDF,
-        formatearFecha
+        formatearFecha,
+        formatFechaExcel,
+        exportarExcel
     }
 
 }
