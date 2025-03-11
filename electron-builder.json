@@ -8,7 +8,7 @@
         "oneClick": false,
         "perMachine": false,
         "allowToChangeInstallationDirectory": true,
-        "shortcutName": "local-store"
+        "shortcutName": "LOCAL STORE"
     },
     "win": {
         "icon": "buildResources/icono.ico",

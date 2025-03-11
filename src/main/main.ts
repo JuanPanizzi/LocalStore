@@ -27,7 +27,7 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(), 'main',  'preload.js'),
+      preload: join(app.getAppPath(), 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -63,13 +63,13 @@ function createWindow() {
       ]
     },
 
-      // {
-      //   label: 'Ver',
-      //   submenu: [ 
-      //     { role: 'forceReload', label: 'Forzar recarga' },
-      //     { role: 'toggleDevTools', label: 'Alternar herramientas de desarrollo' }, 
-      //   ]
-      // }, 
+      {
+        label: 'Ver',
+        submenu: [ 
+          { role: 'forceReload', label: 'Forzar recarga' },
+          { role: 'toggleDevTools', label: 'Alternar herramientas de desarrollo' }, 
+        ]
+      }, 
     {
       label: 'Ayuda',
       submenu: [

@@ -1,5 +1,7 @@
 <template>
-  <section class="p-5 ">
+    <section class="p-5 bg-[#0F172A]">
+  
+  <!-- <section class="p-5 "> -->
     <!-- <h1 class="font-bold text-xl ">Artículos</h1> -->
 
     <div class="max-w-[90vw] flex justify-end mx-auto my-5">
