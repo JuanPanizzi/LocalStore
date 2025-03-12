@@ -271,6 +271,7 @@ export default defineComponent({
             return filteredArticulos.value;
         })
 
+        
         // Función para actualizar el artículo seleccionado al marcar una fila en el DataTable
         function onArticuloSelect(event) {
             console.log("Fila seleccionada:", event.data);
