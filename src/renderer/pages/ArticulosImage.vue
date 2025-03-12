@@ -3,7 +3,7 @@
 
         <div>
             <!-- Filtros -->
-            <div class="mb-4 grid grid-cols-3 gap-4">
+            <div class="mb-4 grid grid-cols-3 gap-4 max-w-1/2">
                 <InputText v-model="filters.material" placeholder="Buscar por material" />
                 <InputText v-model="filters.marca" placeholder="Buscar por marca" />
                 <InputText v-model="filters.modelo" placeholder="Buscar por modelo" />
@@ -13,22 +13,27 @@
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- Carousel: muestra la imagen y detalles dentro de cada item -->
                 <div class="md:w-1/2">
-                    <Carousel :value="filteredArticulos" :numVisible="1" :numScroll="1"
+                    <Carousel :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions">
                         <template #item="slotProps">
-                            <div class="flex">
+                            <div class="flex flex-col">
                                 <!-- Imagen -->
-                                <div class="w-1/2">
+                                <div class="h-[300px]">
                                     <img :src="formatImagePath(slotProps.data.imagen)"
                                         :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                        class="w-full rounded" />
+                                        class="w-full h-full rounded object-cover  " />
                                 </div>
                                 <!-- Datos del artículo -->
-                                <div class="w-1/2 pl-4">
-                                    <p><strong>Material:</strong> {{ slotProps.data.material_repuesto }}</p>
-                                    <p><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
-                                    <p><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
-                                    <p><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
+                                <div class=" mt-4">
+                                    <div class="flex">
+                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto }}</p>
+                                        <p class="w-1/2"><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
+                                    </div>
+                                    <div class="flex">
+                                        
+                                        <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
+                                        <p class="w-1/2"><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
+                                    </div>
                                 </div>
                             </div>
                         </template>
@@ -48,8 +53,8 @@
         </div>
       </div> -->
 
-                <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="5" filterDisplay="row"
-                    tableStyle="" showGridlines class="max-w-1/2 mx-auto"
+                <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"     
+                    tableStyle=""  class="max-w-1/2 mx-auto"
                     >
                     <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
                         <!-- <template #filter="{ filterModel, filterCallback }"> -->
@@ -76,7 +81,6 @@
                     </Column> -->
                     <Column field="cantidad" header="CANTIDAD"></Column>
                 </DataTable>
-
 
             </div>
         </div>
