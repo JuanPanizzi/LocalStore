@@ -44,6 +44,10 @@ export default {
         label: 'Artículos',
         command: () => loadComponent('Articulos'),
       },
+      {
+        label: 'Artículos Image',
+        command: () => loadComponent('ArticulosImage'),
+      },
      
     ]);
 
