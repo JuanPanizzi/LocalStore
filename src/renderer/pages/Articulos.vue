@@ -32,7 +32,11 @@
             placeholder="Buscar por modelo" />
         </template>
       </Column>
-      <Column field="imagen" header="IMAGEN"></Column>
+      <Column field="imagen" header="IMAGEN">
+      <template #body="slotProps">
+        <img :src="formatImagePath(slotProps.data.imagen)"  alt="imagen" />
+        </template>
+    </Column>
       <Column field="cantidad" header="CANTIDAD"></Column>
       <Column header="INGRESO / SALIDA">
         <template #body="slotProps">
@@ -153,6 +157,17 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
+
+    function formatImagePath(path) {
+  if (!path) return '';
+  let fixedPath = path.replace(/\\/g, '/');
+  if (/^[A-Za-z]:/.test(fixedPath)) {
+    fixedPath = '/' + fixedPath;
+  }
+  return `local://${fixedPath}`;
+}
+
+
 
     const nuevoPdf = async (datosFormulario) => {
 
@@ -407,7 +422,7 @@ export default defineComponent({
 
 
     return {
-
+      formatImagePath,
       dataArticulos,
       crearArticulo,
       eliminarArticulo,

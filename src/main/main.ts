@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, session, Menu, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, session, Menu, shell, protocol } from 'electron';
 import { join } from 'path';
 import { ipcMainProcess } from "./ipcMain";  
 // Ruta correcta dentro del directorio de la app en Electron
@@ -172,7 +172,12 @@ function createAboutWindow() {
 
 app.whenReady().then(() => {
 
-
+// Registra el protocolo personalizado "local" para servir archivos locales.
+protocol.registerFileProtocol('local', (request, callback) => {
+  const url = request.url.replace('local:///', '');
+  // En este ejemplo se asume que la ruta ya es absoluta.
+  callback({ path: url });
+});
   createWindow();
 
 
