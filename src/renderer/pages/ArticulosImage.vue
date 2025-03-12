@@ -4,16 +4,16 @@
         <div>
             <!-- Filtros -->
             <div class="mb-4 grid grid-cols-3 gap-4 max-w-1/2">
-                <InputText v-model="filters.material" placeholder="Buscar por material" />
+                <InputText v-model="filters.material_repuesto" placeholder="Buscar por material" />
                 <InputText v-model="filters.marca" placeholder="Buscar por marca" />
-                <InputText v-model="filters.modelo" placeholder="Buscar por modelo" />
+                <InputText v-model="filters.modelo_serie" placeholder="Buscar por modelo" />
             </div>
 
             <!-- Contenedor que muestra Carousel e información al lado -->
             <div class="flex flex-col md:flex-row gap-4">
                 <!-- Carousel: muestra la imagen y detalles dentro de cada item -->
                 <div class="md:w-1/2">
-                    <Carousel :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
+                    <Carousel :value="carouselItems" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions">
                         <template #item="slotProps">
                             <div class="flex flex-col">
@@ -26,11 +26,12 @@
                                 <!-- Datos del artículo -->
                                 <div class=" mt-4">
                                     <div class="flex">
-                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto }}</p>
+                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
+                                            }}</p>
                                         <p class="w-1/2"><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
                                     </div>
                                     <div class="flex">
-                                        
+
                                         <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
                                         <p class="w-1/2"><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
                                     </div>
@@ -53,26 +54,25 @@
         </div>
       </div> -->
 
-                <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"     
-                    tableStyle=""  class="max-w-1/2 mx-auto" selectionMode="single"  :selection="selectedArticulo"
-      @selection-change="onArticuloSelect"
-                    >
+                <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="4" tableStyle=""
+                    class="max-w-1/2 mx-auto" selectionMode="single" :selection="selectedArticulo"
+                    @row-select="onArticuloSelect" dataKey="id">
                     <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
                         <!-- <template #filter="{ filterModel, filterCallback }"> -->
-                            <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                                placeholder="Buscar por material" />
+                        <!-- <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+                            placeholder="Buscar por material" /> -->
                         <!-- </template> -->
                     </Column>
                     <Column field="marca" header="MARCA" :showFilterMenu="false">
                         <!-- <template #filter="{ filterModel, filterCallback }"> -->
-                            <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                                placeholder="Buscar por marca" />
+                        <!-- <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+                            placeholder="Buscar por marca" /> -->
                         <!-- </template> -->
                     </Column>
                     <Column field="modelo_serie" header="MODELO" :showFilterMenu="false">
                         <!-- <template #filter="{ filterModel, filterCallback }"> -->
-                            <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                                placeholder="Buscar por modelo" />
+                        <!-- <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
+                            placeholder="Buscar por modelo" /> -->
                         <!-- </template> -->
                     </Column>
                     <!-- <Column field="imagen" header="IMAGEN">
@@ -161,7 +161,7 @@
 
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { computed, defineComponent, onMounted, reactive, ref } from 'vue';
+import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
 import { useMovimientos } from '../composables/useMovimientos.js'
 import Toast from 'primevue/toast';
@@ -252,6 +252,32 @@ export default defineComponent({
             showForm.value = show;
         }
 
+        // Artículo seleccionado en el DataTable
+        const selectedArticulo = ref(null)
+
+        // Computed para el Carousel: si hay un artículo seleccionado, rota la lista para que ese aparezca primero; de lo contrario, muestra la lista filtrada original
+        const carouselItems = computed(() => {
+            if (selectedArticulo.value) {
+                const index = filteredArticulos.value.findIndex(
+                    item => item.id === selectedArticulo.value.id
+                );
+                if (index !== -1) {
+                    return [
+                        ...filteredArticulos.value.slice(index),
+                        ...filteredArticulos.value.slice(0, index)
+                    ];
+                }
+            }
+            return filteredArticulos.value;
+        })
+
+        // Función para actualizar el artículo seleccionado al marcar una fila en el DataTable
+        function onArticuloSelect(event) {
+            console.log("Fila seleccionada:", event.data);
+            selectedArticulo.value = event.data;
+        }
+
+
         const filters = ref({
             material_repuesto: '',
             marca: '',
@@ -260,9 +286,9 @@ export default defineComponent({
 
         const filteredArticulos = computed(() => {
             return (dataArticulos.value || []).filter(item => {
-                const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material || '').toLowerCase());
+                const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material_repuesto || '').toLowerCase());
                 const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
-                const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo || '').toLowerCase());
+                const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo_serie || '').toLowerCase());
                 return materialMatch && marcaMatch && modeloMatch;
             });
         });
@@ -277,7 +303,7 @@ export default defineComponent({
             activeArticulo.value = filteredArticulos.value[index]
         }
 
-        
+
         //     function formatImagePath(path) {
         //   if (!path) return '';
         //   let fixedPath = path.replace(/\\/g, '/');
@@ -533,6 +559,13 @@ export default defineComponent({
             }
         }
 
+        // Si los filtros cambian y el artículo seleccionado ya no está presente, se resetea la selección
+        watch(filteredArticulos, (newVal) => {
+            if (selectedArticulo.value && !newVal.find(item => item.id === selectedArticulo.value.id)) {
+                selectedArticulo.value = null;
+            }
+        });
+
         onMounted(async () => {
 
             const response = await obtenerArticulos();
@@ -581,7 +614,11 @@ export default defineComponent({
             actualizarArticulo,
             editarArticulo,
             formatImagePath,
-            responsiveOptions
+            responsiveOptions,
+            onArticuloSelect,
+            selectedArticulo,
+            carouselItems,
+            filteredArticulos
 
         }
     }
