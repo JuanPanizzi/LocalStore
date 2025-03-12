@@ -3,7 +3,7 @@
     <div class="max-w-[97%] mx-auto space-y-8">
       <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
       <div class="bg-slate-800 p-4 rounded-lg shadow-md">
-        <h2 class="text-xl font-bold  mb-4">Filtrar Artículos</h2>
+        <h2 class="text-xl font-bold text-white mb-4">Filtrar Artículos</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <InputText v-model="filters.material_repuesto" placeholder="Buscar por material" class="p-2 border rounded" />
           <InputText v-model="filters.marca" placeholder="Buscar por marca" class="p-2 border rounded" />
@@ -15,7 +15,7 @@
       <div class="flex flex-col md:flex-row gap-8">
         <!-- Carousel dentro de un contenedor estilizado -->
         <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
-          <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Vista Previa del Artículo</h3>
+          <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
           <Carousel 
             :value="carouselItems" 
             :numVisible="1" 
@@ -27,7 +27,7 @@
             <template #item="slotProps">
               <div class="flex flex-col">
                 <!-- Imagen -->
-                <div class="h-[300px] overflow-hidden">
+                <div class="h-[200px] overflow-hidden">
                   <img 
                     :src="formatImagePath(slotProps.data.imagen)"
                     :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
@@ -43,6 +43,31 @@
                     <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
                     <p class="w-1/2 text-right"><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
                   </div>
+                  <!-- Botones de acciones (Editar, Eliminar, Ingreso, Salida, Historial) -->
+                <div class="flex  gap-2 mt-4">
+                  <Button 
+                    icon="pi pi-pencil" 
+                    class="p-button-outlined" 
+                    @click="abrirDialogEditar(slotProps.data)" 
+                  />
+                  <Button 
+                    icon="pi pi-trash" 
+                    severity="danger"
+                    class="p-button-outlined" 
+                    @click="confirmarEliminacion(slotProps.data)" 
+                  />
+                  <Button 
+                    icon="pi pi-sign-in" 
+                    severity="success"
+                    @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" 
+                  />
+                  <Button 
+                    icon="pi pi-sign-out" 
+                    severity="danger"
+                    @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" 
+                  />
+                  <Button icon="pi pi-calendar-clock" />
+                </div>
                 </div>
               </div>
             </template>
@@ -51,7 +76,7 @@
 
         <!-- DataTable en contenedor con fondo claro y sombra -->
         <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
-          <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Listado de Artículos</h3>
+          <h3 class="text-lg font-bold text-gray-800 mb-2 text-center text-white">Listado de Artículos</h3>
           <DataTable 
             v-model:filters="filters" 
             :value="filteredArticulos" 
