@@ -158,12 +158,19 @@ export default defineComponent({
       showForm.value = show;
     }
 
-    function formatImagePath(path) {
+//     function formatImagePath(path) {
+//   if (!path) return '';
+//   let fixedPath = path.replace(/\\/g, '/');
+//   if (/^[A-Za-z]:/.test(fixedPath)) {
+//     fixedPath = '/' + fixedPath;
+//   }
+//   return `local://${fixedPath}`;
+// }
+function formatImagePath(path) {
   if (!path) return '';
-  let fixedPath = path.replace(/\\/g, '/');
-  if (/^[A-Za-z]:/.test(fixedPath)) {
-    fixedPath = '/' + fixedPath;
-  }
+  // Reemplaza las barras invertidas por barras normales.
+  const fixedPath = path.replace(/\\/g, '/');
+  // Retorna la URL con el esquema "local"
   return `local://${fixedPath}`;
 }
 
