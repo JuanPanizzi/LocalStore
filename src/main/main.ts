@@ -1,8 +1,14 @@
-import { app, BrowserWindow, ipcMain, session, Menu, shell } from 'electron';
+import { app, BrowserWindow, ipcMain, session, Menu, shell, protocol, net } from 'electron';
 import { join } from 'path';
 import { ipcMainProcess } from "./ipcMain";  
 // Ruta correcta dentro del directorio de la app en Electron
+import path from 'node:path';
+import url from 'node:url';
 
+// Esto se coloca al inicio de tu main.ts, antes de app.whenReady()
+protocol.registerSchemesAsPrivileged([
+  { scheme: 'local', privileges: { standard: true, secure: true, supportFetchAPI: true } }
+]);
 
 function createWindow() {
 
@@ -172,8 +178,47 @@ function createAboutWindow() {
 
 app.whenReady().then(() => {
 
+// Registra el protocolo personalizado "local" para servir archivos locales.
+// protocol.registerFileProtocol('local', (request, callback) => {
+//   const url = request.url.replace('local:///', '');
+//   // En este ejemplo se asume que la ruta ya es absoluta.
+//   callback({ path: url });
+// });
 
-  createWindow();
+
+protocol.handle('local', async (request) => {
+  // Parsear la URL completa
+  const parsedUrl = new URL(request.url);
+  let filePath = '';
+
+  // Si hay host, en Windows el host contendrá la letra de la unidad (ej. "C")
+  if (parsedUrl.host) {
+    // Reconstruir la ruta absoluta: concatenar host + ':' + pathname
+    filePath = `${parsedUrl.host}:${parsedUrl.pathname}`;
+  } else {
+    filePath = parsedUrl.pathname;
+  }
+
+  // Si la ruta no es absoluta (por ejemplo, si se esperaba una ruta relativa), opcionalmente se puede combinar con __dirname
+  if (!path.isAbsolute(filePath)) {
+    filePath = path.join(__dirname, filePath);
+  }
+
+  const fileUrl = url.pathToFileURL(filePath).toString();
+  console.log('filePath', filePath);
+  console.log('fileUrl', fileUrl);
+
+  try {
+    // net.fetch devuelve una promesa con la respuesta
+    return await net.fetch(fileUrl);
+  } catch (error) {
+    console.error('Error fetching file:', error);
+    // Opcional: devolver una respuesta de error
+    throw error;
+  }
+});
+
+createWindow();
 
 
 
