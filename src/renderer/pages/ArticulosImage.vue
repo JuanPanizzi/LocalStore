@@ -1,155 +1,98 @@
 <template>
-    <section class="p-5 bg-[#0F172A]">
+    <section class="min-h-screen p-8 bg-[#0F172A]">
+    <div class="max-w-[97%] mx-auto space-y-8">
+      <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
+      <div class="bg-slate-800 p-4 rounded-lg shadow-md">
+        <h2 class="text-xl font-bold  mb-4">Filtrar Artículos</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <InputText v-model="filters.material_repuesto" placeholder="Buscar por material" class="p-2 border rounded" />
+          <InputText v-model="filters.marca" placeholder="Buscar por marca" class="p-2 border rounded" />
+          <InputText v-model="filters.modelo_serie" placeholder="Buscar por modelo" class="p-2 border rounded" />
+        </div>
+      </div>
 
-        <div>
-            <!-- Filtros -->
-            <div class="mb-4 grid grid-cols-3 gap-4 max-w-1/2">
-                <InputText v-model="filters.material_repuesto" placeholder="Buscar por material" />
-                <InputText v-model="filters.marca" placeholder="Buscar por marca" />
-                <InputText v-model="filters.modelo_serie" placeholder="Buscar por modelo" />
-            </div>
-
-            <!-- Contenedor que muestra Carousel e información al lado -->
-            <div class="flex flex-col md:flex-row gap-4">
-                <!-- Carousel: muestra la imagen y detalles dentro de cada item -->
-                <div class="md:w-1/2">
-                    <Carousel :value="carouselItems" :numVisible="1" :numScroll="1" :showIndicators="false"
-                        :responsiveOptions="responsiveOptions">
-                        <template #item="slotProps">
-                            <div class="flex flex-col">
-                                <!-- Imagen -->
-                                <div class="h-[300px]">
-                                    <img :src="formatImagePath(slotProps.data.imagen)"
-                                        :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                        class="w-full h-full rounded object-cover  " />
-                                </div>
-                                <!-- Datos del artículo -->
-                                <div class=" mt-4">
-                                    <div class="flex">
-                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                            }}</p>
-                                        <p class="w-1/2"><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
-                                    </div>
-                                    <div class="flex">
-
-                                        <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
-                                        <p class="w-1/2"><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </template>
-                    </Carousel>
+      <!-- Contenedor de Carousel y DataTable -->
+      <div class="flex flex-col md:flex-row gap-8">
+        <!-- Carousel dentro de un contenedor estilizado -->
+        <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Vista Previa del Artículo</h3>
+          <Carousel 
+            :value="carouselItems" 
+            :numVisible="1" 
+            :numScroll="1" 
+            :showIndicators="false"
+            :responsiveOptions="responsiveOptions"
+            class="rounded-lg overflow-hidden"
+          >
+            <template #item="slotProps">
+              <div class="flex flex-col">
+                <!-- Imagen -->
+                <div class="h-[300px] overflow-hidden">
+                  <img 
+                    :src="formatImagePath(slotProps.data.imagen)"
+                    :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
+                    class="w-full h-full rounded object-cover" />
                 </div>
-
-                <!-- Sección de listado adicional (opcional) -->
-                <!-- <div class="md:w-1/3">
-        <div 
-          v-for="articulo in filteredArticulos" 
-          :key="articulo.id" 
-          class="mb-4 p-4 border rounded">
-          <h3 class="text-xl font-bold">{{ articulo.material_repuesto }}</h3>
-          <p><strong>Marca:</strong> {{ articulo.marca }}</p>
-          <p><strong>Modelo:</strong> {{ articulo.modelo_serie }}</p>
-          <p><strong>Cantidad:</strong> {{ articulo.cantidad }}</p>
-        </div>
-      </div> -->
-
-                <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="4" tableStyle=""
-                    class="max-w-1/2 mx-auto" selectionMode="single" :selection="selectedArticulo"
-                    @row-select="onArticuloSelect" dataKey="id">
-                    <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
-                        <!-- <template #filter="{ filterModel, filterCallback }"> -->
-                        <!-- <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                            placeholder="Buscar por material" /> -->
-                        <!-- </template> -->
-                    </Column>
-                    <Column field="marca" header="MARCA" :showFilterMenu="false">
-                        <!-- <template #filter="{ filterModel, filterCallback }"> -->
-                        <!-- <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                            placeholder="Buscar por marca" /> -->
-                        <!-- </template> -->
-                    </Column>
-                    <Column field="modelo_serie" header="MODELO" :showFilterMenu="false">
-                        <!-- <template #filter="{ filterModel, filterCallback }"> -->
-                        <!-- <InputText v-model="filterModel.value" type="text" @input="filterCallback()"
-                            placeholder="Buscar por modelo" /> -->
-                        <!-- </template> -->
-                    </Column>
-                    <!-- <Column field="imagen" header="IMAGEN">
-                        <template #body="slotProps">
-                            <img :src="formatImagePath(slotProps.data.imagen)" alt="imagen" class="w-20 rounded" />
-                        </template>
-                    </Column> -->
-                    <Column field="cantidad" header="CANTIDAD"></Column>
-                </DataTable>
-
-            </div>
+                <!-- Datos del artículo -->
+                <div class="mt-4">
+                  <div class="flex justify-between text-white">
+                    <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto }}</p>
+                    <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
+                  </div>
+                  <div class="flex justify-between text-white">
+                    <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
+                    <p class="w-1/2 text-right"><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </Carousel>
         </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        <!-- Dialog crear articulo -->
-        <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
-            <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
-        </Dialog>
-
-        <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" @actualizarArticulo="editarArticulo" />
-
-        <!-- Dialog para ingresar o dar salida a un artículo -->
-        <Dialog v-model:visible="showIngresoSalida.show" modal
-            :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-            <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-                :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
-                @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
-                @nuevoPdf="nuevoPdf" />
-        </Dialog>
-    </section>
+        <!-- DataTable en contenedor con fondo claro y sombra -->
+        <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
+          <h3 class="text-lg font-bold text-gray-800 mb-2 text-center">Listado de Artículos</h3>
+          <DataTable 
+            v-model:filters="filters" 
+            :value="filteredArticulos" 
+            paginator 
+            :rows="4" 
+            class="mx-auto"
+            selectionMode="single" 
+            :selection="selectedArticulo"
+            @row-select="onArticuloSelect"
+            dataKey="id"
+          >
+            <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
+            <Column field="marca" header="MARCA" :showFilterMenu="false" />
+            <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
+            <Column field="cantidad" header="CANTIDAD" />
+          </DataTable>
+        </div>
+      </div>
+      
+      <!-- Aquí se ubican los Dialogs si los necesitas -->
+      <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
+        <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
+      </Dialog>
+      
+      <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" @actualizarArticulo="editarArticulo" />
+      
+      <Dialog v-model:visible="showIngresoSalida.show" modal
+        :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTÍCULO' : 'SALIDA ARTÍCULO'">
+        <IngresoSalida 
+          :ingresoSalida="showIngresoSalida.accion" 
+          :articuloSeleccionado="articuloSeleccionado"
+          :numeroInformeMovimiento="numeroInformeMovimiento" 
+          @guardarMovimiento="crearMovimiento"
+          @cancelarIngresoSalida="handleIngresoSalida(false)" 
+          @reiniciarFormulario="reiniciarIngresoSalida"
+          @nuevoPdf="nuevoPdf" />
+      </Dialog>
+    </div>
+    <Toast />
+    <ConfirmDialog />
+  </section>
 
 
     <Toast />
@@ -271,7 +214,7 @@ export default defineComponent({
             return filteredArticulos.value;
         })
 
-        
+
         // Función para actualizar el artículo seleccionado al marcar una fila en el DataTable
         function onArticuloSelect(event) {
             console.log("Fila seleccionada:", event.data);
