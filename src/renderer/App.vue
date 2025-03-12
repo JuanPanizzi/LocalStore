@@ -3,7 +3,7 @@
     <div class="card bg-success mx-2">
       <Menubar :model="items" :end="configItem" />
       
-      <!-- <Button label="Dark Mode" icon="pi pi-moon" @click="toggleDarkMode()" /> -->
+      <Button label="Dark Mode" icon="pi pi-moon" @click="toggleDarkMode()" />
 
     </div>
     <div class="flex">
