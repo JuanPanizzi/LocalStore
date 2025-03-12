@@ -1,29 +1,64 @@
 <template>
     <section class="p-5 bg-[#0F172A]">
   
-        <div class="card min-w-[400px] max-w-[45%]" >
-        <Carousel :value="dataArticulos" :numVisible="1" :numScroll="1" :responsiveOptions="responsiveOptions">
-            <template #item="slotProps">
-                <div class="border border-surface-200 dark:border-surface-700 rounded m-2  p-4">
-                    <div class="mb-4">
-                        <div class="relative mx-auto">
-                            <img :src="formatImagePath(slotProps.data.imagen)"   :alt="`${slotProps.data.marca} + ${slotProps.data.modelo_serie}`" class="w-full rounded" />
-                            <!-- <Tag :value="slotProps.data.inventoryStatus" :severity="getSeverity(slotProps.data.inventoryStatus)" class="absolute" style="left:5px; top: 5px"/> -->
-                        </div>
-                    </div>
-                    <div class="mb-4 font-medium">Cantidad: {{ slotProps.data.cantidad }}</div>
-                    <div class="flex justify-between items-center">
-                        <div class="mt-0 font-semibold text-xl">{{`${slotProps.data.marca} + ${slotProps.data.modelo_serie}`}}</div>
-                        <span>
-                            <Button icon="pi pi-heart" severity="secondary" outlined />
-                            <Button icon="pi pi-shopping-cart" class="ml-2"/>
-                        </span>
-                    </div>
-                </div>
-            </template>
-        </Carousel>
+  <div>
+    <!-- Filtros -->
+    <div class="mb-4 grid grid-cols-3 gap-4">
+      <InputText 
+        v-model="filters.material" 
+        placeholder="Buscar por material" />
+      <InputText 
+        v-model="filters.marca" 
+        placeholder="Buscar por marca" />
+      <InputText 
+        v-model="filters.modelo" 
+        placeholder="Buscar por modelo" />
     </div>
 
+    <!-- Contenedor que muestra Carousel e información al lado -->
+    <div class="flex flex-col md:flex-row gap-4">
+      <!-- Carousel: muestra la imagen y detalles dentro de cada item -->
+      <div class="md:w-1/2">
+        <Carousel 
+          :value="filteredArticulos" 
+          :numVisible="1" 
+          :numScroll="1" 
+          :responsiveOptions="responsiveOptions">
+          <template #item="slotProps">
+            <div class="flex">
+              <!-- Imagen -->
+              <div class="w-1/2">
+                <img 
+                  :src="formatImagePath(slotProps.data.imagen)" 
+                  :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`" 
+                  class="w-full rounded" />
+              </div>
+              <!-- Datos del artículo -->
+              <div class="w-1/2 pl-4">
+                <p><strong>Material:</strong> {{ slotProps.data.material_repuesto }}</p>
+                <p><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
+                <p><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
+                <p><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
+              </div>
+            </div>
+          </template>
+        </Carousel>
+      </div>
+
+      <!-- Sección de listado adicional (opcional) -->
+      <div class="md:w-1/2">
+        <div 
+          v-for="articulo in filteredArticulos" 
+          :key="articulo.id" 
+          class="mb-4 p-4 border rounded">
+          <h3 class="text-xl font-bold">{{ articulo.material_repuesto }}</h3>
+          <p><strong>Marca:</strong> {{ articulo.marca }}</p>
+          <p><strong>Modelo:</strong> {{ articulo.modelo_serie }}</p>
+          <p><strong>Cantidad:</strong> {{ articulo.cantidad }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
 
 
@@ -100,7 +135,7 @@
 
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
-import { defineComponent, onMounted, reactive, ref } from 'vue';
+import { computed, defineComponent, onMounted, reactive, ref } from 'vue';
 import { useArticulos } from '../composables/useArticulos.js'
 import { useMovimientos } from '../composables/useMovimientos.js'
 import Toast from 'primevue/toast';
@@ -137,7 +172,7 @@ export default defineComponent({
   setup() {
     const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo } = useArticulos();
     const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
-    const dataArticulos = ref(null);
+    const dataArticulos = ref([]);
     const toast = useToast();
     const confirm = useConfirm();
     const numeroInformeMovimiento = ref(null);
@@ -155,13 +190,13 @@ export default defineComponent({
     const articuloSeleccionado = ref(null);
     const registroGuardado = ref(false);
 
-    const filters = ref({
-      global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-      material_repuesto: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-      marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-      modelo_serie: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    // const filters = ref({
+    //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    //   material_repuesto: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    //   marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    //   modelo_serie: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
 
-    })
+    // })
 
     const responsiveOptions = ref([
     {
@@ -190,6 +225,31 @@ export default defineComponent({
     const handleForm = (show) => {
       showForm.value = show;
     }
+
+    const filters = ref({
+  material_repuesto: '',
+  marca: '',
+  modelo_serie: ''
+})
+
+const filteredArticulos = computed(() => {
+  return (dataArticulos.value || []).filter(item => {
+    const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material || '').toLowerCase());
+    const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
+    const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo || '').toLowerCase());
+    return materialMatch && marcaMatch && modeloMatch;
+  });
+});
+
+// Variable para almacenar el artículo activo (por defecto, el primero)
+const activeArticulo = ref(filteredArticulos.value[0] || null)
+
+// Función para actualizar el artículo activo al cambiar el carousel
+function onPageChange(event) {
+  // El objeto event debe incluir el índice actual (ajusta según la documentación de tu Carousel)
+  const index = event.page
+  activeArticulo.value = filteredArticulos.value[index]
+}
 
 //     function formatImagePath(path) {
 //   if (!path) return '';
@@ -451,7 +511,8 @@ function formatImagePath(path) {
       const response = await obtenerArticulos();
       if (response.success) {
         dataArticulos.value = response.data;
-      } else {
+        console.log('', )
+    } else {
         console.log('no se pudieron obtener los articulos')
         console.log(response.error)
         toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los datos, intente nuevamente', life: 3000 });
@@ -462,6 +523,9 @@ function formatImagePath(path) {
 
 
     return {
+        activeArticulo,
+        filteredArticulos,
+        onPageChange,
       dataArticulos,
       crearArticulo,
       eliminarArticulo,
