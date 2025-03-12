@@ -54,7 +54,8 @@
       </div> -->
 
                 <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"     
-                    tableStyle=""  class="max-w-1/2 mx-auto"
+                    tableStyle=""  class="max-w-1/2 mx-auto" selectionMode="single"  :selection="selectedArticulo"
+      @selection-change="onArticuloSelect"
                     >
                     <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false">
                         <!-- <template #filter="{ filterModel, filterCallback }"> -->
@@ -276,6 +277,7 @@ export default defineComponent({
             activeArticulo.value = filteredArticulos.value[index]
         }
 
+        
         //     function formatImagePath(path) {
         //   if (!path) return '';
         //   let fixedPath = path.replace(/\\/g, '/');
