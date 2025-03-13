@@ -1,132 +1,132 @@
 <template>
-    <section class="min-h-screen p-8 bg-[#0F172A]">
-    <div class="max-w-[97%] mx-auto space-y-8">
-      <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
-      <div class="bg-slate-800 p-4 rounded-lg shadow-md">
-        <h2 class="text-xl font-bold text-white mb-4">Filtrar Artículos</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <InputText v-model="filters.material_repuesto" placeholder="Buscar por material" class="p-2 border rounded" />
-          <InputText v-model="filters.marca" placeholder="Buscar por marca" class="p-2 border rounded" />
-          <InputText v-model="filters.modelo_serie" placeholder="Buscar por modelo" class="p-2 border rounded" />
-        </div>
-      </div>
+    <section class="min-h-screen card mx-2 p-8 bg-[#0F172A]">
+        <div class="max-w-[97%] mx-auto space-y-8">
+            <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
+            <div class="bg-slate-800 p-4 rounded-lg shadow-md">
+                <h2 class="text-xl font-bold text-white mb-4">Filtrar Artículos</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <InputText v-model="filters.material_repuesto" placeholder="Buscar por material"
+                        class="p-2 border rounded" />
+                    <InputText v-model="filters.marca" placeholder="Buscar por marca" class="p-2 border rounded" />
+                    <InputText v-model="filters.modelo_serie" placeholder="Buscar por modelo"
+                        class="p-2 border rounded" />
+                </div>
+            </div>
 
-      <!-- Contenedor de Carousel y DataTable -->
-      <div class="flex flex-col md:flex-row gap-8">
-        <!-- Carousel dentro de un contenedor estilizado -->
-        <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
-          <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
-          <Carousel 
-            :value="carouselItems" 
-            :numVisible="1" 
-            :numScroll="1" 
-            :showIndicators="false"
-            :responsiveOptions="responsiveOptions"
-            class="rounded-lg overflow-hidden"
-          >
-            <template #item="slotProps">
-              <div class="flex flex-col">
-                <!-- Imagen -->
-                <div class="h-[200px] overflow-hidden">
-                  <img 
-                    :src="formatImagePath(slotProps.data.imagen)"
-                    :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                    class="w-full h-full rounded object-cover" />
-                </div>
-                <!-- Datos del artículo -->
-                <div class="mt-4">
-                  <div class="flex justify-between text-white">
-                    <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto }}</p>
-                    <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{ slotProps.data.cantidad }}</p>
-                  </div>
-                  <div class="flex justify-between text-white">
-                    <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
-                    <p class="w-1/2 text-right"><strong>Marca:</strong> {{ slotProps.data.marca }}</p>
-                  </div>
-                  <!-- Botones de acciones (Editar, Eliminar, Ingreso, Salida, Historial) -->
-                <div class="flex  gap-2 mt-4">
-                  <Button 
-                    icon="pi pi-pencil" 
-                    class="p-button-outlined" 
-                    @click="abrirDialogEditar(slotProps.data)" 
-                  />
-                  <Button 
-                    icon="pi pi-trash" 
-                    severity="danger"
-                    class="p-button-outlined" 
-                    @click="confirmarEliminacion(slotProps.data)" 
-                  />
-                  <Button 
-                    icon="pi pi-sign-in" 
-                    severity="success"
-                    @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" 
-                  />
-                  <Button 
-                    icon="pi pi-sign-out" 
-                    severity="danger"
-                    @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" 
-                  />
-                  <Button icon="pi pi-calendar-clock" />
-                </div>
-                </div>
-              </div>
-            </template>
-          </Carousel>
-        </div>
+            <!-- Contenedor de Carousel y DataTable -->
+            <div class="flex flex-col md:flex-row gap-8">
+                <!-- Carousel dentro de un contenedor estilizado -->
+                <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
+                    <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
+                    <!-- Condicional para mostrar mensaje de carga -->
+                    <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
+                        <p class="text-white">Cargando...</p>
+                    </div>
+                    <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
+                        :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
+                        <template #item="slotProps">
+                            <div :key="slotProps.data.id"  class="flex flex-col">
+                                <!-- Imagen -->
+                                <div class="h-[300px] overflow-hidden">
+                                    <template v-if="slotProps.data.imagen">
+                                        <img :src="formatImagePath(slotProps.data.imagen)"
+                                            :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
+                                            class="w-full h-full rounded object-cover"
+                                            loading="lazy"  />
+                                    </template>
+                                    <template v-else>
+                                        <!-- Cuadro estilo 'input' cuando no hay imagen -->
+                                        <div class="w-full h-full p-2 border border-slate-600 rounded bg-[#020617] 
+                                                    text-slate-300 hover:text-[#38BDF8] flex items-center justify-center 
+                                                    cursor-pointer hover:border-[#38BDF8] transition-colors"
+                                            @click="actualizarImagenDirecta(slotProps.data)">
+                                            <!-- Simula un placeholder con opacidad -->
+                                            <p class="opacity-70" icon="pi pi-plus"> Adjuntar imagen</p>
+                                        </div>
+                                    </template>
+                                </div>
 
-        <!-- DataTable en contenedor con fondo claro y sombra -->
-        <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
-          <h3 class="text-lg font-bold text-gray-800 mb-2 text-center text-white">Listado de Artículos</h3>
-          <DataTable 
-            v-model:filters="filters" 
-            :value="filteredArticulos" 
-            paginator 
-            :rows="4" 
-            class="mx-auto"
-            selectionMode="single" 
-            :selection="selectedArticulo"
-            @row-select="onArticuloSelect"
-            dataKey="id"
-          >
-            <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
-            <Column field="marca" header="MARCA" :showFilterMenu="false" />
-            <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
-            <Column field="cantidad" header="CANTIDAD" />
-          </DataTable>
+                                <!-- Datos del artículo -->
+                                <div class="mt-4">
+                                    <div class="flex justify-between text-white">
+                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
+                                        }}</p>
+                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
+                                            slotProps.data.cantidad }}</p>
+                                    </div>
+                                    <div class="flex justify-between text-white">
+                                        <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
+                                        <p class="w-1/2 text-right"><strong>Marca:</strong> {{ slotProps.data.marca }}
+                                        </p>
+                                    </div>
+                                    <!-- Botones de acciones (Editar, Eliminar, Ingreso, Salida, Historial) -->
+                                    <div class="flex  gap-2 mt-4">
+                                        <Button icon="pi pi-pencil" class="p-button-outlined"
+                                            @click="abrirDialogEditar(slotProps.data)" />
+                                        <Button icon="pi pi-trash" severity="danger" class="p-button-outlined"
+                                            @click="confirmarEliminacion(slotProps.data)" />
+                                        <Button icon="pi pi-sign-in" severity="success"
+                                            @click="handleIngresoSalida(true, 'INGRESO', slotProps.data)" />
+                                        <Button icon="pi pi-sign-out" severity="danger"
+                                            @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" />
+                                        <Button icon="pi pi-calendar-clock" @click="abrirHistorial(slotProps.data)" />
+                                        <Button icon="pi pi-plus" class="ml-auto" @click="handleForm(true)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </Carousel>
+                </div>
+
+                <!-- DataTable en contenedor con fondo claro y sombra -->
+                <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 text-center text-white">Listado de Artículos</h3>
+                    <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
+                        <p class="text-white">Cargando...</p>
+                    </div>
+                    <DataTable v-else v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"
+                        class="mx-auto" selectionMode="single" :selection="selectedArticulo"
+                        @row-select="onArticuloSelect" dataKey="id">
+                        <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
+                        <Column field="marca" header="MARCA" :showFilterMenu="false" />
+                        <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
+                        <Column field="cantidad" header="CANTIDAD" />
+                    </DataTable>
+                </div>
+            </div>
+
+            <!-- Aquí se ubican los Dialogs si los necesitas -->
+            <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
+                <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
+            </Dialog>
+
+            <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion"
+                @actualizarArticulo="editarArticulo" />
+
+            <!-- Dialog para ingresar o dar salida a un artículo -->
+            <Dialog v-model:visible="showIngresoSalida.show" modal
+                :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+                <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+                    :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
+                    @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
+                    @nuevoPdf="nuevoPdf" />
+            </Dialog>
         </div>
-      </div>
-      
-      <!-- Aquí se ubican los Dialogs si los necesitas -->
-      <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
-        <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
-      </Dialog>
-      
-      <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" @actualizarArticulo="editarArticulo" />
-      
-      <Dialog v-model:visible="showIngresoSalida.show" modal
-        :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTÍCULO' : 'SALIDA ARTÍCULO'">
-        <IngresoSalida 
-          :ingresoSalida="showIngresoSalida.accion" 
-          :articuloSeleccionado="articuloSeleccionado"
-          :numeroInformeMovimiento="numeroInformeMovimiento" 
-          @guardarMovimiento="crearMovimiento"
-          @cancelarIngresoSalida="handleIngresoSalida(false)" 
-          @reiniciarFormulario="reiniciarIngresoSalida"
-          @nuevoPdf="nuevoPdf" />
-      </Dialog>
-    </div>
-    <Toast />
-    <ConfirmDialog />
-  </section>
+        <Toast />
+        <!-- <ConfirmDialog /> -->
+    </section>
 
 
     <Toast />
     <ConfirmDialog></ConfirmDialog>
 
+    <DynamicDialog />
+
 </template>
 
 <script>
 
+import DynamicDialog from 'primevue/dynamicdialog';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue';
@@ -134,6 +134,7 @@ import { useArticulos } from '../composables/useArticulos.js'
 import { useMovimientos } from '../composables/useMovimientos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useDialog } from 'primevue/usedialog';
 import InputNumber from 'primevue/inputnumber';
 import FormularioArticulos from '../components/Articulos/FormularioArticulos.vue';
 import Button from 'primevue/button';
@@ -145,6 +146,7 @@ import DialogEditar from '../components/Articulos/DialogEditar.vue';
 import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
 import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
+import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
 
 export default defineComponent({
     name: 'ArticulosImage',
@@ -159,15 +161,18 @@ export default defineComponent({
         ConfirmDialog,
         DialogEditar,
         IngresoSalida,
-        Carousel
+        Carousel,
+        DynamicDialog
+
 
     },
 
     setup() {
-        const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo } = useArticulos();
+        const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo, seleccionarImagen } = useArticulos();
         const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
         const dataArticulos = ref([]);
         const toast = useToast();
+        const dialog = useDialog();
         const confirm = useConfirm();
         const numeroInformeMovimiento = ref(null);
         const articuloEdicion = ref({
@@ -183,6 +188,33 @@ export default defineComponent({
         const showIngresoSalida = ref({ show: false, accion: '' });
         const articuloSeleccionado = ref(null);
         const registroGuardado = ref(false);
+        const isLoading = ref(true);
+
+
+        const abrirHistorial = (articulo) => {
+            const { id, marca, modelo_serie } = articulo
+            dialog.open(HistorialArticulo, {
+                data: {
+                    articulo_id: id
+                },
+                props: {
+                    modal: true,
+                    header: `HISTORIAL ARTÍCULO: ${marca} - ${modelo_serie}`
+                }
+            })
+        }
+        const actualizarImagenDirecta = async (articulo) => {
+            const response = await seleccionarImagen();
+            if (response.success && !response.data.canceled) {
+                // Generamos una copia del artículo y actualizamos la imagen
+                const articuloActualizado = { ...articulo, imagen: response.data.filePaths[0] };
+                // Llamamos a la función de edición para actualizar en la base de datos
+                await editarArticulo(articuloActualizado);
+            } else if (!response.success) {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al seleccionar la imagen, intente nuevamente', life: 3000 });
+            }
+        };
+
 
         // const filters = ref({
         //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -224,20 +256,20 @@ export default defineComponent({
         const selectedArticulo = ref(null)
 
         // Computed para el Carousel: si hay un artículo seleccionado, rota la lista para que ese aparezca primero; de lo contrario, muestra la lista filtrada original
-        const carouselItems = computed(() => {
-            if (selectedArticulo.value) {
-                const index = filteredArticulos.value.findIndex(
-                    item => item.id === selectedArticulo.value.id
-                );
-                if (index !== -1) {
-                    return [
-                        ...filteredArticulos.value.slice(index),
-                        ...filteredArticulos.value.slice(0, index)
-                    ];
-                }
-            }
-            return filteredArticulos.value;
-        })
+        // const carouselItems = computed(() => {
+        //     if (selectedArticulo.value) {
+        //         const index = filteredArticulos.value.findIndex(
+        //             item => item.id === selectedArticulo.value.id
+        //         );
+        //         if (index !== -1) {
+        //             return [
+        //                 ...filteredArticulos.value.slice(index),
+        //                 ...filteredArticulos.value.slice(0, index)
+        //             ];
+        //         }
+        //     }
+        //     return filteredArticulos.value;
+        // })
 
 
         // Función para actualizar el artículo seleccionado al marcar una fila en el DataTable
@@ -404,8 +436,6 @@ export default defineComponent({
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo, intente nuevamente', life: 5000 });
             }
 
-
-
         }
         const abrirDialogEditar = (articulo) => {
 
@@ -547,6 +577,7 @@ export default defineComponent({
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los datos, intente nuevamente', life: 3000 });
 
             }
+            isLoading.value = false;
 
         })
 
@@ -586,8 +617,12 @@ export default defineComponent({
             responsiveOptions,
             onArticuloSelect,
             selectedArticulo,
-            carouselItems,
-            filteredArticulos
+            // carouselItems,
+            filteredArticulos,
+            dialog,
+            abrirHistorial,
+            isLoading,
+            actualizarImagenDirecta
 
         }
     }

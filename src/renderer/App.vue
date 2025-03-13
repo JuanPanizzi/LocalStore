@@ -1,13 +1,13 @@
 <template>
   <div class="min-h-screen ">
-    <div class="card bg-success mx-2">
+    <div class="card   mx-2">
       <Menubar :model="items" :end="configItem" />
       
-      <Button label="Dark Mode" icon="pi pi-moon" @click="toggleDarkMode()" />
+      <!-- <Button label="Dark Mode" icon="pi pi-moon" @click="toggleDarkMode()" /> -->
 
     </div>
-    <div class="flex">
-      <div class="m-2 p-1 bg-white shadow-md rounded-lg w-full">
+    <div class="flex ">
+      <div class="m-2 p-1 bg-[#0F172A] shadow-md rounded-lg w-full ">
         <div v-if="loading">
           <div class="flex items-center justify-center h-64">
             <i class="pi pi-spin pi-spinner text-4xl text-primary"></i>

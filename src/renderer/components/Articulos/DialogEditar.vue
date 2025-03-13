@@ -82,8 +82,6 @@ export default defineComponent({
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al seleccionar la imagen, intente nuevamente', life: 3000 });
 
             }
-
-
         }
 
    
