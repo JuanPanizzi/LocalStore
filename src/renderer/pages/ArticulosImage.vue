@@ -193,7 +193,14 @@ export default defineComponent({
 
         const abrirHistorial = (articulo) => {
             const {id} = articulo
-            dialog.open(HistorialArticulo, {})
+            dialog.open(HistorialArticulo, {
+                data: {
+                  articulo_id: id  
+                },
+                props: {
+                    modal: true
+                }
+            })
         }
 
         // const filters = ref({

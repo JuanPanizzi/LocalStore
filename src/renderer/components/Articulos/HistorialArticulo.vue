@@ -80,7 +80,7 @@
 <script>
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref , onMounted, inject} from 'vue';
 import { stringToDate, formatearFecha } from '../../utils/funcionesFecha.js'
 import { useMovimientos } from '../../composables/useMovimientos.js';
 
@@ -96,9 +96,12 @@ export default defineComponent({
 
         const { obtenerMovimientosArticulo} = useMovimientos();
         const dataMovimientosArticulo = ref(null);
-        onMounted(async () => {
+        const dialogRef = inject('dialogRef');
 
-            const response = await obtenerMovimientosArticulo();
+        onMounted(async () => {
+            console.log('dialogRef.value.data', dialogRef.value.data.articulo_id)
+            const response = await obtenerMovimientosArticulo(dialogRef.value.data.articulo_id);
+            console.log('repsonse.data en historial art', response.data)
             if (response.success) {
 
                 dataMovimientosArticulo.value = response.data.map(mov => ({
@@ -116,7 +119,8 @@ export default defineComponent({
         return {
             dataMovimientosArticulo,
             stringToDate,
-            formatearFecha
+            formatearFecha,
+            dialogRef
         }
 
     }
