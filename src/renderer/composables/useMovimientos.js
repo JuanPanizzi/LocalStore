@@ -33,6 +33,22 @@ export function useMovimientos() {
 
     }
 
+    const obtenerMovimientosArticulo = async (articulo_id) => { 
+        try {
+            const response = await window.electronAPI.obtenerMovimientosArticulo(articulo_id);
+            
+            if (response.success) {
+                console.log('datos obtenidos correctamente en obtener mov articulo', response.data);
+                return { success: true, data: response.data };
+            } else {
+                throw new Error();
+            }
+        } catch (error) {
+            console.log('error', error);
+            return { success: false };
+
+        }
+     }
     const guardarMovimiento = async (movimiento) => {
         try {
             const response = await window.electronAPI.guardarMovimiento(movimiento);
@@ -617,6 +633,7 @@ export function useMovimientos() {
         importarExcel,
         guardarExcelMovimientos,
         obtenerMovimientos,
+        obtenerMovimientosArticulo,
         guardarMovimiento,
         generarPdf,
         obtenerUltimoMovimiento,

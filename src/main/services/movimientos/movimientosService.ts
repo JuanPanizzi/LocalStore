@@ -20,6 +20,20 @@ export async function obtenerMovimientos() {
   }
 }
 
+export const obtenerMovimientosArticulo = (articulo_id) => {
+  try {
+
+    const stmt = db.prepare(`SELECT * FROM movimientos_materiales WHERE articulo_id = ?`);
+    const result = stmt.all(articulo_id);
+
+    return { success: true, data: result }
+
+  } catch (error) {
+    console.log('error al obtener los datos', error)
+    return { success: false, error }
+  }
+
+}
 
 // export async function guardarExcelMovimientos(data) {
 
@@ -315,7 +329,7 @@ export const guardarMovimiento = async (movimiento) => {
 
 
 
-    
+
     // Verificar si el artículo existe
     const articulo = db.prepare("SELECT cantidad FROM articulos WHERE id = ?").get(articulo_id);
     if (!articulo) {

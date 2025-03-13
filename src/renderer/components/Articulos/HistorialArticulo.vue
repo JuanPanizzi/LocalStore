@@ -1,5 +1,8 @@
 <template>
-    <DataTable :value="dataMovimientos">
+    
+    
+        <DataTable :value="dataMovimientosArticulo" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
+        style="max-width: 90vw">
         <Column field="numero_movimiento" header="ID"></Column>
 
         <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem" :showFilterOperator="false"
@@ -9,13 +12,13 @@
             ]">
             <template #body="{ data }">
                 <!-- {{ data.fecha }} -->
-                <!-- {{ formatearFecha(data.fecha) }} -->
+                {{ formatearFecha(data.fecha) }}
             </template>
             <template #filter="{ filterModel }">
                 <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />
             </template>
         </Column>
-
+        
         <Column class="min-w-[12rem]" field="material_repuesto" header="MATERIAL / REPUESTO" :showFilterOperator="false"
             :showFilterMatchModes="false" :showAddButton="false">
             <template #body="{ data }">
@@ -78,6 +81,8 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { defineComponent, ref } from 'vue';
+import { stringToDate, formatearFecha } from '../../utils/funcionesFecha.js'
+import { useMovimientos } from '../../composables/useMovimientos.js';
 
 export default defineComponent({
     name: 'HistorialArticulo',
@@ -87,51 +92,32 @@ export default defineComponent({
     },
 
 
-    setup(){
+    setup() {
 
+        const { obtenerMovimientosArticulo} = useMovimientos();
+        const dataMovimientosArticulo = ref(null);
+        onMounted(async () => {
 
-        const dataMovimientos = ref([{
-    "id": 16026,
-    "fecha": "2025-03-13",
-    "tipo_movimiento": "INGRESO",
-    "origen": "1",
-    "destino": "2212",
-    "articulo_id": 12197,
-    "cantidad": 2,
-    "permiso_trabajo_asociado": "12",
-    "informe_asociado": "21",
-    "orden_trabajo_asociada": "21",
-    "remito": "21",
-    "material_repuesto": "Manguera Tela",
-    "marca": "GPM",
-    "modelo_serie": "2,5\"",
-    "numero_movimiento": 1273,
-    "numero_almacenes": null,
-    "observaciones": null
-},
-{
-    "id": 16025,
-    "fecha": "2025-03-13",
-    "tipo_movimiento": "INGRESO",
-    "origen": "213",
-    "destino": "2121",
-    "articulo_id": 12197,
-    "cantidad": 1,
-    "permiso_trabajo_asociado": null,
-    "informe_asociado": null,
-    "orden_trabajo_asociada": null,
-    "remito": null,
-    "material_repuesto": "Manguera Tela",
-    "marca": "GPM",
-    "modelo_serie": "2,5\"",
-    "numero_movimiento": 1272,
-    "numero_almacenes": null,
-    "observaciones": null
-}])
+            const response = await obtenerMovimientosArticulo();
+            if (response.success) {
 
-    return {
-        dataMovimientos
-    }
+                dataMovimientosArticulo.value = response.data.map(mov => ({
+                    ...mov,
+                    fecha: stringToDate(mov.fecha)
+                })
+                )
+
+            } else {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });
+            }
+
+        });
+
+        return {
+            dataMovimientosArticulo,
+            stringToDate,
+            formatearFecha
+        }
 
     }
 })

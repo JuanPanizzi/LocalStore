@@ -66,7 +66,7 @@
                     severity="danger"
                     @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" 
                   />
-                  <Button icon="pi pi-calendar-clock" @click="abrirHistorial" />
+                  <Button icon="pi pi-calendar-clock" @click="abrirHistorial(slotProps.data)" />
                   <Button icon="pi pi-plus" class="ml-auto"  @click="handleForm(true)" />
                 </div>
                 </div>
@@ -148,6 +148,7 @@ import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
 import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
 import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
+
 export default defineComponent({
     name: 'ArticulosImage',
     components: {
@@ -190,7 +191,8 @@ export default defineComponent({
         const registroGuardado = ref(false);
 
 
-        const abrirHistorial = () => {
+        const abrirHistorial = (articulo) => {
+            const {id} = articulo
             dialog.open(HistorialArticulo, {})
         }
 

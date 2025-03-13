@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // insertData: (data: { name: string; age: number }) => ipcRenderer.invoke('insert-data', data),
   // getData: () => ipcRenderer.invoke('get-data'),
   obtenerMovimientos: () => ipcRenderer.invoke('obtener-movimientos'),
+  obtenerMovimientosArticulo: () => ipcRenderer.invoke('obtener-movimientos-articulo'),
   obtenerArticulos: () => ipcRenderer.invoke('obtener-articulos'),
   guardarMovimiento: (movimiento)=> ipcRenderer.invoke('guardar-movimiento', movimiento),
   crearArticulo: (nuevoArticulo) => ipcRenderer.invoke('nuevo-articulo', nuevoArticulo),
@@ -19,5 +20,6 @@ contextBridge.exposeInMainWorld('electronAPI', {
   seleccionarImagen: ()=> ipcRenderer.invoke('seleccionar-imagen-articulo'),
   actualizarArticulo: (articuloActualizado) => ipcRenderer.invoke('actualizar-articulo', articuloActualizado),
   obtenerUltimoMovimiento: ()=> ipcRenderer.invoke('obtener-ultimo-movimiento'),
-  guardarPdf: (pdfData: ArrayBuffer) => ipcRenderer.invoke('guardar-pdf', pdfData)
+  guardarPdf: (pdfData: ArrayBuffer) => ipcRenderer.invoke('guardar-pdf', pdfData),
+  
 });
