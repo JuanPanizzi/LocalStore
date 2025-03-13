@@ -22,16 +22,29 @@
                     <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
                         <p class="text-white">Cargando...</p>
                     </div>
-                    <Carousel  v-else :value="carouselItems" :numVisible="1" :numScroll="1" :showIndicators="false"
+                    <Carousel v-else :value="carouselItems" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
                         <template #item="slotProps">
                             <div class="flex flex-col">
                                 <!-- Imagen -->
                                 <div class="h-[300px] overflow-hidden">
-                                    <img :src="formatImagePath(slotProps.data.imagen)"
-                                        :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                        class="w-full h-full rounded object-cover" />
+                                    <template v-if="slotProps.data.imagen">
+                                        <img :src="formatImagePath(slotProps.data.imagen)"
+                                            :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
+                                            class="w-full h-full rounded object-cover" />
+                                    </template>
+                                    <template v-else>
+                                        <!-- Cuadro estilo 'input' cuando no hay imagen -->
+                                        <div class="w-full h-full p-2 border border-slate-600 rounded bg-[#020617] 
+                 text-slate-300 hover:text-[#38BDF8] flex items-center justify-center 
+                 cursor-pointer hover:border-[#38BDF8] transition-colors"
+                                            @click="actualizarImagenDirecta(slotProps.data)">
+                                            <!-- Simula un placeholder con opacidad -->
+                                            <p class="opacity-70" icon="pi pi-plus"> Adjuntar imagen</p>
+                                        </div>
+                                    </template>
                                 </div>
+
                                 <!-- Datos del artículo -->
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
@@ -67,9 +80,12 @@
                 <!-- DataTable en contenedor con fondo claro y sombra -->
                 <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
                     <h3 class="text-lg font-bold text-gray-800 mb-2 text-center text-white">Listado de Artículos</h3>
-                    <DataTable v-model:filters="filters" :value="filteredArticulos" paginator :rows="4" class="mx-auto"
-                        selectionMode="single" :selection="selectedArticulo" @row-select="onArticuloSelect"
-                        dataKey="id">
+                    <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
+                        <p class="text-white">Cargando...</p>
+                    </div>
+                    <DataTable v-else v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"
+                        class="mx-auto" selectionMode="single" :selection="selectedArticulo"
+                        @row-select="onArticuloSelect" dataKey="id">
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
@@ -151,7 +167,7 @@ export default defineComponent({
     },
 
     setup() {
-        const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo } = useArticulos();
+        const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo, seleccionarImagen } = useArticulos();
         const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
         const dataArticulos = ref([]);
         const toast = useToast();
@@ -186,6 +202,18 @@ export default defineComponent({
                 }
             })
         }
+        const actualizarImagenDirecta = async (articulo) => {
+            const response = await seleccionarImagen();
+            if (response.success && !response.data.canceled) {
+                // Generamos una copia del artículo y actualizamos la imagen
+                const articuloActualizado = { ...articulo, imagen: response.data.filePaths[0] };
+                // Llamamos a la función de edición para actualizar en la base de datos
+                await editarArticulo(articuloActualizado);
+            } else if (!response.success) {
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al seleccionar la imagen, intente nuevamente', life: 3000 });
+            }
+        };
+
 
         // const filters = ref({
         //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -407,8 +435,6 @@ export default defineComponent({
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo, intente nuevamente', life: 5000 });
             }
 
-
-
         }
         const abrirDialogEditar = (articulo) => {
 
@@ -594,7 +620,8 @@ export default defineComponent({
             filteredArticulos,
             dialog,
             abrirHistorial,
-            isLoading
+            isLoading,
+            actualizarImagenDirecta
 
         }
     }
