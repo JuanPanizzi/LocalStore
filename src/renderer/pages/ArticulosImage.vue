@@ -1,5 +1,5 @@
 <template>
-    <section class="min-h-screen p-8 bg-[#0F172A]">
+    <section class="min-h-screen card mx-2 p-8 bg-[#0F172A]">
     <div class="max-w-[97%] mx-auto space-y-8">
       <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
       <div class="bg-slate-800 p-4 rounded-lg shadow-md">
@@ -27,7 +27,7 @@
             <template #item="slotProps">
               <div class="flex flex-col">
                 <!-- Imagen -->
-                <div class="h-[200px] overflow-hidden">
+                <div class="h-[300px] overflow-hidden">
                   <img 
                     :src="formatImagePath(slotProps.data.imagen)"
                     :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
