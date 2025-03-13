@@ -22,16 +22,17 @@
                     <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
                         <p class="text-white">Cargando...</p>
                     </div>
-                    <Carousel v-else :value="carouselItems" :numVisible="1" :numScroll="1" :showIndicators="false"
+                    <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
                         <template #item="slotProps">
-                            <div class="flex flex-col">
+                            <div :key="slotProps.data.id"  class="flex flex-col">
                                 <!-- Imagen -->
                                 <div class="h-[300px] overflow-hidden">
                                     <template v-if="slotProps.data.imagen">
                                         <img :src="formatImagePath(slotProps.data.imagen)"
                                             :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                            class="w-full h-full rounded object-cover" />
+                                            class="w-full h-full rounded object-cover"
+                                            loading="lazy"  />
                                     </template>
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
@@ -255,20 +256,20 @@ export default defineComponent({
         const selectedArticulo = ref(null)
 
         // Computed para el Carousel: si hay un artículo seleccionado, rota la lista para que ese aparezca primero; de lo contrario, muestra la lista filtrada original
-        const carouselItems = computed(() => {
-            if (selectedArticulo.value) {
-                const index = filteredArticulos.value.findIndex(
-                    item => item.id === selectedArticulo.value.id
-                );
-                if (index !== -1) {
-                    return [
-                        ...filteredArticulos.value.slice(index),
-                        ...filteredArticulos.value.slice(0, index)
-                    ];
-                }
-            }
-            return filteredArticulos.value;
-        })
+        // const carouselItems = computed(() => {
+        //     if (selectedArticulo.value) {
+        //         const index = filteredArticulos.value.findIndex(
+        //             item => item.id === selectedArticulo.value.id
+        //         );
+        //         if (index !== -1) {
+        //             return [
+        //                 ...filteredArticulos.value.slice(index),
+        //                 ...filteredArticulos.value.slice(0, index)
+        //             ];
+        //         }
+        //     }
+        //     return filteredArticulos.value;
+        // })
 
 
         // Función para actualizar el artículo seleccionado al marcar una fila en el DataTable
@@ -616,7 +617,7 @@ export default defineComponent({
             responsiveOptions,
             onArticuloSelect,
             selectedArticulo,
-            carouselItems,
+            // carouselItems,
             filteredArticulos,
             dialog,
             abrirHistorial,
