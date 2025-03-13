@@ -3,7 +3,7 @@
 
         <Toolbar>
             <template #start>
-                <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success" />
+                <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success" @click="exportarExcel(dataMovimientosArticulo)" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
                     style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo)" />
             </template>
@@ -107,7 +107,7 @@ export default defineComponent({
 
     setup() {
 
-        const { obtenerMovimientosArticulo, generarListadoPDF } = useMovimientos();
+        const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel } = useMovimientos();
         const dataMovimientosArticulo = ref(null);
         const dialogRef = inject('dialogRef');
 
@@ -136,7 +136,8 @@ export default defineComponent({
             formatearFecha,
             dialogRef,
             generarListadoPDF,
-            generarListadoPDF
+            generarListadoPDF,
+            exportarExcel
         }
 
     }
