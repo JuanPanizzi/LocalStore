@@ -1,6 +1,6 @@
 <template>
     <section class="p-5 bg-[#0F172A]">
-    <!-- <section class="p-5"> -->
+        <!-- <section class="p-5"> -->
         <!-- {{ dataMovimientosFiltrada }} -->
 
         <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
@@ -32,7 +32,7 @@
                     </div>
                 </template>
 </Column> -->
-<Column field="numero_movimiento" header="ID"></Column>
+            <Column field="numero_movimiento" header="ID"></Column>
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
                 :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[
@@ -282,21 +282,13 @@ export default defineComponent({
         onMounted(async () => {
 
             const response = await obtenerMovimientos();
-
             if (response.success) {
                 // dataMovimientos.value = response.data;
-                dataMovimientos.value = response.data.map(mov =>
-                // console.log('mov', mov)
-
-                (
-
-                    {
+                dataMovimientos.value = response.data.map(mov => ({
                         ...mov,
                         fecha: stringToDate(mov.fecha)
                     })
-
                 )
-
 
             } else {
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al obtener el registro de movimientos, intente nuevamente', life: 3000 });

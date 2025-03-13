@@ -9,6 +9,7 @@ import ConfirmationService from 'primevue/confirmationservice';
 import InputText from 'primevue/inputtext';
 import RadioButton from 'primevue/radiobutton';
 import ToastService from 'primevue/toastservice';
+import DialogService from 'primevue/dialogservice';
 import { definePreset } from '@primevue/themes';
 
 const MyPreset = definePreset(Aura, {
@@ -68,6 +69,7 @@ const app = createApp(App)
 
 app.use(ConfirmationService);
 app.use(ToastService);
+app.use(DialogService);
 app.use(PrimeVue, {
     // Default theme configuration
     theme: {

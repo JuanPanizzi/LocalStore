@@ -66,7 +66,7 @@
                     severity="danger"
                     @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" 
                   />
-                  <Button icon="pi pi-calendar-clock" />
+                  <Button icon="pi pi-calendar-clock" @click="abrirHistorial" />
                   <Button icon="pi pi-plus" class="ml-auto"  @click="handleForm(true)" />
                 </div>
                 </div>
@@ -121,10 +121,13 @@
     <Toast />
     <ConfirmDialog></ConfirmDialog>
 
+    <DynamicDialog />
+
 </template>
 
 <script>
 
+import DynamicDialog from 'primevue/dynamicdialog';
 import Column from 'primevue/column';
 import DataTable from 'primevue/datatable';
 import { computed, defineComponent, onMounted, reactive, ref, watch } from 'vue';
@@ -132,6 +135,7 @@ import { useArticulos } from '../composables/useArticulos.js'
 import { useMovimientos } from '../composables/useMovimientos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import { useDialog } from 'primevue/usedialog';
 import InputNumber from 'primevue/inputnumber';
 import FormularioArticulos from '../components/Articulos/FormularioArticulos.vue';
 import Button from 'primevue/button';
@@ -143,7 +147,7 @@ import DialogEditar from '../components/Articulos/DialogEditar.vue';
 import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
 import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
-
+import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
 export default defineComponent({
     name: 'ArticulosImage',
     components: {
@@ -157,7 +161,9 @@ export default defineComponent({
         ConfirmDialog,
         DialogEditar,
         IngresoSalida,
-        Carousel
+        Carousel,
+        DynamicDialog
+
 
     },
 
@@ -166,6 +172,7 @@ export default defineComponent({
         const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
         const dataArticulos = ref([]);
         const toast = useToast();
+        const dialog = useDialog();
         const confirm = useConfirm();
         const numeroInformeMovimiento = ref(null);
         const articuloEdicion = ref({
@@ -181,6 +188,11 @@ export default defineComponent({
         const showIngresoSalida = ref({ show: false, accion: '' });
         const articuloSeleccionado = ref(null);
         const registroGuardado = ref(false);
+
+
+        const abrirHistorial = () => {
+            dialog.open(HistorialArticulo, {})
+        }
 
         // const filters = ref({
         //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -585,7 +597,9 @@ export default defineComponent({
             onArticuloSelect,
             selectedArticulo,
             carouselItems,
-            filteredArticulos
+            filteredArticulos,
+            dialog,
+            abrirHistorial
 
         }
     }
