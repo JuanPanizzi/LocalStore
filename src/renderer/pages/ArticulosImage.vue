@@ -103,20 +103,17 @@
       
       <DialogEditar v-if="showDialogEditar" :articuloEdicion="articuloEdicion" @actualizarArticulo="editarArticulo" />
       
-      <Dialog v-model:visible="showIngresoSalida.show" modal
-        :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTÍCULO' : 'SALIDA ARTÍCULO'">
-        <IngresoSalida 
-          :ingresoSalida="showIngresoSalida.accion" 
-          :articuloSeleccionado="articuloSeleccionado"
-          :numeroInformeMovimiento="numeroInformeMovimiento" 
-          @guardarMovimiento="crearMovimiento"
-          @cancelarIngresoSalida="handleIngresoSalida(false)" 
-          @reiniciarFormulario="reiniciarIngresoSalida"
-          @nuevoPdf="nuevoPdf" />
-      </Dialog>
+       <!-- Dialog para ingresar o dar salida a un artículo -->
+    <Dialog v-model:visible="showIngresoSalida.show" modal
+      :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+      <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+        :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
+        @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
+        @nuevoPdf="nuevoPdf" />
+    </Dialog>
     </div>
     <Toast />
-    <ConfirmDialog />
+    <!-- <ConfirmDialog /> -->
   </section>
 
 
