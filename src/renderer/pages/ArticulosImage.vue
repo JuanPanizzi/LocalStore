@@ -199,7 +199,7 @@ export default defineComponent({
                 },
                 props: {
                     modal: true,
-                    header: `HISTORIAL ARTÍCULO: ${marca} ${modelo_serie}`
+                    header: `HISTORIAL ARTÍCULO: ${marca} - ${modelo_serie}`
                 }
             })
         }
