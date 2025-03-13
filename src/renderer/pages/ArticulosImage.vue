@@ -37,8 +37,8 @@
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
                                         <div class="w-full h-full p-2 border border-slate-600 rounded bg-[#020617] 
-                 text-slate-300 hover:text-[#38BDF8] flex items-center justify-center 
-                 cursor-pointer hover:border-[#38BDF8] transition-colors"
+                                                    text-slate-300 hover:text-[#38BDF8] flex items-center justify-center 
+                                                    cursor-pointer hover:border-[#38BDF8] transition-colors"
                                             @click="actualizarImagenDirecta(slotProps.data)">
                                             <!-- Simula un placeholder con opacidad -->
                                             <p class="opacity-70" icon="pi pi-plus"> Adjuntar imagen</p>
