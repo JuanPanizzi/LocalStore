@@ -67,6 +67,7 @@
                     @click="handleIngresoSalida(true, 'SALIDA', slotProps.data)" 
                   />
                   <Button icon="pi pi-calendar-clock" />
+                  <Button icon="pi pi-plus" class="ml-auto"  @click="handleForm(true)" />
                 </div>
                 </div>
               </div>
@@ -91,7 +92,7 @@
             <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
             <Column field="marca" header="MARCA" :showFilterMenu="false" />
             <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
-            <Column field="cantidad" header="CANTIDAD" />
+            <Column field="cantidad" header="CANTIDAD"  />
           </DataTable>
         </div>
       </div>
