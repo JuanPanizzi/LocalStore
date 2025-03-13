@@ -192,13 +192,14 @@ export default defineComponent({
 
 
         const abrirHistorial = (articulo) => {
-            const {id} = articulo
+            const {id, marca, modelo_serie} = articulo
             dialog.open(HistorialArticulo, {
                 data: {
                   articulo_id: id  
                 },
                 props: {
-                    modal: true
+                    modal: true,
+                    header: `HISTORIAL ARTÍCULO: ${marca} ${modelo_serie}`
                 }
             })
         }
