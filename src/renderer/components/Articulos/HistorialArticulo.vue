@@ -3,7 +3,8 @@
 
         <Toolbar>
             <template #start>
-                <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success" @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
+                <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success"
+                    @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
                     style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo)" />
             </template>
@@ -12,10 +13,10 @@
         <DataTable :value="dataMovimientosArticulo" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
             style="max-width: 90vw">
             <Column>
-            <template #body="slotProps">
-                <Button icon="pi pi-trash" @click="eliminarMovimientoArticulo(slotProps.data.id)"/>
-                <Button icon="pi pi-pencil"/>
-            </template>
+                <template #body="slotProps">
+                    <Button icon="pi pi-trash" @click="eliminarMovimientoArticulo(slotProps.data.id)" />
+                    <Button icon="pi pi-pencil" />
+                </template>
             </Column>
             <Column field="numero_movimiento" header="ID"></Column>
 
@@ -120,15 +121,23 @@ export default defineComponent({
         const toast = useToast();
         const dialogRef = inject('dialogRef');
 
-        const eliminarMovimientoArticulo = async (idMovimiento) => { 
+        const eliminarMovimientoArticulo = async (idMovimiento) => {
             const response = await eliminarMovimiento(idMovimiento);
-            if(response.success){
-                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
-            }else{
+  
+            if (response.success) {
+                const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == idMovimiento);
+              
+                if (indexMovimiento !== -1) {
+                    dataMovimientosArticulo.value.splice(indexMovimiento, 1);
+                    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
+                } else {
+                    toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
+                }
+            } else {
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
             }
 
-         }
+        }
 
 
         onMounted(async () => {
