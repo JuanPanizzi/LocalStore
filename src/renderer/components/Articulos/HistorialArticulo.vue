@@ -11,6 +11,12 @@
 
         <DataTable :value="dataMovimientosArticulo" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
             style="max-width: 90vw">
+            <Column>
+            <template #body="slotProps">
+                <Button icon="pi pi-trash" @click="eliminarMovimiento"/>
+                <Button icon="pi pi-pencil"/>
+            </template>
+            </Column>
             <Column field="numero_movimiento" header="ID"></Column>
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
@@ -80,8 +86,6 @@
             <Column field="remito" header="REMITO"></Column>
             <Column field="numero_almacenes" header="N° ALMACENES"></Column>
             <Column field="observaciones" header="OBSERVACIONES"></Column>
-
-
         </DataTable>
 
     </div>
@@ -111,7 +115,11 @@ export default defineComponent({
         const dataMovimientosArticulo = ref(null);
         const dialogRef = inject('dialogRef');
 
+        const eliminarMovimiento = (idMovimiento) => { 
+            
+            
 
+         }
 
 
         onMounted(async () => {

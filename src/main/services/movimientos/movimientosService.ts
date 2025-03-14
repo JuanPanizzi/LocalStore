@@ -35,6 +35,19 @@ export const obtenerMovimientosArticulo = (articulo_id) => {
 
 }
 
+export const eliminarMovimiento = (idMovimiento) => { 
+  
+  try {
+      const stmt = db.prepare(`DELETE FROM movimientos_materiales WHERE id = ?`)
+      const result = stmt.run(idMovimiento)
+    return {success: true, data: result}
+  
+  } catch (error) {
+    return {success: false}  
+  }
+
+ }
+
 // export async function guardarExcelMovimientos(data) {
 
 //   try {

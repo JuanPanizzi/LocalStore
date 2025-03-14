@@ -11,6 +11,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // insertData: (data: { name: string; age: number }) => ipcRenderer.invoke('insert-data', data),
   // getData: () => ipcRenderer.invoke('get-data'),
   obtenerMovimientos: () => ipcRenderer.invoke('obtener-movimientos'),
+  eliminarMovimiento: (idMovimiento) => ipcRenderer.invoke('eliminar-movimiento', idMovimiento),
   obtenerMovimientosArticulo: (articulo_id) => ipcRenderer.invoke('obtener-movimientos-articulo', articulo_id),
   obtenerArticulos: () => ipcRenderer.invoke('obtener-articulos'),
   guardarMovimiento: (movimiento)=> ipcRenderer.invoke('guardar-movimiento', movimiento),

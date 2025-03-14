@@ -33,6 +33,17 @@ export function useMovimientos() {
 
     }
 
+    const eliminarMovimiento = async (idMovimiento) => { 
+        
+        try {
+            const response = await window.electronAPI.eliminarMovimiento(idMovimiento);
+
+        } catch (error) {
+            
+        }
+
+     }
+
     const obtenerMovimientosArticulo = async (articulo_id) => { 
         try {
             const response = await window.electronAPI.obtenerMovimientosArticulo(articulo_id);
