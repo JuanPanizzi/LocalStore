@@ -535,7 +535,7 @@ export function useMovimientos() {
     };
 
 
-    const exportarExcel = (datosFiltrados) => {
+    const exportarExcel = (datosFiltrados, tipoExcel) => {
         // Mapear los datos al formato requerido}
         const formattedData = datosFiltrados.map((item) => ({
             "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
@@ -624,7 +624,16 @@ export function useMovimientos() {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Historial de Movimientos");
 
         // Exportar el archivo Excel
-        XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
+        if(tipoExcel == "historial articulo"){
+            const material = datosFiltrados[0].material_repuesto;
+            const marca = datosFiltrados[0].marca;
+            const modelo = datosFiltrados[1].modelo_serie
+            XLSX.writeFile(workbook, `INF-MOV-${material}-${marca}-${modelo}.xlsx`);
+
+        }else{
+
+            XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
+        }
     };
 
 

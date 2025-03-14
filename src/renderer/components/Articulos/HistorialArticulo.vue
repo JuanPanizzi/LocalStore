@@ -3,7 +3,7 @@
 
         <Toolbar>
             <template #start>
-                <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success" @click="exportarExcel(dataMovimientosArticulo)" />
+                <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success" @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
                     style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo)" />
             </template>
