@@ -14,8 +14,11 @@
             style="max-width: 90vw">
             <Column>
                 <template #body="slotProps">
-                    <Button icon="pi pi-trash" @click="eliminarMovimientoArticulo(slotProps.data.id)" />
-                    <Button icon="pi pi-pencil" />
+                    <div class="flex">
+
+                        <Button class="mr-2" icon="pi pi-trash" outlined severity="danger" @click="eliminarMovimientoArticulo(slotProps.data.id)" />
+                        <Button icon="pi pi-pencil" outlined severity="info" />
+                    </div>
                 </template>
             </Column>
             <Column field="numero_movimiento" header="ID"></Column>
