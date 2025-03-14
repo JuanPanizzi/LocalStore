@@ -13,7 +13,7 @@
             style="max-width: 90vw">
             <Column>
             <template #body="slotProps">
-                <Button icon="pi pi-trash" @click="eliminarMovimiento"/>
+                <Button icon="pi pi-trash" @click="eliminarMovimientoArticulo(slotProps.data.id)"/>
                 <Button icon="pi pi-pencil"/>
             </template>
             </Column>
@@ -89,6 +89,7 @@
         </DataTable>
 
     </div>
+    <Toast />
 </template>
 <script>
 import DataTable from 'primevue/datatable';
@@ -98,6 +99,8 @@ import { stringToDate, formatearFecha } from '../../utils/funcionesFecha.js'
 import { useMovimientos } from '../../composables/useMovimientos.js';
 import Toolbar from 'primevue/toolbar';
 import Button from 'primevue/button';
+import { useToast } from 'primevue/usetoast';
+import Toast from 'primevue/toast';
 
 export default defineComponent({
     name: 'HistorialArticulo',
@@ -105,19 +108,25 @@ export default defineComponent({
         DataTable,
         Column,
         Toolbar,
-        Button
+        Button,
+        Toast
     },
 
 
     setup() {
 
-        const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel } = useMovimientos();
+        const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel, eliminarMovimiento } = useMovimientos();
         const dataMovimientosArticulo = ref(null);
+        const toast = useToast();
         const dialogRef = inject('dialogRef');
 
-        const eliminarMovimiento = (idMovimiento) => { 
-            
-            
+        const eliminarMovimientoArticulo = async (idMovimiento) => { 
+            const response = await eliminarMovimiento(idMovimiento);
+            if(response.success){
+                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
+            }else{
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+            }
 
          }
 
@@ -145,7 +154,8 @@ export default defineComponent({
             dialogRef,
             generarListadoPDF,
             generarListadoPDF,
-            exportarExcel
+            exportarExcel,
+            eliminarMovimientoArticulo
         }
 
     }
