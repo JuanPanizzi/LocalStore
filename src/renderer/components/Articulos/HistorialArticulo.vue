@@ -238,13 +238,14 @@ export default defineComponent({
 
         const abrirEdicionMovimiento = (movimiento) => {
             console.log('movimiento', movimiento)
-            movimientoSeleccionado.value = movimiento;
+            movimientoSeleccionado.value = {...movimiento};
             visibleRight.value = true;
         }
 
         const editarMovimiento = async () => { 
 
             const response = await actualizarMovimiento(movimientoSeleccionado.value);
+            // console.log('response en editar movimiento', response)
             if(response.success){
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
                 visibleRight.value = false;

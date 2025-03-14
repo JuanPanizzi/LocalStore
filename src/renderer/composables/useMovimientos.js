@@ -37,6 +37,7 @@ export function useMovimientos() {
         
         try {
                 const response = await window.electronAPI.actualizarMovimiento(movimiento);
+                console.log('response en use movimientos', response)
                 if(response.success){
                     return { success: true, data: response.data}
                 }else{
