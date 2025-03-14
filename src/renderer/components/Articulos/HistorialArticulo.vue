@@ -98,7 +98,7 @@
      <!-- Drawer para edición -->
      <Drawer
       v-model:visible="visibleRight"
-      header="Editar Movimiento"
+      :header="`Editar Movimiento N° ${movimientoSeleccionado?.numero_movimiento}`"
       position="right"
       class="!w-[30vw]"
     >
@@ -185,7 +185,7 @@
         <!-- Botones de acción -->
         <div class="flex justify-end space-x-2">
           <Button label="Cancelar" severity="secondary" outlined @click="cancelarEdicion" />
-          <Button label="Guardar" severity="success" @click="guardarEdicion" />
+          <Button label="Guardar" severity="success" @click="actualizarMovimiento" />
         </div>
       </div>
     </Drawer>
@@ -242,7 +242,11 @@ export default defineComponent({
             visibleRight.value = true;
         }
 
+        const actualizarMovimiento = async () => { 
 
+            
+
+         }
 
         const confirmarEliminacionMov = (movimiento) => {
 

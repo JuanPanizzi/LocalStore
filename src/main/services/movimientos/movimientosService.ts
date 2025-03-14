@@ -426,6 +426,26 @@ export const guardarMovimiento = async (movimiento) => {
 
 }
 
+export const actualizarMovimiento = async (movimiento) => { 
+
+  const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id, id: id_movimiento } = movimiento;
+
+ try {
+      const stmt = db.prepare(`UPDATE movimientos_materiales SET numero_movimiento = ?, fecha = ?, tipo_movimiento = ?, origen = ?, destino = ?, cantidad = ?, permiso_trabajo_asociado = ?, informe_asociado = ?, orden_trabajo_asociada = ?, remito = ?, numero_almacenes = ?, material_repuesto = ?, marca = ?, modelo_serie = ?, observaciones = ?, articulo_id = ? WHERE id = ?`);
+      
+      const result = stmt.run(numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id, id_movimiento);
+
+      if(result.changes == 0){
+          return { success: false, error: 'No se encontró el movimiento' }
+      }
+      const articuloActualizado = db.prepare(`SELECT * FROM movimientos_materiales WHERE id = ?`).get(id_movimiento);
+
+      return { success: true, data: articuloActualizado }
+
+ } catch (error) {
+    return {success: false}  
+ }
+}
 export const obtenerUltimoMovimiento = async () => {
   try {
     const result = db
