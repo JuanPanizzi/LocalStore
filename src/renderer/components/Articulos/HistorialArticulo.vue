@@ -185,7 +185,7 @@
         <!-- Botones de acción -->
         <div class="flex justify-end space-x-2">
           <Button label="Cancelar" severity="secondary" outlined @click="cancelarEdicion" />
-          <Button label="Guardar" severity="success" @click="actualizarMovimiento" />
+          <Button label="Guardar" severity="success" @click="editarMovimiento(movimientoSeleccionado)" />
         </div>
       </div>
     </Drawer>
@@ -228,7 +228,7 @@ export default defineComponent({
 
     setup() {
 
-        const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel, eliminarMovimiento } = useMovimientos();
+        const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel, eliminarMovimiento, actualizarMovimiento } = useMovimientos();
         const dataMovimientosArticulo = ref(null);
         const confirm = useConfirm();
         const toast = useToast();
@@ -242,9 +242,15 @@ export default defineComponent({
             visibleRight.value = true;
         }
 
-        const actualizarMovimiento = async () => { 
+        const editarMovimiento = async () => { 
 
-            
+            const response = await actualizarMovimiento(movimientoSeleccionado.value);
+            if(response.success){
+                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
+                visibleRight.value = false;
+            }else{
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el movimiento, intente nuevamente', life: 3000 });
+            }
 
          }
 
@@ -318,7 +324,9 @@ export default defineComponent({
             confirmarEliminacionMov,
             visibleRight,
             movimientoSeleccionado,
-            abrirEdicionMovimiento
+            abrirEdicionMovimiento,
+            actualizarMovimiento,
+            editarMovimiento
             
         }
 

@@ -33,6 +33,20 @@ export function useMovimientos() {
 
     }
 
+    const actualizarMovimiento = async (movimiento) => { 
+        
+        try {
+                const response = await window.electronAPI.actualizarMovimiento(movimiento);
+                if(response.success){
+                    return { success: true, data: response.data}
+                }else{
+                    throw new Error();
+                }
+        } catch (error) {
+            return { success: false }
+        }
+     }
+
     const eliminarMovimiento = async (idMovimiento) => { 
         
         try {
@@ -664,7 +678,8 @@ export function useMovimientos() {
         generarListadoPDF,
         formatearFecha,
         exportarExcel,
-        eliminarMovimiento
+        eliminarMovimiento,
+        actualizarMovimiento
     }
 
 }
