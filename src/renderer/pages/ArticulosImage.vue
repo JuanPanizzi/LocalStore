@@ -113,12 +113,12 @@
             </Dialog>
         </div>
         <Toast />
-        <!-- <ConfirmDialog /> -->
     </section>
 
 
     <Toast />
-    <ConfirmDialog></ConfirmDialog>
+    <!-- <ConfirmDialog></ConfirmDialog> -->
+    <ConfirmPopup/>
 
     <DynamicDialog />
 
@@ -147,6 +147,7 @@ import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
 import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
 import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
+import ConfirmPopup from 'primevue/confirmpopup';
 
 export default defineComponent({
     name: 'ArticulosImage',
@@ -158,11 +159,12 @@ export default defineComponent({
         Button,
         FormularioArticulos,
         Dialog,
-        ConfirmDialog,
         DialogEditar,
         IngresoSalida,
         Carousel,
-        DynamicDialog
+        DynamicDialog,
+        ConfirmPopup,
+        ConfirmDialog,
 
 
     },

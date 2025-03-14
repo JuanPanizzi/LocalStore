@@ -16,7 +16,8 @@
                 <template #body="slotProps">
                     <div class="flex">
 
-                        <Button class="mr-2" icon="pi pi-trash" outlined severity="danger" @click="eliminarMovimientoArticulo(slotProps.data.id)" />
+                        <Button class="mr-2" icon="pi pi-trash" outlined severity="danger"
+                            @click="confirmarEliminacionMov(slotProps.data)" />
                         <Button icon="pi pi-pencil" outlined severity="info" />
                     </div>
                 </template>
@@ -93,6 +94,8 @@
         </DataTable>
 
     </div>
+    <!-- <ConfirmPopup></ConfirmPopup> -->
+
     <Toast />
 </template>
 <script>
@@ -101,10 +104,12 @@ import Column from 'primevue/column';
 import { defineComponent, ref, onMounted, inject } from 'vue';
 import { stringToDate, formatearFecha } from '../../utils/funcionesFecha.js'
 import { useMovimientos } from '../../composables/useMovimientos.js';
+import { useConfirm } from 'primevue/useconfirm';
 import Toolbar from 'primevue/toolbar';
 import Button from 'primevue/button';
 import { useToast } from 'primevue/usetoast';
 import Toast from 'primevue/toast';
+import ConfirmPopup from 'primevue/confirmpopup';
 
 export default defineComponent({
     name: 'HistorialArticulo',
@@ -113,7 +118,9 @@ export default defineComponent({
         Column,
         Toolbar,
         Button,
-        Toast
+        Toast,
+        ConfirmPopup,
+
     },
 
 
@@ -121,24 +128,49 @@ export default defineComponent({
 
         const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel, eliminarMovimiento } = useMovimientos();
         const dataMovimientosArticulo = ref(null);
+        const confirm = useConfirm();
         const toast = useToast();
         const dialogRef = inject('dialogRef');
 
-        const eliminarMovimientoArticulo = async (idMovimiento) => {
-            const response = await eliminarMovimiento(idMovimiento);
-  
-            if (response.success) {
-                const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == idMovimiento);
-              
-                if (indexMovimiento !== -1) {
-                    dataMovimientosArticulo.value.splice(indexMovimiento, 1);
-                    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
-                } else {
-                    toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
-                }
-            } else {
-                toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
-            }
+        const confirmarEliminacionMov = (movimiento) => {
+
+            const { id } = movimiento;
+
+            confirm.require({
+                message: `¿Estás seguro de eliminar este movimiento?`,
+                header: 'Atención',
+                icon: 'pi pi-info-circle',
+                rejectLabel: 'Cancelar',
+                rejectProps: {
+                    label: 'Cancelar',
+                    severity: 'secondary',
+                    outlined: true
+                },
+                acceptProps: {
+                    label: 'Eliminar',
+                    severity: 'danger'
+                },
+                accept: async () => {
+
+                    const response = await eliminarMovimiento(id);
+
+                    if (response.success) {
+                        const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == id);
+
+                        if (indexMovimiento !== -1) {
+                            dataMovimientosArticulo.value.splice(indexMovimiento, 1);
+                            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
+                        } else {
+                            toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
+                        }
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                    }
+
+                },
+                // reject: () => {
+                // }
+            });
 
         }
 
@@ -167,7 +199,7 @@ export default defineComponent({
             generarListadoPDF,
             generarListadoPDF,
             exportarExcel,
-            eliminarMovimientoArticulo
+            confirmarEliminacionMov
         }
 
     }
