@@ -176,7 +176,7 @@
         <!-- Observaciones -->
         <div>
           <label class="block text-sm font-medium">Observaciones</label>
-          <InputTextarea
+          <Textarea
             v-model="movimientoSeleccionado.observaciones"
             class="w-full"
             rows="3"
@@ -206,6 +206,7 @@ import ConfirmPopup from 'primevue/confirmpopup';
 import Drawer from 'primevue/drawer';
 import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
+import Textarea from 'primevue/textarea';
 
 
 export default defineComponent({
@@ -220,7 +221,7 @@ export default defineComponent({
         Drawer,
         InputNumber,
         DatePicker,
-        InputTextarea
+        Textarea
 
     },
 

@@ -104,7 +104,8 @@
         </DataTable>
 
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
-            <!-- <Button label="PDF Historial de Movimientos" @click="generarPdfArticulo(dataMovimientosFiltrada)" severity="danger" icon="pi pi-file-pdf" outlined /> -->
+            <!-- <Button label="PDF Historial de Movimientos" @click="generarPdfArticulo(dataMovimientosFi
+            severity="danger" icon="pi pi-file-pdf" outlined /> -->
             <Button label="PDF Historial de Artículo" class="mx-2" severity="danger" icon="pi pi-file-pdf" outlined
                 @click="generarPdfArticulo(dataMovimientosFiltrada)" />
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
