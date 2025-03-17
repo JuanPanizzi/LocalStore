@@ -23,7 +23,7 @@ export async function obtenerMovimientos() {
 export const obtenerMovimientosArticulo = (articulo_id) => {
   try {
 
-    const stmt = db.prepare(`SELECT * FROM movimientos_materiales WHERE articulo_id = ?`);
+    const stmt = db.prepare(`SELECT * FROM movimientos_materiales WHERE articulo_id = ? ORDER BY fecha DESC`);
     const result = stmt.all(articulo_id);
 
     return { success: true, data: result }
