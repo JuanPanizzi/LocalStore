@@ -138,7 +138,7 @@
             </div <!-- Cantidad -->
             <div>
                 <label class="block text-sm font-medium">Cantidad</label>
-                <InputNumber v-model="movimientoSeleccionado.cantidad" class="w-full" />
+                <InputNumber v-model="movimientoSeleccionado.cantidad" class="w-full" readonly />
             </div>
             <!-- Permiso Trabajo Asociado -->
             <div>
@@ -183,7 +183,7 @@
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import { defineComponent, ref, onMounted, inject } from 'vue';
-import { stringToDate, formatearFecha } from '../../utils/funcionesFecha.js'
+import { stringToDate, formatearFecha, formatFechaToYYYYMMDD } from '../../utils/funcionesFecha.js'
 import { useMovimientos } from '../../composables/useMovimientos.js';
 import { useConfirm } from 'primevue/useconfirm';
 import Toolbar from 'primevue/toolbar';
@@ -245,7 +245,13 @@ export default defineComponent({
 
         const editarMovimiento = async () => {
 
-            const response = await actualizarMovimiento(movimientoSeleccionado.value);
+            // console.log('movimientoSeleccionado.value', movimientoSeleccionado.value)
+            const movimientoActualizado = {
+                ...movimientoSeleccionado.value,
+                fecha: movimientoSeleccionado.value.fecha ? formatFechaToYYYYMMDD(movimientoSeleccionado.value.fecha) : ''
+            }
+            // console.log('movimientoActualizado que se manda: historialArticulo-258', movimientoActualizado)
+            const response = await actualizarMovimiento(movimientoActualizado);
             // console.log('response en editar movimiento', response)
             if (response.success) {
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
@@ -329,7 +335,8 @@ export default defineComponent({
             abrirEdicionMovimiento,
             actualizarMovimiento,
             editarMovimiento,
-            tipoMoviminento
+            tipoMoviminento,
+            formatFechaToYYYYMMDD
 
         }
 

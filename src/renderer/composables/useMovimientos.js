@@ -34,7 +34,7 @@ export function useMovimientos() {
     }
 
     const actualizarMovimiento = async (movimiento) => { 
-        
+        console.log('movimiento en actualizaar movimiento', movimiento)
         try {
                 const response = await window.electronAPI.actualizarMovimiento(movimiento);
                 console.log('response en use movimientos', response)
@@ -44,6 +44,7 @@ export function useMovimientos() {
                     throw new Error();
                 }
         } catch (error) {
+            console.log('error en actualizar movimiento', error)
             return { success: false }
         }
      }
