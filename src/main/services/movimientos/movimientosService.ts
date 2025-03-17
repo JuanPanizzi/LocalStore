@@ -23,7 +23,17 @@ export async function obtenerMovimientos() {
 export const obtenerMovimientosArticulo = (articulo_id) => {
   try {
 
-    const stmt = db.prepare(`SELECT * FROM movimientos_materiales WHERE articulo_id = ? ORDER BY fecha DESC`);
+    const stmt = db.prepare(`SELECT * FROM movimientos_materiales WHERE articulo_id = ? 
+      ORDER BY 
+        CASE 
+          WHEN instr(numero_movimiento, '-') > 0 THEN CAST(substr(numero_movimiento, 1, instr(numero_movimiento, '-') - 1) AS INTEGER)
+          ELSE CAST(numero_movimiento AS INTEGER)
+        END DESC,
+        CASE 
+          WHEN instr(numero_movimiento, '-') > 0 THEN substr(numero_movimiento, instr(numero_movimiento, '-') + 1)
+          ELSE ''
+        END DESC
+    `);
     const result = stmt.all(articulo_id);
 
     return { success: true, data: result }
