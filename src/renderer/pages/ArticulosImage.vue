@@ -25,14 +25,13 @@
                     <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
                         <template #item="slotProps">
-                            <div :key="slotProps.data.id"  class="flex flex-col">
+                            <div :key="slotProps.data.id" class="flex flex-col">
                                 <!-- Imagen -->
                                 <div class="h-[300px] overflow-hidden">
                                     <template v-if="slotProps.data.imagen">
                                         <img :src="formatImagePath(slotProps.data.imagen)"
                                             :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                            class="w-full h-full rounded object-cover"
-                                            loading="lazy"  />
+                                            class="w-full h-full rounded object-cover" loading="lazy" />
                                     </template>
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
@@ -118,7 +117,7 @@
 
     <Toast />
     <!-- <ConfirmDialog></ConfirmDialog> -->
-    <ConfirmPopup/>
+    <ConfirmPopup />
 
     <DynamicDialog />
 
@@ -148,6 +147,7 @@ import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
 import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
 import ConfirmPopup from 'primevue/confirmpopup';
+import { useDebounce } from '@vueuse/core'
 
 export default defineComponent({
     name: 'ArticulosImage',
@@ -191,6 +191,7 @@ export default defineComponent({
         const articuloSeleccionado = ref(null);
         const registroGuardado = ref(false);
         const isLoading = ref(true);
+
 
 
         const abrirHistorial = (articulo) => {
@@ -280,21 +281,38 @@ export default defineComponent({
             selectedArticulo.value = event.data;
         }
 
-
+        
         const filters = ref({
             material_repuesto: '',
             marca: '',
             modelo_serie: ''
         })
+        // Se crea una versión debounced de 'filters' con 300ms de retardo
+        const debouncedFilters = useDebounce(filters, 300);
 
+        // const filteredArticulos = computed(() => {
+        //     return (dataArticulos.value || []).filter(item => {
+        //         const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material_repuesto || '').toLowerCase());
+        //         const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
+        //         const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo_serie || '').toLowerCase());
+        //         return materialMatch && marcaMatch && modeloMatch;
+        //     });
+        // });
+        // Computed que utiliza los filtros debounced para realizar el filtrado
         const filteredArticulos = computed(() => {
-            return (dataArticulos.value || []).filter(item => {
-                const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material_repuesto || '').toLowerCase());
-                const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
-                const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo_serie || '').toLowerCase());
-                return materialMatch && marcaMatch && modeloMatch;
-            });
-        });
+            return dataArticulos.value.filter(item => {
+                const materialMatch = (item.material_repuesto || '')
+                    .toLowerCase()
+                    .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
+                const marcaMatch = (item.marca || '')
+                    .toLowerCase()
+                    .includes((debouncedFilters.value.marca || '').toLowerCase())
+                const modeloMatch = (item.modelo_serie || '')
+                    .toLowerCase()
+                    .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
+                return materialMatch && marcaMatch && modeloMatch
+            })
+        })
 
         // Variable para almacenar el artículo activo (por defecto, el primero)
         const activeArticulo = ref(filteredArticulos.value[0] || null)
@@ -624,7 +642,8 @@ export default defineComponent({
             dialog,
             abrirHistorial,
             isLoading,
-            actualizarImagenDirecta
+            actualizarImagenDirecta,
+            debouncedFilters
 
         }
     }
