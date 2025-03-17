@@ -68,7 +68,7 @@ export async function guardarExcelMovimientos(data) {
         // Se inserta sin asignar el articulo_id (podría ser null)
         insert.run(
           movimiento.fecha,
-          movimiento.tipo_movimiento,
+          movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
           movimiento.origen,
           movimiento.destino,
           movimiento.material_repuesto,
