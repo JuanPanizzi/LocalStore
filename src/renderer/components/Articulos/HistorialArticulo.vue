@@ -18,7 +18,8 @@
 
                         <Button class="mr-2" icon="pi pi-trash" outlined severity="danger"
                             @click="confirmarEliminacionMov(slotProps.data)" />
-                        <Button icon="pi pi-pencil" outlined severity="info" @click="abrirEdicionMovimiento(slotProps.data)" />
+                        <Button icon="pi pi-pencil" outlined severity="info"
+                            @click="abrirEdicionMovimiento(slotProps.data)" />
                     </div>
                 </template>
             </Column>
@@ -95,100 +96,86 @@
 
     </div>
     <!-- <ConfirmPopup></ConfirmPopup> -->
-     <!-- Drawer para edición -->
-     <Drawer
-      v-model:visible="visibleRight"
-      :header="`Editar Movimiento N° ${movimientoSeleccionado?.numero_movimiento}`"
-      position="right"
-      class="!w-[30vw]"
-    >
-      <div class="p-4 space-y-4">
-        <!-- Fecha -->
-        <div>
-          <label class="block text-sm font-medium">Fecha</label>
-          <DatePicker
-            v-model="movimientoSeleccionado.fecha"
-            dateFormat="dd/mm/yy"
-            placeholder="Seleccione fecha"
-            class="w-full"
-          />
+    <!-- Drawer para edición -->
+    <Drawer v-model:visible="visibleRight" :header="`Editar Movimiento N° ${movimientoSeleccionado?.numero_movimiento}`"
+        position="right" class="!w-[30vw]">
+        <div class="p-4 space-y-4">
+            <!-- Fecha -->
+            <div>
+                <label class="block text-sm font-medium">Fecha</label>
+                <DatePicker v-model="movimientoSeleccionado.fecha" dateFormat="dd/mm/yy" placeholder="Seleccione fecha"
+                    class="w-full" />
+            </div>
+            <!-- Material / Repuesto -->
+            <div>
+                <label class="block text-sm font-medium">Material / Repuesto</label>
+                <InputText v-model="movimientoSeleccionado.material_repuesto" readonly class="w-full" />
+            </div>
+            <!-- Marca -->
+            <div>
+                <label class="block text-sm font-medium">Marca</label>
+                <InputText v-model="movimientoSeleccionado.marca" class="w-full" readonly />
+            </div>
+            <!-- Modelo / Serie -->
+            <div>
+                <label class="block text-sm font-medium">Modelo / Serie</label>
+                <InputText v-model="movimientoSeleccionado.modelo_serie" class="w-full" readonly />
+            </div>
+            <!-- Tipo Movimiento -->
+            <div>
+                <label class="block text-sm font-medium">Tipo Movimiento</label>
+                <Select :options="tipoMoviminento" optionLabel="nombre" optionValue="nombre" v-model="movimientoSeleccionado.tipo_movimiento" class="w-full" />
+            </div>
+            <!-- Origen -->
+            <div>
+                <label class="block text-sm font-medium">Origen</label>
+                <InputText v-model="movimientoSeleccionado.origen" class="w-full" />
+            </div>
+            <!-- Destino -->
+            <div>
+                <label class="block text-sm font-medium">Destino</label>
+                <InputText v-model="movimientoSeleccionado.destino" class="w-full" />
+            </div <!-- Cantidad -->
+            <div>
+                <label class="block text-sm font-medium">Cantidad</label>
+                <InputNumber v-model="movimientoSeleccionado.cantidad" class="w-full" />
+            </div>
+            <!-- Permiso Trabajo Asociado -->
+            <div>
+                <label class="block text-sm font-medium">Permiso Trabajo Asociado</label>
+                <InputText v-model="movimientoSeleccionado.permiso_trabajo_asociado" class="w-full" />
+            </div>
+            <!-- Informe Asociado -->
+            <div>
+                <label class="block text-sm font-medium">Informe Asociado</label>
+                <InputText v-model="movimientoSeleccionado.informe_asociado" class="w-full" />
+            </div>
+            <!-- Orden Trabajo Asociada -->
+            <div>
+                <label class="block text-sm font-medium">Orden Trabajo Asociada</label>
+                <InputText v-model="movimientoSeleccionado.orden_trabajo_asociada" class="w-full" />
+            </div>
+            <!-- Remito -->
+            <div>
+                <label class="block text-sm font-medium">Remito</label>
+                <InputText v-model="movimientoSeleccionado.remito" class="w-full" />
+            </div>
+            <!-- Número Almacenes -->
+            <div>
+                <label class="block text-sm font-medium">N° Almacenes</label>
+                <InputNumber v-model="movimientoSeleccionado.numero_almacenes" class="w-full" />
+            </div>
+            <!-- Observaciones -->
+            <div>
+                <label class="block text-sm font-medium">Observaciones</label>
+                <Textarea v-model="movimientoSeleccionado.observaciones" class="w-full" rows="3" />
+            </div>
+            <!-- Botones de acción -->
+            <div class="flex justify-end space-x-2">
+                <Button label="Cancelar" severity="secondary" outlined @click="cancelarEdicion" />
+                <Button label="Guardar" severity="success" @click="editarMovimiento(movimientoSeleccionado)" />
+            </div>
         </div>
-        <!-- Material / Repuesto -->
-        <div>
-          <label class="block text-sm font-medium">Material / Repuesto</label>
-          <InputText v-model="movimientoSeleccionado.material_repuesto" readonly class="w-full" />
-        </div>
-        <!-- Marca -->
-        <div>
-          <label class="block text-sm font-medium">Marca</label>
-          <InputText v-model="movimientoSeleccionado.marca" class="w-full" readonly />
-        </div>
-        <!-- Modelo / Serie -->
-        <div>
-          <label class="block text-sm font-medium">Modelo / Serie</label>
-          <InputText v-model="movimientoSeleccionado.modelo_serie" class="w-full" readonly />
-        </div>
-        <!-- Tipo Movimiento -->
-        <div>
-          <label class="block text-sm font-medium">Tipo Movimiento</label>
-            <Select :options="tipoMoviminento"  v-model="movimientoSeleccionado.tipo_movimiento" class="w-full" />
-
-        </div>
-        <!-- Origen -->
-        <div>
-          <label class="block text-sm font-medium">Origen</label>
-          <InputText v-model="movimientoSeleccionado.origen" class="w-full" />
-        </div>
-        <!-- Destino -->
-        <div>
-          <label class="block text-sm font-medium">Destino</label>
-          <InputText v-model="movimientoSeleccionado.destino" class="w-full" />
-        </div
-        <!-- Cantidad -->
-        <div>
-          <label class="block text-sm font-medium">Cantidad</label>
-          <InputNumber v-model="movimientoSeleccionado.cantidad" class="w-full" />
-        </div>
-        <!-- Permiso Trabajo Asociado -->
-        <div>
-          <label class="block text-sm font-medium">Permiso Trabajo Asociado</label>
-          <InputText v-model="movimientoSeleccionado.permiso_trabajo_asociado" class="w-full" />
-        </div>
-        <!-- Informe Asociado -->
-        <div>
-          <label class="block text-sm font-medium">Informe Asociado</label>
-          <InputText v-model="movimientoSeleccionado.informe_asociado" class="w-full" />
-        </div>
-        <!-- Orden Trabajo Asociada -->
-        <div>
-          <label class="block text-sm font-medium">Orden Trabajo Asociada</label>
-          <InputText v-model="movimientoSeleccionado.orden_trabajo_asociada" class="w-full" />
-        </div>
-        <!-- Remito -->
-        <div>
-          <label class="block text-sm font-medium">Remito</label>
-          <InputText v-model="movimientoSeleccionado.remito" class="w-full" />
-        </div>
-        <!-- Número Almacenes -->
-        <div>
-          <label class="block text-sm font-medium">N° Almacenes</label>
-          <InputNumber v-model="movimientoSeleccionado.numero_almacenes" class="w-full" />
-        </div>
-        <!-- Observaciones -->
-        <div>
-          <label class="block text-sm font-medium">Observaciones</label>
-          <Textarea
-            v-model="movimientoSeleccionado.observaciones"
-            class="w-full"
-            rows="3"
-          />
-        </div>
-        <!-- Botones de acción -->
-        <div class="flex justify-end space-x-2">
-          <Button label="Cancelar" severity="secondary" outlined @click="cancelarEdicion" />
-          <Button label="Guardar" severity="success" @click="editarMovimiento(movimientoSeleccionado)" />
-        </div>
-      </div>
     </Drawer>
     <Toast />
 </template>
@@ -238,27 +225,36 @@ export default defineComponent({
         const dialogRef = inject('dialogRef');
         const visibleRight = ref(false);
         const movimientoSeleccionado = ref(null);
-        // const tipoMoviminento = [{nombre: "SALIDA"}, {nombre: "ENTRADA"}]
-        const tipoMoviminento = ["SALIDA", "INGRESO"];
+        const tipoMoviminento = [{nombre: "SALIDA"}, {nombre: "INGRESO"}]
+        // const tipoMoviminento = ["SALIDA", "INGRESO"];
 
         const abrirEdicionMovimiento = (movimiento) => {
-            console.log('movimiento', movimiento)
-            movimientoSeleccionado.value = {...movimiento};
+            // Normalizamos el valor recibido a mayúsculas y lo mapeamos a los valores esperados
+            const valorNormalizado = movimiento.tipo_movimiento.toUpperCase() === 'SALIDA'
+                ? 'SALIDA'
+                : 'INGRESO'; // Cualquier valor distinto a 'SALIDA' lo tratamos como 'ENTRADA'
+
+            movimientoSeleccionado.value = {
+                ...movimiento,
+                tipo_movimiento: valorNormalizado
+            };
+
+            // movimientoSeleccionado.value = {...movimiento};
             visibleRight.value = true;
         }
 
-        const editarMovimiento = async () => { 
+        const editarMovimiento = async () => {
 
             const response = await actualizarMovimiento(movimientoSeleccionado.value);
             // console.log('response en editar movimiento', response)
-            if(response.success){
+            if (response.success) {
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
                 visibleRight.value = false;
-            }else{
+            } else {
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el movimiento, intente nuevamente', life: 3000 });
             }
 
-         }
+        }
 
         const confirmarEliminacionMov = (movimiento) => {
 
@@ -334,7 +330,7 @@ export default defineComponent({
             actualizarMovimiento,
             editarMovimiento,
             tipoMoviminento
-            
+
         }
 
     }
