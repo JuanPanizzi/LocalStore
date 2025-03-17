@@ -116,22 +116,23 @@
         <!-- Material / Repuesto -->
         <div>
           <label class="block text-sm font-medium">Material / Repuesto</label>
-          <InputText v-model="movimientoSeleccionado.material_repuesto" class="w-full" />
+          <InputText v-model="movimientoSeleccionado.material_repuesto" readonly class="w-full" />
         </div>
         <!-- Marca -->
         <div>
           <label class="block text-sm font-medium">Marca</label>
-          <InputText v-model="movimientoSeleccionado.marca" class="w-full" />
+          <InputText v-model="movimientoSeleccionado.marca" class="w-full" readonly />
         </div>
         <!-- Modelo / Serie -->
         <div>
           <label class="block text-sm font-medium">Modelo / Serie</label>
-          <InputText v-model="movimientoSeleccionado.modelo_serie" class="w-full" />
+          <InputText v-model="movimientoSeleccionado.modelo_serie" class="w-full" readonly />
         </div>
         <!-- Tipo Movimiento -->
         <div>
           <label class="block text-sm font-medium">Tipo Movimiento</label>
-          <InputText v-model="movimientoSeleccionado.tipo_movimiento" class="w-full" />
+            <Select :options="tipoMoviminento"  v-model="movimientoSeleccionado.tipo_movimiento" class="w-full" />
+
         </div>
         <!-- Origen -->
         <div>
@@ -142,7 +143,7 @@
         <div>
           <label class="block text-sm font-medium">Destino</label>
           <InputText v-model="movimientoSeleccionado.destino" class="w-full" />
-        </div>
+        </div
         <!-- Cantidad -->
         <div>
           <label class="block text-sm font-medium">Cantidad</label>
@@ -207,11 +208,13 @@ import Drawer from 'primevue/drawer';
 import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Textarea from 'primevue/textarea';
+import Select from 'primevue/select';
 
 
 export default defineComponent({
     name: 'HistorialArticulo',
     components: {
+        Select,
         DataTable,
         Column,
         Toolbar,
@@ -235,6 +238,8 @@ export default defineComponent({
         const dialogRef = inject('dialogRef');
         const visibleRight = ref(false);
         const movimientoSeleccionado = ref(null);
+        // const tipoMoviminento = [{nombre: "SALIDA"}, {nombre: "ENTRADA"}]
+        const tipoMoviminento = ["SALIDA", "INGRESO"];
 
         const abrirEdicionMovimiento = (movimiento) => {
             console.log('movimiento', movimiento)
@@ -327,7 +332,8 @@ export default defineComponent({
             movimientoSeleccionado,
             abrirEdicionMovimiento,
             actualizarMovimiento,
-            editarMovimiento
+            editarMovimiento,
+            tipoMoviminento
             
         }
 
