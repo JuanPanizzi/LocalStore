@@ -246,20 +246,30 @@ export default defineComponent({
         const editarMovimiento = async () => {
 
             // console.log('movimientoSeleccionado.value', movimientoSeleccionado.value)
-            const movimientoActualizado = {
+            const movimientoEditado = {
                 ...movimientoSeleccionado.value,
                 fecha: movimientoSeleccionado.value.fecha ? formatFechaToYYYYMMDD(movimientoSeleccionado.value.fecha) : ''
             }
-            // console.log('movimientoActualizado que se manda: historialArticulo-258', movimientoActualizado)
-            const response = await actualizarMovimiento(movimientoActualizado);
+            // console.log('movimientoEditado que se manda: historialArticulo-258', movimientoEditado)
+            const response = await actualizarMovimiento(movimientoEditado);
             // console.log('response en editar movimiento', response)
             if (response.success) {
-                toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
-                visibleRight.value = false;
+                const movimientoActualizado = response.data;
+                const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == movimientoActualizado.id )
+
+                if(indexMovimiento !== -1){
+
+                    dataMovimientosArticulo.value.splice(indexMovimiento, 1, movimientoActualizado);
+                    toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
+                    visibleRight.value = false;
+                }else{
+                    throw new Error()
+                }
             } else {
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el movimiento, intente nuevamente', life: 3000 });
+                visibleRight.value = false;
+                
             }
-
         }
 
         const confirmarEliminacionMov = (movimiento) => {
