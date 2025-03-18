@@ -33,12 +33,40 @@ export function useMovimientos() {
 
     }
 
+    const actualizarMovimiento = async (movimiento) => { 
+        try {
+                const response = await window.electronAPI.actualizarMovimiento(movimiento);
+                if(response.success){
+                    return { success: true, data: response.data}
+                }else{
+                    throw new Error();
+                }
+        } catch (error) {
+            console.log('error en actualizar movimiento', error)
+            return { success: false }
+        }
+     }
+
+    const eliminarMovimiento = async (movimiento) => { 
+
+        try {
+            const response = await window.electronAPI.eliminarMovimiento({...movimiento});
+            if(response.success){
+                return { success: true, data: response.data }
+            } else {
+                throw new Error(response.error)
+            }
+        } catch (error) {
+            console.log('error', error)
+            return { success: false }
+        }
+     }
+
     const obtenerMovimientosArticulo = async (articulo_id) => { 
         try {
             const response = await window.electronAPI.obtenerMovimientosArticulo(articulo_id);
             
             if (response.success) {
-                console.log('datos obtenidos correctamente en obtener mov articulo', response.data);
                 return { success: true, data: response.data };
             } else {
                 throw new Error();
@@ -52,7 +80,6 @@ export function useMovimientos() {
     const guardarMovimiento = async (movimiento) => {
         try {
             const response = await window.electronAPI.guardarMovimiento(movimiento);
-            console.log('response en guardar movimiento use movimietnos', response)
             if (response.success) {
                 return { success: true, data: response.data }
             } else {
@@ -535,7 +562,7 @@ export function useMovimientos() {
     };
 
 
-    const exportarExcel = (datosFiltrados) => {
+    const exportarExcel = (datosFiltrados, tipoExcel) => {
         // Mapear los datos al formato requerido}
         const formattedData = datosFiltrados.map((item) => ({
             "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
@@ -624,7 +651,16 @@ export function useMovimientos() {
         XLSX.utils.book_append_sheet(workbook, worksheet, "Historial de Movimientos");
 
         // Exportar el archivo Excel
-        XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
+        if(tipoExcel == "historial articulo"){
+            const material = datosFiltrados[0].material_repuesto;
+            const marca = datosFiltrados[0].marca;
+            const modelo = datosFiltrados[1].modelo_serie
+            XLSX.writeFile(workbook, `INF-MOV-${material}-${marca}-${modelo}.xlsx`);
+
+        }else{
+
+            XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
+        }
     };
 
 
@@ -639,7 +675,9 @@ export function useMovimientos() {
         obtenerUltimoMovimiento,
         generarListadoPDF,
         formatearFecha,
-        exportarExcel
+        exportarExcel,
+        eliminarMovimiento,
+        actualizarMovimiento
     }
 
 }

@@ -25,14 +25,13 @@
                     <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
                         <template #item="slotProps">
-                            <div :key="slotProps.data.id"  class="flex flex-col">
+                            <div :key="slotProps.data.id" class="flex flex-col">
                                 <!-- Imagen -->
                                 <div class="h-[300px] overflow-hidden">
                                     <template v-if="slotProps.data.imagen">
                                         <img :src="formatImagePath(slotProps.data.imagen)"
-                                            :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                            class="w-full h-full rounded object-cover"
-                                            loading="lazy"  />
+                                            :alt="` ${slotProps.data.material_repuesto} - ${slotProps.data.marca} - ${slotProps.data.modelo_serie}`"
+                                            class="w-full h-full rounded object-contain" loading="lazy" />
                                     </template>
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
@@ -50,7 +49,7 @@
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                        }}</p>
+                                            }}</p>
                                         <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
                                             slotProps.data.cantidad }}</p>
                                     </div>
@@ -105,7 +104,8 @@
 
             <!-- Dialog para ingresar o dar salida a un artículo -->
             <Dialog v-model:visible="showIngresoSalida.show" modal
-                :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
+                :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`
+                    : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`">
                 <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
                     :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
                     @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
@@ -113,12 +113,12 @@
             </Dialog>
         </div>
         <Toast />
-        <!-- <ConfirmDialog /> -->
     </section>
 
 
     <Toast />
-    <ConfirmDialog></ConfirmDialog>
+    <!-- <ConfirmDialog></ConfirmDialog> -->
+    <ConfirmPopup />
 
     <DynamicDialog />
 
@@ -147,6 +147,8 @@ import IngresoSalida from '../components/Movimientos/IngresoSalida.vue';
 import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
 import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
+import ConfirmPopup from 'primevue/confirmpopup';
+import { useDebounce } from '@vueuse/core'
 
 export default defineComponent({
     name: 'ArticulosImage',
@@ -158,11 +160,12 @@ export default defineComponent({
         Button,
         FormularioArticulos,
         Dialog,
-        ConfirmDialog,
         DialogEditar,
         IngresoSalida,
         Carousel,
-        DynamicDialog
+        DynamicDialog,
+        ConfirmPopup,
+        ConfirmDialog,
 
 
     },
@@ -191,6 +194,7 @@ export default defineComponent({
         const isLoading = ref(true);
 
 
+
         const abrirHistorial = (articulo) => {
             const { id, marca, modelo_serie } = articulo
             dialog.open(HistorialArticulo, {
@@ -200,9 +204,36 @@ export default defineComponent({
                 props: {
                     modal: true,
                     header: `HISTORIAL ARTÍCULO: ${marca} - ${modelo_serie}`
+                },
+                emits: {
+                    onSave: (e) => {
+                        const {articulo_id, tipo_movimiento, cantidad} = e.movimiento_articulo_eliminado;
+                        console.log(e);
+                        
+                        const indexArticulo = dataArticulos.value.findIndex(art => art.id == articulo_id);
+
+                        if(indexArticulo !== -1 ){
+
+                            if(tipo_movimiento == 'SALIDA'){
+
+                                dataArticulos.value[indexArticulo].cantidad += cantidad;
+
+                            } else if(tipo_movimiento == 'INGRESO' || tipo_movimiento ==  'SALIDA'){
+
+                                dataArticulos.value[indexArticulo].cantidad -= cantidad;
+
+                            } else{
+                                toast.add({ severity: 'error', summary: 'Error', detail: 'Tipo de movimiento no reconocido, el mismo debe ser "INGRESO", "ENTRADA" o "SALIDA"', life: 3000 });
+
+                            }
+                        }
+                    }
                 }
             })
         }
+
+        
+
         const actualizarImagenDirecta = async (articulo) => {
             const response = await seleccionarImagen();
             if (response.success && !response.data.canceled) {
@@ -284,15 +315,32 @@ export default defineComponent({
             marca: '',
             modelo_serie: ''
         })
+        // Se crea una versión debounced de 'filters' con 300ms de retardo
+        const debouncedFilters = useDebounce(filters, 300);
 
+        // const filteredArticulos = computed(() => {
+        //     return (dataArticulos.value || []).filter(item => {
+        //         const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material_repuesto || '').toLowerCase());
+        //         const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
+        //         const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo_serie || '').toLowerCase());
+        //         return materialMatch && marcaMatch && modeloMatch;
+        //     });
+        // });
+        // Computed que utiliza los filtros debounced para realizar el filtrado
         const filteredArticulos = computed(() => {
-            return (dataArticulos.value || []).filter(item => {
-                const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material_repuesto || '').toLowerCase());
-                const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
-                const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo_serie || '').toLowerCase());
-                return materialMatch && marcaMatch && modeloMatch;
-            });
-        });
+            return dataArticulos.value.filter(item => {
+                const materialMatch = (item.material_repuesto || '')
+                    .toLowerCase()
+                    .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
+                const marcaMatch = (item.marca || '')
+                    .toLowerCase()
+                    .includes((debouncedFilters.value.marca || '').toLowerCase())
+                const modeloMatch = (item.modelo_serie || '')
+                    .toLowerCase()
+                    .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
+                return materialMatch && marcaMatch && modeloMatch
+            })
+        })
 
         // Variable para almacenar el artículo activo (por defecto, el primero)
         const activeArticulo = ref(filteredArticulos.value[0] || null)
@@ -504,7 +552,6 @@ export default defineComponent({
         }
 
         const crearMovimiento = async (datosCompIngresoSalida) => {
-            //console.log('datosFormulario', datosCompIngresoSalida) //llegan del componente hijo
 
             const datosFormulario = {
                 ...datosCompIngresoSalida,
@@ -512,11 +559,8 @@ export default defineComponent({
             }
 
             const response = await guardarMovimiento(datosFormulario);
-            // console.log('response en crear movimiento', response)
             if (response.success) {
 
-                // console.log('response.data movmiento generado', response.data)
-                //dataArticulos.value.push(response.data);
                 const movimientoArticulo = response.data;
 
                 const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
@@ -526,10 +570,11 @@ export default defineComponent({
                     return;
                 }
 
-                const articuloParaModificar = dataArticulos.value[indexArticulo];
+                const articuloActualizado = dataArticulos.value[indexArticulo];
+                articuloActualizado.cantidad = movimientoArticulo.stock_articulo;
 
-                articuloParaModificar.cantidad += showIngresoSalida.value.accion === 'INGRESO' ? 1 : -1;
-
+                // Con esto se actualiza el input del componente hijo "ingreso salida" que muestra el stock del artículo
+                articuloSeleccionado.value.cantidad = movimientoArticulo.stock_articulo;
 
                 // showIngresoSalida.value.show = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
@@ -543,7 +588,7 @@ export default defineComponent({
                 } else if (response.error == 'Stock insuficiente para realizar la salida') {
 
                     showIngresoSalida.value.show = false;
-                    toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 5000 });
+                    toast.add({ severity: 'error', summary: 'Stock Insuficiente', detail: 'La cantidad seleccionada es mayor a la cantidad del artículo en stock.', life: 5000 });
                     return;
 
                 } else if (response.error == 'numero de informe repetido') {
@@ -622,7 +667,8 @@ export default defineComponent({
             dialog,
             abrirHistorial,
             isLoading,
-            actualizarImagenDirecta
+            actualizarImagenDirecta,
+            debouncedFilters
 
         }
     }

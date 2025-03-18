@@ -1,4 +1,5 @@
 import { contextBridge, ipcRenderer } from "electron";
+import { actualizarMovimiento } from "./services/movimientos/movimientosService";
 
 
 //expose global window.electronAPI for font-end by contextBridge 
@@ -11,6 +12,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // insertData: (data: { name: string; age: number }) => ipcRenderer.invoke('insert-data', data),
   // getData: () => ipcRenderer.invoke('get-data'),
   obtenerMovimientos: () => ipcRenderer.invoke('obtener-movimientos'),
+  actualizarMovimiento: (movimiento) => ipcRenderer.invoke('actualizar-movimiento', movimiento),
+  eliminarMovimiento: (movimiento) => ipcRenderer.invoke('eliminar-movimiento', movimiento),
   obtenerMovimientosArticulo: (articulo_id) => ipcRenderer.invoke('obtener-movimientos-articulo', articulo_id),
   obtenerArticulos: () => ipcRenderer.invoke('obtener-articulos'),
   guardarMovimiento: (movimiento)=> ipcRenderer.invoke('guardar-movimiento', movimiento),

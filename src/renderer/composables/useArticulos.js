@@ -57,7 +57,6 @@ export function useArticulos(){
   
 
       const actualizarArticulo = async (articulo) => {
-        console.log('articulo que llega', articulo)
         try {
             const response = await window.electronAPI.actualizarArticulo(articulo);
             if(response.success){

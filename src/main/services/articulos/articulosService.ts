@@ -74,7 +74,6 @@ export const eliminarArticulo = async (articuloId: number | string) => {
 
 export const actualizarArticulo = async (articulo) => {
     const { material_repuesto, marca, modelo_serie, cantidad, imagen, id } = articulo;
-    console.log('articulo que llega', articulo)
     try {
         // const stmt = db.prepare(`UPDATE articulos SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? WHERE id = ?`);
 
@@ -90,7 +89,6 @@ export const actualizarArticulo = async (articulo) => {
              RETURNING *`
         );
         const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, imagen, id);
-        console.log('articulo actualizado', articuloActualizado)
 
         return { success: true, data: articuloActualizado }
 

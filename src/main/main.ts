@@ -205,8 +205,6 @@ protocol.handle('local', async (request) => {
   }
 
   const fileUrl = url.pathToFileURL(filePath).toString();
-  console.log('filePath', filePath);
-  console.log('fileUrl', fileUrl);
 
   try {
     // net.fetch devuelve una promesa con la respuesta

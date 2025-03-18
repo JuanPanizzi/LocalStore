@@ -2,15 +2,25 @@
     <Form class="px-3 py-5 border border-gray rounded-xl  max-w-[95vw] mx-auto">
 
         <div>
-            <div class="inputs-container flex flex-col items-end mb-4">
-                <div class="input-group flex items-center mb-3">
-                    <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                    <InputText v-model="formData.numero_movimiento" readonly class="w-64" />
+
+
+            <div class="flex justify-between items-center  px-4 mb-4 mt-2">
+
+                <div class=" flex items-center mb-3">
+                    <label class=" text-right mr-3 font-semibold">ARTÍCULO EN STOCK:</label>
+                    <InputText v-model="formData.cantidad" readonly class="w-64" />
                 </div>
-                <div :class="`input-group flex items-center `">
-                    <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
-                    <DatePicker v-model="formData.fecha" class="w-64" aria-required="required" dateFormat="dd/mm/yy"
-                        :showIcon="true" />
+
+                <div class="flex flex-col ">
+                    <div class="input-group flex items-center mb-3">
+                        <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
+                        <InputText v-model="formData.numero_movimiento" readonly class="w-64" />
+                    </div>
+                    <div :class="`input-group flex items-center `">
+                        <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
+                        <DatePicker v-model="formData.fecha" class="w-64" aria-required="required" dateFormat="dd/mm/yy"
+                            :showIcon="true" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -33,7 +43,7 @@
 
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
-                <InputNumber v-model="formData.cantidad" class="w-3/5" readonly />
+                <InputNumber v-model="formData.cantidad_seleccionada" class="w-3/5" />
             </div>
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
@@ -94,9 +104,9 @@
             <div class="flex items-center">
 
                 <Button label="Generar PDF " icon="pi pi-file-pdf" class="" severity="info"
-                :disabled="!camposRequeridos" @click="nuevoPdf" />
+                    :disabled="!camposRequeridos" @click="nuevoPdf" />
                 <Button label="Regresar" icon="pi pi-refresh" class="mx-2" severity="danger"
-                @click="cancelarIngresoSalida" />
+                    @click="cancelarIngresoSalida" />
                 <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
             </div>
 
@@ -156,6 +166,7 @@ export default defineComponent({
             marca: props.articuloSeleccionado.marca,
             modelo_serie: props.articuloSeleccionado.modelo_serie,
             cantidad: props.articuloSeleccionado.cantidad,
+            cantidad_seleccionada: 0,
             fecha: fechaActual(),
             tipo_movimiento: props.ingresoSalida,
             origen: null,
@@ -185,14 +196,20 @@ export default defineComponent({
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
+        watch(() => props.articuloSeleccionado, (nuevoArticulo) => {
+  if (nuevoArticulo && nuevoArticulo.cantidad !== undefined) {
+    formData.cantidad = nuevoArticulo.cantidad;
+  }
+}, { immediate: true, deep: true });
 
-        const reiniciarFormulario = () => { 
+
+        const reiniciarFormulario = () => {
             emit('reiniciarFormulario')
-         }
+        }
 
-        const nuevoPdf = () => { 
-            emit('nuevoPdf', {...formData})
-         }
+        const nuevoPdf = () => {
+            emit('nuevoPdf', { ...formData })
+        }
 
         const guardarMovimiento = () => {
 

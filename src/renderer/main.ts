@@ -82,29 +82,6 @@ app.use(PrimeVue, {
             cssLayer: false
         }
     },
-    pt: {
-        select: {
-            
-                  root: {
-                    class: 'select-root',
-                  },
-                  dropdown: {
-                    class: 'select-dropdown',
-                    style: 'display: flex; align-items:center; margin-right: 2px; '
-                  },
-                  listContainer: {
-                    // class: 'p-select-list-container'
-                    style: 'background: white; border: 1px solid gray; padding: 5px '
-                  },
-                  option: {
-                    class: 'select-option',
-                  },
-                  optionLabel: {
-                    class: 'select-optionLabel'
-                  }
-                
-        }
-    },
     locale: {
       addRule: 'Agregar Condición',
       clear: 'Reiniciar',

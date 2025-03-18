@@ -12,7 +12,6 @@ export function handleArticulos(ipcMain: IpcMain) {
             return await eliminarArticulo(articuloId);
         });
         ipcMain.handle('actualizar-articulo', async (event, articulo) => {
-            console.log('articulo que llega en handler', articulo)
             return await actualizarArticulo(articulo);
         });
         ipcMain.handle('seleccionar-imagen-articulo', async () => {
@@ -25,7 +24,7 @@ export function handleArticulos(ipcMain: IpcMain) {
             }).catch(err => {
                 console.log(err)
             })
-            console.log('resultadoSeleccion selecchionar imagen', resultadoSeleccion)
+            // console.log('resultadoSeleccion selecchionar imagen', resultadoSeleccion)
             return resultadoSeleccion;
         })}
         // ipcMain.handle('seleccionar-hipervinculo-permiso-trabajo', async () => {

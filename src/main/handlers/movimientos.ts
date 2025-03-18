@@ -1,5 +1,5 @@
 import { dialog, IpcMain } from 'electron';
-import { guardarExcelMovimientos, guardarMovimiento, obtenerMovimientos, obtenerMovimientosArticulo, obtenerUltimoMovimiento } from '../services/movimientos/movimientosService';
+import { guardarExcelMovimientos, guardarMovimiento, obtenerMovimientos, obtenerMovimientosArticulo, obtenerUltimoMovimiento, eliminarMovimiento, actualizarMovimiento } from '../services/movimientos/movimientosService';
 import fs from 'fs';
 
 export function handleMovimientos(ipcMain: IpcMain) {
@@ -13,6 +13,12 @@ export function handleMovimientos(ipcMain: IpcMain) {
     ipcMain.handle('guardar-movimiento', async (event, movimiento) => {    
         return await guardarMovimiento(movimiento);
     });
+    ipcMain.handle('actualizar-movimiento', async (event, movimiento) => {    
+      return await actualizarMovimiento(movimiento);
+  });
+    ipcMain.handle('eliminar-movimiento', async (event, movimiento) => {    
+      return await eliminarMovimiento(movimiento);
+  });
     ipcMain.handle('obtener-ultimo-movimiento', async (event) => {
         return await obtenerUltimoMovimiento();
     });
