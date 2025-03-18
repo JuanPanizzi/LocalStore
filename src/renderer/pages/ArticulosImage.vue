@@ -30,8 +30,8 @@
                                 <div class="h-[300px] overflow-hidden">
                                     <template v-if="slotProps.data.imagen">
                                         <img :src="formatImagePath(slotProps.data.imagen)"
-                                            :alt="`${slotProps.data.marca} ${slotProps.data.modelo_serie}`"
-                                            class="w-full h-full rounded object-cover" loading="lazy" />
+                                            :alt="` ${slotProps.data.material_repuesto} - ${slotProps.data.marca} - ${slotProps.data.modelo_serie}`"
+                                            class="w-full h-full rounded object-contain" loading="lazy" />
                                     </template>
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
@@ -207,8 +207,7 @@ export default defineComponent({
                 },
                 emits: {
                     onSave: (e) => {
-
-                        const {id, articulo_id, tipo_movimiento, cantidad} = e.movimiento_articulo_eliminado;
+                        const {articulo_id, tipo_movimiento, cantidad} = e.movimiento_articulo_eliminado;
                         console.log(e);
                         
                         const indexArticulo = dataArticulos.value.findIndex(art => art.id == articulo_id);
@@ -227,10 +226,7 @@ export default defineComponent({
                                 toast.add({ severity: 'error', summary: 'Error', detail: 'Tipo de movimiento no reconocido, el mismo debe ser "INGRESO", "ENTRADA" o "SALIDA"', life: 3000 });
 
                             }
-
                         }
-
-
                     }
                 }
             })
