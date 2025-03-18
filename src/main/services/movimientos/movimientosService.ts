@@ -45,18 +45,18 @@ export const obtenerMovimientosArticulo = (articulo_id) => {
 
 }
 
-export const eliminarMovimiento = (idMovimiento) => { 
-  
+export const eliminarMovimiento = (idMovimiento) => {
+
   try {
-      const stmt = db.prepare(`DELETE FROM movimientos_materiales WHERE id = ?`)
-      const result = stmt.run(idMovimiento)
-    return {success: true, data: result}
-  
+    const stmt = db.prepare(`DELETE FROM movimientos_materiales WHERE id = ?`)
+    const result = stmt.run(idMovimiento)
+    return { success: true, data: result }
+
   } catch (error) {
-    return {success: false}  
+    return { success: false }
   }
 
- }
+}
 
 
 
@@ -170,7 +170,7 @@ export async function guardarExcelMovimientos(data) {
 
 export const guardarMovimiento = async (movimiento) => {
 
-  const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id: articulo_id } = movimiento;
+  const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, cantidad_seleccionada, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id: articulo_id } = movimiento;
 
 
   // console.log('movimiento', movimiento)
@@ -192,10 +192,6 @@ export const guardarMovimiento = async (movimiento) => {
     db.prepare("BEGIN TRANSACTION").run(); // Iniciar la transacción
 
 
-
-
-
-
     // Verificar si el artículo existe
     const articulo = db.prepare("SELECT cantidad FROM articulos WHERE id = ?").get(articulo_id);
     if (!articulo) {
@@ -203,17 +199,26 @@ export const guardarMovimiento = async (movimiento) => {
       return { success: false, error: "El artículo no existe" };
     }
 
-    let nuevaCantidad = articulo.cantidad;
+    let nuevaCantidad;
+
+    const stockArticulo = typeof articulo.cantidad === 'string'
+      ? parseInt(articulo.cantidad, 10)
+      : articulo.cantidad;
+
 
     // Determinar nueva cantidad según el tipo de movimiento
     if (tipo_movimiento === "INGRESO") {
-      nuevaCantidad += 1; // Sumar 1
+      console.log('articulo.cantidad', articulo.cantidad)
+      console.log('cantidad.seleccionada', cantidad_seleccionada)
+      
+      nuevaCantidad = articulo.cantidad + cantidad_seleccionada;
+
     } else if (tipo_movimiento === "SALIDA") {
-      if (articulo.cantidad < 1) {
+      if (stockArticulo < 1 || (stockArticulo - cantidad_seleccionada < 0)) {
         db.prepare("ROLLBACK").run(); // Revertir cambios si no hay suficiente stock
         return { success: false, error: "Stock insuficiente para realizar la salida" };
       }
-      nuevaCantidad -= 1; // Restar 1
+      nuevaCantidad = stockArticulo - cantidad_seleccionada; // Restar 1
     } else {
       db.prepare("ROLLBACK").run(); // Revertir si el tipo de movimiento es inválido
       return { success: false, error: "Tipo de movimiento inválido" };
@@ -227,7 +232,6 @@ export const guardarMovimiento = async (movimiento) => {
       db.prepare("ROLLBACK").run(); // Revertir si la actualización falla
       return { success: false, error: "No se pudo actualizar la cantidad del artículo" };
     }
-
 
 
 
@@ -245,7 +249,6 @@ export const guardarMovimiento = async (movimiento) => {
 
 
     db.prepare("COMMIT").run(); // Confirmar transacción si todo salió bien
-
     const movimientoCreado = {
       id: result.lastInsertRowid,
       numero_movimiento,
@@ -265,7 +268,7 @@ export const guardarMovimiento = async (movimiento) => {
       observaciones,
       articulo_id
     }
-
+console.log('movimientoCreado', movimientoCreado)
 
 
     return { success: true, data: movimientoCreado }
@@ -279,26 +282,26 @@ export const guardarMovimiento = async (movimiento) => {
 
 }
 
-export const actualizarMovimiento = async (movimiento) => { 
+export const actualizarMovimiento = async (movimiento) => {
 
 
   const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id, id: id_movimiento } = movimiento;
 
- try {
-      const stmt = db.prepare(`UPDATE movimientos_materiales SET numero_movimiento = ?, fecha = ?, tipo_movimiento = ?, origen = ?, destino = ?, cantidad = ?, permiso_trabajo_asociado = ?, informe_asociado = ?, orden_trabajo_asociada = ?, remito = ?, numero_almacenes = ?, material_repuesto = ?, marca = ?, modelo_serie = ?, observaciones = ?, articulo_id = ? WHERE id = ?`);
-      
-      const result = stmt.run(numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id, id_movimiento);
+  try {
+    const stmt = db.prepare(`UPDATE movimientos_materiales SET numero_movimiento = ?, fecha = ?, tipo_movimiento = ?, origen = ?, destino = ?, cantidad = ?, permiso_trabajo_asociado = ?, informe_asociado = ?, orden_trabajo_asociada = ?, remito = ?, numero_almacenes = ?, material_repuesto = ?, marca = ?, modelo_serie = ?, observaciones = ?, articulo_id = ? WHERE id = ?`);
 
-      if(result.changes == 0){
-          return { success: false, error: 'No se encontró el movimiento' }
-      }
-      const articuloActualizado = db.prepare(`SELECT * FROM movimientos_materiales WHERE id = ?`).get(id_movimiento);
+    const result = stmt.run(numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id, id_movimiento);
 
-      return { success: true, data: articuloActualizado }
+    if (result.changes == 0) {
+      return { success: false, error: 'No se encontró el movimiento' }
+    }
+    const articuloActualizado = db.prepare(`SELECT * FROM movimientos_materiales WHERE id = ?`).get(id_movimiento);
 
- } catch (error) {
-    return {success: false}  
- }
+    return { success: true, data: articuloActualizado }
+
+  } catch (error) {
+    return { success: false }
+  }
 }
 export const obtenerUltimoMovimiento = async () => {
   try {

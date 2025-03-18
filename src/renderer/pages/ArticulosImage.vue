@@ -525,7 +525,6 @@ export default defineComponent({
         }
 
         const crearMovimiento = async (datosCompIngresoSalida) => {
-            //console.log('datosFormulario', datosCompIngresoSalida) //llegan del componente hijo
 
             const datosFormulario = {
                 ...datosCompIngresoSalida,
@@ -533,11 +532,8 @@ export default defineComponent({
             }
 
             const response = await guardarMovimiento(datosFormulario);
-            // console.log('response en crear movimiento', response)
             if (response.success) {
 
-                // console.log('response.data movmiento generado', response.data)
-                //dataArticulos.value.push(response.data);
                 const movimientoArticulo = response.data;
 
                 const indexArticulo = dataArticulos.value.findIndex(art => art.id == movimientoArticulo.articulo_id);
@@ -546,10 +542,13 @@ export default defineComponent({
                     toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo encontrar el artículo, intente nuevamente', life: 3000 });
                     return;
                 }
-
+                
                 const articuloParaModificar = dataArticulos.value[indexArticulo];
+                articuloParaModificar.cantidad = movimientoArticulo.cantidad;
 
-                articuloParaModificar.cantidad += showIngresoSalida.value.accion === 'INGRESO' ? 1 : -1;
+                // const articuloParaModificar = dataArticulos.value[indexArticulo];
+                // articuloParaModificar.cantidad += showIngresoSalida.value.accion === 'INGRESO' ? 1 : -1;
+
 
 
                 // showIngresoSalida.value.show = false;
