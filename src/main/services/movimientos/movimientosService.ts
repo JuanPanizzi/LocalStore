@@ -136,7 +136,8 @@ export async function guardarExcelMovimientos(data) {
           movimiento.material_repuesto,
           movimiento.marca,
           movimiento.modelo_serie,
-          movimiento.cantidad, // Se usa la cantidad del último movimiento
+          0, //de momento se inicia la cantidad
+          //movimiento.cantidad, // Se usa la cantidad del último movimiento
           null
         );
         // Obtener el ID del artículo insertado
