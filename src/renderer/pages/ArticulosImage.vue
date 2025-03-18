@@ -549,9 +549,6 @@ export default defineComponent({
                 // Con esto se actualiza el input del componente hijo "ingreso salida" que muestra el stock del artículo
                 articuloSeleccionado.value.cantidad = movimientoArticulo.cantidad;
 
-
-
-
                 // showIngresoSalida.value.show = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
                 registroGuardado.value = true;

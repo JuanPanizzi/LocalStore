@@ -83,7 +83,6 @@ export function useMovimientos() {
     const guardarMovimiento = async (movimiento) => {
         try {
             const response = await window.electronAPI.guardarMovimiento(movimiento);
-            console.log('response en guardar movimiento use movimietnos', response)
             if (response.success) {
                 return { success: true, data: response.data }
             } else {

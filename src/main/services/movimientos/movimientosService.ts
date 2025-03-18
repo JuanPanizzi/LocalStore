@@ -208,8 +208,6 @@ export const guardarMovimiento = async (movimiento) => {
 
     // Determinar nueva cantidad según el tipo de movimiento
     if (tipo_movimiento === "INGRESO") {
-      console.log('articulo.cantidad', articulo.cantidad)
-      console.log('cantidad.seleccionada', cantidad_seleccionada)
       
       nuevaCantidad = articulo.cantidad + cantidad_seleccionada;
 
@@ -239,7 +237,7 @@ export const guardarMovimiento = async (movimiento) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
     const result = stmt.run(
-      numero_movimiento, fecha, tipo_movimiento, origen, destino, nuevaCantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id
+      numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad_seleccionada, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, articulo_id
     )
 
     if (result.changes === 0) {
