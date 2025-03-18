@@ -196,6 +196,12 @@ export default defineComponent({
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
+        watch(() => props.articuloSeleccionado, (nuevoArticulo) => {
+  if (nuevoArticulo && nuevoArticulo.cantidad !== undefined) {
+    formData.cantidad = nuevoArticulo.cantidad;
+  }
+}, { immediate: true, deep: true });
+
 
         const reiniciarFormulario = () => {
             emit('reiniciarFormulario')
