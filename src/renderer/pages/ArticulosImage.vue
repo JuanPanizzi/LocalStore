@@ -564,7 +564,7 @@ export default defineComponent({
                 } else if (response.error == 'Stock insuficiente para realizar la salida') {
 
                     showIngresoSalida.value.show = false;
-                    toast.add({ severity: 'error', summary: 'Sin stock', detail: 'La cantidad del artículo seleccionado es 0, por lo que no se le puede dar salida.', life: 5000 });
+                    toast.add({ severity: 'error', summary: 'Stock Insuficiente', detail: 'La cantidad seleccionada es mayor a la cantidad del artículo en stock.', life: 5000 });
                     return;
 
                 } else if (response.error == 'numero de informe repetido') {

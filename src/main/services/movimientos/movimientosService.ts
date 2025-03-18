@@ -268,7 +268,6 @@ export const guardarMovimiento = async (movimiento) => {
       observaciones,
       articulo_id
     }
-console.log('movimientoCreado', movimientoCreado)
 
 
     return { success: true, data: movimientoCreado }
