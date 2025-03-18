@@ -4,14 +4,14 @@
         <div>
 
 
-            <div class="flex justify-between items-center   mb-4 mt-2">
+            <div class="flex justify-between items-center  px-4 mb-4 mt-2">
 
                 <div class=" flex items-center mb-3">
-                    <label class="w-40 text-right mr-3 font-semibold">STOCK ARTÍCULO:</label>
+                    <label class=" text-right mr-3 font-semibold">ARTÍCULO EN STOCK:</label>
                     <InputText v-model="formData.cantidad" readonly class="w-64" />
                 </div>
 
-                <div class="flex flex-col pr-4 ">
+                <div class="flex flex-col ">
                     <div class="input-group flex items-center mb-3">
                         <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
                         <InputText v-model="formData.numero_movimiento" readonly class="w-64" />
