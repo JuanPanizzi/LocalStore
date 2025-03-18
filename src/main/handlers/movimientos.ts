@@ -16,8 +16,8 @@ export function handleMovimientos(ipcMain: IpcMain) {
     ipcMain.handle('actualizar-movimiento', async (event, movimiento) => {    
       return await actualizarMovimiento(movimiento);
   });
-    ipcMain.handle('eliminar-movimiento', async (event, idMovimiento) => {    
-      return await eliminarMovimiento(idMovimiento);
+    ipcMain.handle('eliminar-movimiento', async (event, movimiento) => {    
+      return await eliminarMovimiento(movimiento);
   });
     ipcMain.handle('obtener-ultimo-movimiento', async (event) => {
         return await obtenerUltimoMovimiento();

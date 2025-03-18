@@ -49,17 +49,17 @@ export function useMovimientos() {
         }
      }
 
-    const eliminarMovimiento = async (idMovimiento) => { 
-        
+    const eliminarMovimiento = async (movimiento) => { 
+
         try {
-            const response = await window.electronAPI.eliminarMovimiento(idMovimiento);
+            const response = await window.electronAPI.eliminarMovimiento({...movimiento});
             if(response.success){
                 return { success: true, data: response.data }
             } else {
                 throw new Error(response.error)
             }
         } catch (error) {
-
+            console.log('error', error)
             return { success: false }
         }
      }

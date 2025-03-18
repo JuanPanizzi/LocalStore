@@ -274,10 +274,12 @@ export default defineComponent({
 
         const confirmarEliminacionMov = (movimiento) => {
 
-            const { id } = movimiento;
+            const { id, tipo_movimiento, cantidad } = movimiento;
 
             confirm.require({
-                message: `¿Estás seguro de eliminar este movimiento?`,
+                message:  tipo_movimiento == 'SALIDA' ? 
+                    `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock del mismo` :
+                    `¿Estás Seguro? Se eliminarán ${cantidad} artículos en el stock del mismo`,
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
@@ -292,7 +294,7 @@ export default defineComponent({
                 },
                 accept: async () => {
 
-                    const response = await eliminarMovimiento(id);
+                    const response = await eliminarMovimiento(movimiento);
 
                     if (response.success) {
                         const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == id);

@@ -45,14 +45,41 @@ export const obtenerMovimientosArticulo = (articulo_id) => {
 
 }
 
-export const eliminarMovimiento = (idMovimiento) => {
+export const eliminarMovimiento = (movimiento) => {
+
+const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
+
 
   try {
-    const stmt = db.prepare(`DELETE FROM movimientos_materiales WHERE id = ?`)
-    const result = stmt.run(idMovimiento)
+
+    db.exec("BEGIN TRANSACTION");
+
+
+    if(tipo_movimiento == 'INGRESO'){
+
+      const stmtActualizar = db.prepare(`UPDATE articulos SET cantidad = cantidad - ? WHERE id = ?`);
+      stmtActualizar.run(cantidad, articulo_id)
+    
+    } else if( tipo_movimiento == 'SALIDA'){
+
+      const stmtActualizar = db.prepare(`UPDATE articulos SET cantidad = cantidad + ? WHERE id = ?`);
+      stmtActualizar.run(cantidad, articulo_id)
+
+    } else {
+      throw new Error("Tipo de movimiento desconocido");
+    }
+
+
+    const stmtEliminar = db.prepare(`DELETE FROM movimientos_materiales WHERE id = ?`);
+    const result = stmtEliminar.run(movimiento.id);
+
+    db.exec("COMMIT");
+
     return { success: true, data: result }
 
   } catch (error) {
+    console.log('error', error)
+    db.exec("ROLLBACK");
     return { success: false }
   }
 
