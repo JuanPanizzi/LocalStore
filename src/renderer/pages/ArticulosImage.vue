@@ -217,14 +217,10 @@ export default defineComponent({
 
                             if(tipo_movimiento == 'SALIDA'){
 
-                                console.log('dataArticulos.value[indexArticulo].cantidad', dataArticulos.value[indexArticulo].cantidad) 
                                 dataArticulos.value[indexArticulo].cantidad = dataArticulos.value[indexArticulo].cantidad + cantidad;
-                                console.log('e.movimiento_articulo_eliminado', e.movimiento_articulo_eliminado) 
 
-                            } else if(tipo_movimiento == 'INGRESO' || 'SALIDA'){
-                                console.log('dataArticulos.value[indexArticulo].cantidad', dataArticulos.value[indexArticulo].cantidad) 
+                            } else if(tipo_movimiento == 'INGRESO' || tipo_movimiento ==  'SALIDA'){
                                 dataArticulos.value[indexArticulo].cantidad = dataArticulos.value[indexArticulo].cantidad - cantidad;
-                                console.log('e.movimiento_articulo_eliminado', e.movimiento_articulo_eliminado) 
                             } else{
                                 toast.add({ severity: 'error', summary: 'Error', detail: 'Tipo de movimiento no reconocido, el mismo debe ser "INGRESO", "ENTRADA" o "SALIDA"', life: 3000 });
 
