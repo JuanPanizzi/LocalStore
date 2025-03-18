@@ -49,7 +49,7 @@
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                        }}</p>
+                                            }}</p>
                                         <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
                                             slotProps.data.cantidad }}</p>
                                     </div>
@@ -104,9 +104,9 @@
 
             <!-- Dialog para ingresar o dar salida a un artículo -->
             <Dialog v-model:visible="showIngresoSalida.show" modal
-                :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}` 
-                : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`">
-                <IngresoSalida  :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+                :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`
+                    : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`">
+                <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
                     :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
                     @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
                     @nuevoPdf="nuevoPdf" />
@@ -204,9 +204,42 @@ export default defineComponent({
                 props: {
                     modal: true,
                     header: `HISTORIAL ARTÍCULO: ${marca} - ${modelo_serie}`
+                },
+                emits: {
+                    onSave: (e) => {
+
+                        const {id, articulo_id, tipo_movimiento, cantidad} = e.movimiento_articulo_eliminado;
+                        console.log(e);
+                        
+                        const indexArticulo = dataArticulos.value.findIndex(art => art.id == articulo_id);
+
+                        if(indexArticulo !== -1 ){
+
+                            if(tipo_movimiento == 'SALIDA'){
+
+                                console.log('dataArticulos.value[indexArticulo].cantidad', dataArticulos.value[indexArticulo].cantidad) 
+                                dataArticulos.value[indexArticulo].cantidad = dataArticulos.value[indexArticulo].cantidad + cantidad;
+                                console.log('e.movimiento_articulo_eliminado', e.movimiento_articulo_eliminado) 
+
+                            } else if(tipo_movimiento == 'INGRESO' || 'SALIDA'){
+                                console.log('dataArticulos.value[indexArticulo].cantidad', dataArticulos.value[indexArticulo].cantidad) 
+                                dataArticulos.value[indexArticulo].cantidad = dataArticulos.value[indexArticulo].cantidad - cantidad;
+                                console.log('e.movimiento_articulo_eliminado', e.movimiento_articulo_eliminado) 
+                            } else{
+                                toast.add({ severity: 'error', summary: 'Error', detail: 'Tipo de movimiento no reconocido, el mismo debe ser "INGRESO", "ENTRADA" o "SALIDA"', life: 3000 });
+
+                            }
+
+                        }
+
+
+                    }
                 }
             })
         }
+
+        
+
         const actualizarImagenDirecta = async (articulo) => {
             const response = await seleccionarImagen();
             if (response.success && !response.data.canceled) {
@@ -282,7 +315,7 @@ export default defineComponent({
             selectedArticulo.value = event.data;
         }
 
-        
+
         const filters = ref({
             material_repuesto: '',
             marca: '',
@@ -542,10 +575,10 @@ export default defineComponent({
                     toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo encontrar el artículo, intente nuevamente', life: 3000 });
                     return;
                 }
-                
+
                 const articuloActualizado = dataArticulos.value[indexArticulo];
                 articuloActualizado.cantidad = movimientoArticulo.stock_articulo;
-                
+
                 // Con esto se actualiza el input del componente hijo "ingreso salida" que muestra el stock del artículo
                 articuloSeleccionado.value.cantidad = movimientoArticulo.stock_articulo;
 

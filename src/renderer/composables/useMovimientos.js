@@ -34,10 +34,8 @@ export function useMovimientos() {
     }
 
     const actualizarMovimiento = async (movimiento) => { 
-        console.log('movimiento en actualizaar movimiento', movimiento)
         try {
                 const response = await window.electronAPI.actualizarMovimiento(movimiento);
-                console.log('response en use movimientos', response)
                 if(response.success){
                     return { success: true, data: response.data}
                 }else{
@@ -69,7 +67,6 @@ export function useMovimientos() {
             const response = await window.electronAPI.obtenerMovimientosArticulo(articulo_id);
             
             if (response.success) {
-                console.log('datos obtenidos correctamente en obtener mov articulo', response.data);
                 return { success: true, data: response.data };
             } else {
                 throw new Error();

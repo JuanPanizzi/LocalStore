@@ -55,7 +55,7 @@ const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
     db.exec("BEGIN TRANSACTION");
 
 
-    if(tipo_movimiento == 'INGRESO'){
+    if(tipo_movimiento == 'INGRESO' || tipo_movimiento == 'ENTRADA'){
 
       const stmtActualizar = db.prepare(`UPDATE articulos SET cantidad = cantidad - ? WHERE id = ?`);
       stmtActualizar.run(cantidad, articulo_id)
@@ -233,7 +233,7 @@ export const guardarMovimiento = async (movimiento) => {
 
 
     // Determinar nueva cantidad según el tipo de movimiento
-    if (tipo_movimiento === "INGRESO") {
+    if (tipo_movimiento === "INGRESO" || tipo_movimiento === "ENTRADA") {
       
       nuevaCantidad = articulo.cantidad + cantidad_seleccionada;
 

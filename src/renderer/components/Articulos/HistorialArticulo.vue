@@ -216,8 +216,8 @@ export default defineComponent({
     },
 
 
-    setup() {
-
+    setup(props, {emit}) {
+        
         const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel, eliminarMovimiento, actualizarMovimiento } = useMovimientos();
         const dataMovimientosArticulo = ref(null);
         const confirm = useConfirm();
@@ -274,12 +274,12 @@ export default defineComponent({
 
         const confirmarEliminacionMov = (movimiento) => {
 
-            const { id, tipo_movimiento, cantidad } = movimiento;
+            const { id, tipo_movimiento, cantidad} = movimiento;
 
             confirm.require({
                 message:  tipo_movimiento == 'SALIDA' ? 
-                    `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock del mismo` :
-                    `¿Estás Seguro? Se eliminarán ${cantidad} artículos en el stock del mismo`,
+                    `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock` :
+                    `¿Estás Seguro? Se eliminarán ${cantidad} artículos del stock`,
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
@@ -300,7 +300,11 @@ export default defineComponent({
                         const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == id);
 
                         if (indexMovimiento !== -1) {
+                            
                             dataMovimientosArticulo.value.splice(indexMovimiento, 1);
+
+                            emit('save', {movimiento_articulo_eliminado: movimiento});
+                            
                             toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
                         } else {
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
@@ -348,7 +352,8 @@ export default defineComponent({
             actualizarMovimiento,
             editarMovimiento,
             tipoMoviminento,
-            formatFechaToYYYYMMDD
+            formatFechaToYYYYMMDD,
+            emit
 
         }
 
