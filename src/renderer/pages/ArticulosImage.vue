@@ -104,8 +104,9 @@
 
             <!-- Dialog para ingresar o dar salida a un artículo -->
             <Dialog v-model:visible="showIngresoSalida.show" modal
-                :header="showIngresoSalida.accion == 'INGRESO' ? 'INGRESO ARTICULO' : 'SALIDA ARTICULO'">
-                <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
+                :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}` 
+                : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`">
+                <IngresoSalida  :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
                     :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
                     @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
                     @nuevoPdf="nuevoPdf" />
