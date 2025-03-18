@@ -543,8 +543,8 @@ export default defineComponent({
                     return;
                 }
                 
-                const articuloParaModificar = dataArticulos.value[indexArticulo];
-                articuloParaModificar.cantidad = movimientoArticulo.cantidad;
+                const articuloActualizado = dataArticulos.value[indexArticulo];
+                articuloActualizado.cantidad = movimientoArticulo.cantidad;
                 
                 // Con esto se actualiza el input del componente hijo "ingreso salida" que muestra el stock del artículo
                 articuloSeleccionado.value.cantidad = movimientoArticulo.cantidad;
