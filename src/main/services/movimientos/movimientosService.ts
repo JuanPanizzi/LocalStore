@@ -173,7 +173,6 @@ export const guardarMovimiento = async (movimiento) => {
   const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, cantidad_seleccionada, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id: articulo_id } = movimiento;
 
 
-  // console.log('movimiento', movimiento)
   try {
 
 
@@ -254,7 +253,8 @@ export const guardarMovimiento = async (movimiento) => {
       tipo_movimiento,
       origen,
       destino,
-      cantidad: nuevaCantidad,
+      stock_articulo: nuevaCantidad,
+      cantidad_seleccionada,
       permiso_trabajo_asociado,
       informe_asociado,
       orden_trabajo_asociada,

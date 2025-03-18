@@ -544,10 +544,10 @@ export default defineComponent({
                 }
                 
                 const articuloActualizado = dataArticulos.value[indexArticulo];
-                articuloActualizado.cantidad = movimientoArticulo.cantidad;
+                articuloActualizado.cantidad = movimientoArticulo.stock_articulo;
                 
                 // Con esto se actualiza el input del componente hijo "ingreso salida" que muestra el stock del artículo
-                articuloSeleccionado.value.cantidad = movimientoArticulo.cantidad;
+                articuloSeleccionado.value.cantidad = movimientoArticulo.stock_articulo;
 
                 // showIngresoSalida.value.show = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
