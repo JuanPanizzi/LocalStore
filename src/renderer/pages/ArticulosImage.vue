@@ -20,10 +20,24 @@
                     <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
                     <!-- Condicional para mostrar mensaje de carga -->
                     <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
-                        <p class="text-white">Cargando...</p>
+                        <p class="text-white" icon="pi pi-clock" style="font-size: 1rem">
+                            <i class="pi pi-clock" style="font-size: 1rem"></i>
+                            Cargando...
+                        </p>
+
+                        <!-- <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i> -->
+                        <!-- <i class="pi pi-spin pi-cog" style="font-size: 2rem"></i> -->
+
                     </div>
                     <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
-                        :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
+                        :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden"
+                        emptyMessage="Sin resultados">
+
+                        <template #empty>
+                            <div class="w-full h-full flex justify-center items-center bg-[#0F172A]  py-14 mt-1  rounded-xl">
+                                <h1>Sin Resultados</h1>
+                            </div>
+                        </template>
                         <template #item="slotProps">
                             <div :key="slotProps.data.id" class="flex flex-col">
                                 <!-- Imagen -->
@@ -31,7 +45,7 @@
                                     <template v-if="slotProps.data.imagen">
                                         <img :src="formatImagePath(slotProps.data.imagen)"
                                             :alt="` ${slotProps.data.material_repuesto} - ${slotProps.data.marca} - ${slotProps.data.modelo_serie}`"
-                                            class="w-full h-full rounded object-contain" loading="lazy" />
+                                            class="w-full h-full rounded object-contain rounded" loading="lazy" />
                                     </template>
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
@@ -81,11 +95,18 @@
                 <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
                     <h3 class="text-lg font-bold text-gray-800 mb-2 text-center text-white">Listado de Artículos</h3>
                     <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
-                        <p class="text-white">Cargando...</p>
+                        <p class="text-white" icon="pi pi-clock" style="font-size: 1rem">
+                            <i class="pi pi-clock" style="font-size: 1rem"></i>
+                            Cargando...
+                        </p>
                     </div>
-                    <DataTable v-else v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"
-                        class="mx-auto" selectionMode="single" :selection="selectedArticulo"
-                        @row-select="onArticuloSelect" dataKey="id">
+                    <DataTable v-else :value="filteredArticulos" paginator :rows="4" class="mx-auto"
+                        selectionMode="single" :selection="selectedArticulo" @row-select="onArticuloSelect"
+                        dataKey="id">
+
+                        <template #empty>
+                            <h1 class="text-center ">Sin resultados</h1>
+                        </template>
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
@@ -148,7 +169,7 @@ import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
 import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
 import ConfirmPopup from 'primevue/confirmpopup';
-import { useDebounce } from '@vueuse/core'
+import { useDebounce, useDebounceFn } from '@vueuse/core'
 
 export default defineComponent({
     name: 'ArticulosImage',
@@ -196,33 +217,33 @@ export default defineComponent({
 
 
         const abrirHistorial = (articulo) => {
-            const { id, marca, modelo_serie } = articulo
+            const { id, marca, modelo_serie, material_repuesto } = articulo
             dialog.open(HistorialArticulo, {
                 data: {
                     articulo_id: id
                 },
                 props: {
                     modal: true,
-                    header: `HISTORIAL ARTÍCULO: ${marca} - ${modelo_serie}`
+                    header: `HISTORIAL ARTÍCULO: ${material_repuesto} - ${marca} - ${modelo_serie}`
                 },
                 emits: {
                     onSave: (e) => {
-                        const {articulo_id, tipo_movimiento, cantidad} = e.movimiento_articulo_eliminado;
+                        const { articulo_id, tipo_movimiento, cantidad } = e.movimiento_articulo_eliminado;
                         console.log(e);
-                        
+
                         const indexArticulo = dataArticulos.value.findIndex(art => art.id == articulo_id);
 
-                        if(indexArticulo !== -1 ){
+                        if (indexArticulo !== -1) {
 
-                            if(tipo_movimiento == 'SALIDA'){
+                            if (tipo_movimiento == 'SALIDA') {
 
                                 dataArticulos.value[indexArticulo].cantidad += cantidad;
 
-                            } else if(tipo_movimiento == 'INGRESO' || tipo_movimiento ==  'SALIDA'){
+                            } else if (tipo_movimiento == 'INGRESO' || tipo_movimiento == 'ENTRADA') {
 
                                 dataArticulos.value[indexArticulo].cantidad -= cantidad;
 
-                            } else{
+                            } else {
                                 toast.add({ severity: 'error', summary: 'Error', detail: 'Tipo de movimiento no reconocido, el mismo debe ser "INGRESO", "ENTRADA" o "SALIDA"', life: 3000 });
 
                             }
@@ -232,7 +253,7 @@ export default defineComponent({
             })
         }
 
-        
+
 
         const actualizarImagenDirecta = async (articulo) => {
             const response = await seleccionarImagen();
@@ -316,7 +337,22 @@ export default defineComponent({
             modelo_serie: ''
         })
         // Se crea una versión debounced de 'filters' con 300ms de retardo
-        const debouncedFilters = useDebounce(filters, 300);
+        // Creamos una copia de los filtros que se actualizará con debounce
+        const debouncedFilters = ref({ ...filters.value });
+
+        // Función debounced que actualizará 'debouncedFilters' después de 300ms sin cambios
+        const updateDebouncedFilters = useDebounceFn(() => {
+            debouncedFilters.value = { ...filters.value };
+        }, 300);
+
+        // Observa los cambios en 'filters' de forma profunda
+        watch(
+            filters,
+            () => {
+                updateDebouncedFilters();
+            },
+            { deep: true }
+        );
 
         // const filteredArticulos = computed(() => {
         //     return (dataArticulos.value || []).filter(item => {
@@ -327,20 +363,35 @@ export default defineComponent({
         //     });
         // });
         // Computed que utiliza los filtros debounced para realizar el filtrado
+        // const filteredArticulos = computed(() => {
+        //     return dataArticulos.value.filter(item => {
+        //         const materialMatch = (item.material_repuesto || '')
+        //             .toLowerCase()
+        //             .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
+        //         const marcaMatch = (item.marca || '')
+        //             .toLowerCase()
+        //             .includes((debouncedFilters.value.marca || '').toLowerCase())
+        //         const modeloMatch = (item.modelo_serie || '')
+        //             .toLowerCase()
+        //             .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
+        //         return materialMatch && marcaMatch && modeloMatch
+        //     })
+        // })
+        // Computed que utiliza los filtros debounced para filtrar los artículos
         const filteredArticulos = computed(() => {
             return dataArticulos.value.filter(item => {
                 const materialMatch = (item.material_repuesto || '')
                     .toLowerCase()
-                    .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
+                    .includes((debouncedFilters.value.material_repuesto || '').toLowerCase());
                 const marcaMatch = (item.marca || '')
                     .toLowerCase()
-                    .includes((debouncedFilters.value.marca || '').toLowerCase())
+                    .includes((debouncedFilters.value.marca || '').toLowerCase());
                 const modeloMatch = (item.modelo_serie || '')
                     .toLowerCase()
-                    .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
-                return materialMatch && marcaMatch && modeloMatch
-            })
-        })
+                    .includes((debouncedFilters.value.modelo_serie || '').toLowerCase());
+                return materialMatch && marcaMatch && modeloMatch;
+            });
+        });
 
         // Variable para almacenar el artículo activo (por defecto, el primero)
         const activeArticulo = ref(filteredArticulos.value[0] || null)

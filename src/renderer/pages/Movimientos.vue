@@ -255,7 +255,7 @@ export default defineComponent({
             const modeloExiste = modeloValue && modeloValue.trim().length > 0;
 
             if (!marcaExiste || !modeloExiste) {
-                toast.add({ severity: 'error', summary: 'Marca y/o Modelo inexistente', detail: 'Debes elegir en los filtros una marca y un modelo para seleccionar el artículo, intente nuevamente', life: 5000 });
+                toast.add({ severity: 'error', summary: 'Marca y/o Modelo inexistente', detail: 'Debe elegir en los filtros una marca y un modelo para seleccionar el artículo, intente nuevamente', life: 5000 });
                 return;
             }
 

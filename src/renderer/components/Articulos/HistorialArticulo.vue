@@ -18,8 +18,7 @@
 
                         <Button class="mr-2" icon="pi pi-trash" outlined severity="danger"
                             @click="confirmarEliminacionMov(slotProps.data)" />
-                        <Button icon="pi pi-pencil" outlined severity="info"
-                            @click="abrirEdicionMovimiento(slotProps.data)" />
+                        <!-- <Button icon="pi pi-pencil" outlined severity="info" @click="abrirEdicionMovimiento(slotProps.data)" /> -->
                     </div>
                 </template>
             </Column>
@@ -124,7 +123,8 @@
             <!-- Tipo Movimiento -->
             <div>
                 <label class="block text-sm font-medium">Tipo Movimiento</label>
-                <Select :options="tipoMoviminento" optionLabel="nombre" optionValue="nombre" v-model="movimientoSeleccionado.tipo_movimiento" class="w-full" />
+                <Select :options="tipoMoviminento" optionLabel="nombre" optionValue="nombre"
+                    v-model="movimientoSeleccionado.tipo_movimiento" class="w-full" />
             </div>
             <!-- Origen -->
             <div>
@@ -216,8 +216,8 @@ export default defineComponent({
     },
 
 
-    setup(props, {emit}) {
-        
+    setup(props, { emit }) {
+
         const { obtenerMovimientosArticulo, generarListadoPDF, exportarExcel, eliminarMovimiento, actualizarMovimiento } = useMovimientos();
         const dataMovimientosArticulo = ref(null);
         const confirm = useConfirm();
@@ -225,7 +225,7 @@ export default defineComponent({
         const dialogRef = inject('dialogRef');
         const visibleRight = ref(false);
         const movimientoSeleccionado = ref(null);
-        const tipoMoviminento = [{nombre: "SALIDA"}, {nombre: "INGRESO"}]
+        const tipoMoviminento = [{ nombre: "SALIDA" }, { nombre: "INGRESO" }]
         // const tipoMoviminento = ["SALIDA", "INGRESO"];
 
         const abrirEdicionMovimiento = (movimiento) => {
@@ -255,31 +255,38 @@ export default defineComponent({
             // console.log('response en editar movimiento', response)
             if (response.success) {
                 const movimientoActualizado = response.data;
-                const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == movimientoActualizado.id )
+                const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == movimientoActualizado.id)
 
-                if(indexMovimiento !== -1){
+                if (indexMovimiento !== -1) {
 
                     dataMovimientosArticulo.value.splice(indexMovimiento, 1, movimientoActualizado);
                     toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento actualizado correctamente', life: 4000 });
                     visibleRight.value = false;
-                }else{
+                } else {
                     throw new Error()
                 }
             } else {
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el movimiento, intente nuevamente', life: 3000 });
                 visibleRight.value = false;
-                
+
             }
         }
 
         const confirmarEliminacionMov = (movimiento) => {
 
-            const { id, tipo_movimiento, cantidad} = movimiento;
+            const { id, tipo_movimiento, cantidad } = movimiento;
 
             confirm.require({
-                message:  tipo_movimiento == 'SALIDA' ? 
-                    `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock` :
-                    `¿Estás Seguro? Se eliminarán ${cantidad} artículos del stock`,
+                message:
+                    tipo_movimiento === 'SALIDA'
+                        ? (cantidad > 1
+                            ? `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock`
+                            : `¿Estás Seguro? Se reestablecerá ${cantidad} artículo en el stock`)
+                        : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                            ? (cantidad > 1
+                                ? `¿Estás Seguro? Se eliminarán ${cantidad} artículos del stock`
+                                : `¿Estás Seguro? Se eliminará ${cantidad} artículo del stock`)
+                            : ''),
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
@@ -300,12 +307,22 @@ export default defineComponent({
                         const indexMovimiento = dataMovimientosArticulo.value.findIndex(mov => mov.id == id);
 
                         if (indexMovimiento !== -1) {
-                            
+
                             dataMovimientosArticulo.value.splice(indexMovimiento, 1);
 
-                            emit('save', {movimiento_articulo_eliminado: movimiento});
-                            
-                            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
+                            emit('save', { movimiento_articulo_eliminado: movimiento });
+
+                            const mensaje = tipo_movimiento === 'SALIDA'
+                                    ? (cantidad > 1
+                                        ? `Se han restablecido ${cantidad} artículos en el stock`
+                                        : `Se ha restablecido ${cantidad} artículo en el stock`)
+                                    : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                                        ? (cantidad > 1
+                                            ? `Se han eliminado ${cantidad} artículos del stock`
+                                            : `Se ha eliminado ${cantidad} artículo del stock`)
+                                        : '')
+
+                                    toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
                         } else {
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
