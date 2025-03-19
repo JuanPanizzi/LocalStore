@@ -30,7 +30,14 @@
 
                     </div>
                     <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
-                        :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
+                        :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden"
+                        emptyMessage="Sin resultados">
+
+                        <template #empty>
+                            <div class="w-full h-full flex justify-center items-center bg-[#0F172A]  py-5 mt-8 rounded-xl">
+                                <h1>Sin Resultados</h1>
+                            </div>
+                        </template>
                         <template #item="slotProps">
                             <div :key="slotProps.data.id" class="flex flex-col">
                                 <!-- Imagen -->
@@ -56,7 +63,7 @@
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                        }}</p>
+                                            }}</p>
                                         <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
                                             slotProps.data.cantidad }}</p>
                                     </div>
@@ -228,7 +235,7 @@ export default defineComponent({
 
                                 dataArticulos.value[indexArticulo].cantidad += cantidad;
 
-                            } else if (tipo_movimiento == 'INGRESO' || tipo_movimiento == 'SALIDA') {
+                            } else if (tipo_movimiento == 'INGRESO' || tipo_movimiento == 'ENTRADA') {
 
                                 dataArticulos.value[indexArticulo].cantidad -= cantidad;
 
