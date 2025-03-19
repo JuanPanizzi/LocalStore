@@ -24,7 +24,7 @@
                             <i class="pi pi-clock" style="font-size: 1rem"></i>
                             Cargando...
                         </p>
-                        
+
                         <!-- <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i> -->
                         <!-- <i class="pi pi-spin pi-cog" style="font-size: 2rem"></i> -->
 
@@ -93,9 +93,9 @@
                             Cargando...
                         </p>
                     </div>
-                    <DataTable v-else  :value="filteredArticulos" paginator :rows="4"
-                        class="mx-auto" selectionMode="single" :selection="selectedArticulo"
-                        @row-select="onArticuloSelect" dataKey="id">
+                    <DataTable v-else :value="filteredArticulos" paginator :rows="4" class="mx-auto"
+                        selectionMode="single" :selection="selectedArticulo" @row-select="onArticuloSelect"
+                        dataKey="id">
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
@@ -158,7 +158,7 @@ import { formatFechaToYYYYMMDD } from '../utils/funcionesFecha.js'
 import Carousel from 'primevue/carousel';
 import HistorialArticulo from '../components/Articulos/HistorialArticulo.vue'
 import ConfirmPopup from 'primevue/confirmpopup';
-import { useDebounce } from '@vueuse/core'
+import { useDebounce, useDebounceFn } from '@vueuse/core'
 
 export default defineComponent({
     name: 'ArticulosImage',
@@ -326,7 +326,22 @@ export default defineComponent({
             modelo_serie: ''
         })
         // Se crea una versión debounced de 'filters' con 300ms de retardo
-        const debouncedFilters = useDebounce(filters, 300);
+        // Creamos una copia de los filtros que se actualizará con debounce
+        const debouncedFilters = ref({ ...filters.value });
+
+        // Función debounced que actualizará 'debouncedFilters' después de 300ms sin cambios
+        const updateDebouncedFilters = useDebounceFn(() => {
+            debouncedFilters.value = { ...filters.value };
+        }, 300);
+
+        // Observa los cambios en 'filters' de forma profunda
+        watch(
+            filters,
+            () => {
+                updateDebouncedFilters();
+            },
+            { deep: true }
+        );
 
         // const filteredArticulos = computed(() => {
         //     return (dataArticulos.value || []).filter(item => {
@@ -337,20 +352,35 @@ export default defineComponent({
         //     });
         // });
         // Computed que utiliza los filtros debounced para realizar el filtrado
+        // const filteredArticulos = computed(() => {
+        //     return dataArticulos.value.filter(item => {
+        //         const materialMatch = (item.material_repuesto || '')
+        //             .toLowerCase()
+        //             .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
+        //         const marcaMatch = (item.marca || '')
+        //             .toLowerCase()
+        //             .includes((debouncedFilters.value.marca || '').toLowerCase())
+        //         const modeloMatch = (item.modelo_serie || '')
+        //             .toLowerCase()
+        //             .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
+        //         return materialMatch && marcaMatch && modeloMatch
+        //     })
+        // })
+        // Computed que utiliza los filtros debounced para filtrar los artículos
         const filteredArticulos = computed(() => {
             return dataArticulos.value.filter(item => {
                 const materialMatch = (item.material_repuesto || '')
                     .toLowerCase()
-                    .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
+                    .includes((debouncedFilters.value.material_repuesto || '').toLowerCase());
                 const marcaMatch = (item.marca || '')
                     .toLowerCase()
-                    .includes((debouncedFilters.value.marca || '').toLowerCase())
+                    .includes((debouncedFilters.value.marca || '').toLowerCase());
                 const modeloMatch = (item.modelo_serie || '')
                     .toLowerCase()
-                    .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
-                return materialMatch && marcaMatch && modeloMatch
-            })
-        })
+                    .includes((debouncedFilters.value.modelo_serie || '').toLowerCase());
+                return materialMatch && marcaMatch && modeloMatch;
+            });
+        });
 
         // Variable para almacenar el artículo activo (por defecto, el primero)
         const activeArticulo = ref(filteredArticulos.value[0] || null)
