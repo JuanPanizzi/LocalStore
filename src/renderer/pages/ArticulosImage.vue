@@ -93,7 +93,7 @@
                             Cargando...
                         </p>
                     </div>
-                    <DataTable v-else v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"
+                    <DataTable v-else  :value="filteredArticulos" paginator :rows="4"
                         class="mx-auto" selectionMode="single" :selection="selectedArticulo"
                         @row-select="onArticuloSelect" dataKey="id">
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
