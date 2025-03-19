@@ -186,20 +186,47 @@ app.whenReady().then(() => {
 // });
 
 
+// protocol.handle('local', async (request) => {
+//   // Parsear la URL completa
+//   const parsedUrl = new URL(request.url);
+//   let filePath = '';
+
+//   // Si hay host, en Windows el host contendrá la letra de la unidad (ej. "C")
+//   if (parsedUrl.host) {
+//     // Reconstruir la ruta absoluta: concatenar host + ':' + pathname
+//     filePath = `${parsedUrl.host}:${parsedUrl.pathname}`;
+//   } else {
+//     filePath = parsedUrl.pathname;
+//   }
+
+//   // Si la ruta no es absoluta (por ejemplo, si se esperaba una ruta relativa), opcionalmente se puede combinar con __dirname
+//   if (!path.isAbsolute(filePath)) {
+//     filePath = path.join(__dirname, filePath);
+//   }
+
+//   const fileUrl = url.pathToFileURL(filePath).toString();
+
+//   try {
+//     // net.fetch devuelve una promesa con la respuesta
+//     return await net.fetch(fileUrl);
+//   } catch (error) {
+//     console.error('Error fetching file:', error);
+//     // Opcional: devolver una respuesta de error
+//     throw error;
+//   }
+// });
 protocol.handle('local', async (request) => {
-  // Parsear la URL completa
   const parsedUrl = new URL(request.url);
   let filePath = '';
 
-  // Si hay host, en Windows el host contendrá la letra de la unidad (ej. "C")
   if (parsedUrl.host) {
-    // Reconstruir la ruta absoluta: concatenar host + ':' + pathname
-    filePath = `${parsedUrl.host}:${parsedUrl.pathname}`;
+    // Decodifica el pathname para convertir %20 en espacios
+    filePath = `${parsedUrl.host}:${decodeURIComponent(parsedUrl.pathname)}`;
   } else {
-    filePath = parsedUrl.pathname;
+    filePath = decodeURIComponent(parsedUrl.pathname);
   }
 
-  // Si la ruta no es absoluta (por ejemplo, si se esperaba una ruta relativa), opcionalmente se puede combinar con __dirname
+  // Asegúrate de tener una ruta absoluta
   if (!path.isAbsolute(filePath)) {
     filePath = path.join(__dirname, filePath);
   }
@@ -207,14 +234,13 @@ protocol.handle('local', async (request) => {
   const fileUrl = url.pathToFileURL(filePath).toString();
 
   try {
-    // net.fetch devuelve una promesa con la respuesta
     return await net.fetch(fileUrl);
   } catch (error) {
     console.error('Error fetching file:', error);
-    // Opcional: devolver una respuesta de error
     throw error;
   }
 });
+
 
 createWindow();
 
