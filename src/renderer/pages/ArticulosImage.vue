@@ -34,7 +34,7 @@
                         emptyMessage="Sin resultados">
 
                         <template #empty>
-                            <div class="w-full h-full flex justify-center items-center bg-[#0F172A]  py-5 mt-8 rounded-xl">
+                            <div class="w-full h-full flex justify-center items-center bg-[#0F172A]  py-14 mt-1  rounded-xl">
                                 <h1>Sin Resultados</h1>
                             </div>
                         </template>
@@ -45,7 +45,7 @@
                                     <template v-if="slotProps.data.imagen">
                                         <img :src="formatImagePath(slotProps.data.imagen)"
                                             :alt="` ${slotProps.data.material_repuesto} - ${slotProps.data.marca} - ${slotProps.data.modelo_serie}`"
-                                            class="w-full h-full rounded object-contain" loading="lazy" />
+                                            class="w-full h-full rounded object-contain rounded" loading="lazy" />
                                     </template>
                                     <template v-else>
                                         <!-- Cuadro estilo 'input' cuando no hay imagen -->
@@ -103,6 +103,10 @@
                     <DataTable v-else :value="filteredArticulos" paginator :rows="4" class="mx-auto"
                         selectionMode="single" :selection="selectedArticulo" @row-select="onArticuloSelect"
                         dataKey="id">
+
+                        <template #empty>
+                            <h1 class="text-center ">Sin resultados</h1>
+                        </template>
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
