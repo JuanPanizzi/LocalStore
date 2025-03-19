@@ -20,7 +20,14 @@
                     <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
                     <!-- Condicional para mostrar mensaje de carga -->
                     <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
-                        <p class="text-white">Cargando...</p>
+                        <p class="text-white" icon="pi pi-clock" style="font-size: 1rem">
+                            <i class="pi pi-clock" style="font-size: 1rem"></i>
+                            Cargando...
+                        </p>
+                        
+                        <!-- <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i> -->
+                        <!-- <i class="pi pi-spin pi-cog" style="font-size: 2rem"></i> -->
+
                     </div>
                     <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden">
@@ -49,7 +56,7 @@
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                            }}</p>
+                                        }}</p>
                                         <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
                                             slotProps.data.cantidad }}</p>
                                     </div>
@@ -81,7 +88,10 @@
                 <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
                     <h3 class="text-lg font-bold text-gray-800 mb-2 text-center text-white">Listado de Artículos</h3>
                     <div v-if="isLoading" class="flex items-center justify-center h-[300px] bg-slate-700 rounded-lg">
-                        <p class="text-white">Cargando...</p>
+                        <p class="text-white" icon="pi pi-clock" style="font-size: 1rem">
+                            <i class="pi pi-clock" style="font-size: 1rem"></i>
+                            Cargando...
+                        </p>
                     </div>
                     <DataTable v-else v-model:filters="filters" :value="filteredArticulos" paginator :rows="4"
                         class="mx-auto" selectionMode="single" :selection="selectedArticulo"
@@ -207,22 +217,22 @@ export default defineComponent({
                 },
                 emits: {
                     onSave: (e) => {
-                        const {articulo_id, tipo_movimiento, cantidad} = e.movimiento_articulo_eliminado;
+                        const { articulo_id, tipo_movimiento, cantidad } = e.movimiento_articulo_eliminado;
                         console.log(e);
-                        
+
                         const indexArticulo = dataArticulos.value.findIndex(art => art.id == articulo_id);
 
-                        if(indexArticulo !== -1 ){
+                        if (indexArticulo !== -1) {
 
-                            if(tipo_movimiento == 'SALIDA'){
+                            if (tipo_movimiento == 'SALIDA') {
 
                                 dataArticulos.value[indexArticulo].cantidad += cantidad;
 
-                            } else if(tipo_movimiento == 'INGRESO' || tipo_movimiento ==  'SALIDA'){
+                            } else if (tipo_movimiento == 'INGRESO' || tipo_movimiento == 'SALIDA') {
 
                                 dataArticulos.value[indexArticulo].cantidad -= cantidad;
 
-                            } else{
+                            } else {
                                 toast.add({ severity: 'error', summary: 'Error', detail: 'Tipo de movimiento no reconocido, el mismo debe ser "INGRESO", "ENTRADA" o "SALIDA"', life: 3000 });
 
                             }
@@ -232,7 +242,7 @@ export default defineComponent({
             })
         }
 
-        
+
 
         const actualizarImagenDirecta = async (articulo) => {
             const response = await seleccionarImagen();
