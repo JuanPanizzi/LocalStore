@@ -18,8 +18,7 @@
 
                         <Button class="mr-2" icon="pi pi-trash" outlined severity="danger"
                             @click="confirmarEliminacionMov(slotProps.data)" />
-                        <Button icon="pi pi-pencil" outlined severity="info"
-                            @click="abrirEdicionMovimiento(slotProps.data)" />
+                        <!-- <Button icon="pi pi-pencil" outlined severity="info" @click="abrirEdicionMovimiento(slotProps.data)" /> -->
                     </div>
                 </template>
             </Column>
@@ -313,7 +312,17 @@ export default defineComponent({
 
                             emit('save', { movimiento_articulo_eliminado: movimiento });
 
-                            toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento eliminado correctamente', life: 4000 });
+                            const mensaje = tipo_movimiento === 'SALIDA'
+                                    ? (cantidad > 1
+                                        ? `Se han restablecido ${cantidad} artículos en el stock`
+                                        : `Se ha restablecido ${cantidad} artículo en el stock`)
+                                    : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                                        ? (cantidad > 1
+                                            ? `Se han eliminado ${cantidad} artículos del stock`
+                                            : `Se ha eliminado ${cantidad} artículo del stock`)
+                                        : '')
+
+                                    toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
                         } else {
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
