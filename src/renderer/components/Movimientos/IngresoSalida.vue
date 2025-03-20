@@ -1,5 +1,5 @@
 <template>
-    {{ articuloSeleccionado }}
+  
     <Form class="px-3 py-5 border border-gray rounded-xl  max-w-[95vw] mx-auto">
 
         <div>
