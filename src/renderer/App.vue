@@ -40,12 +40,12 @@ export default {
         label: 'Movimientos de Materiales',
         command: () => loadComponent('Movimientos'),
       },
+      // {
+      //   label: 'Artículos',
+      //   command: () => loadComponent('Articulos'),
+      // },
       {
         label: 'Artículos',
-        command: () => loadComponent('Articulos'),
-      },
-      {
-        label: 'Artículos Image',
         command: () => loadComponent('ArticulosImage'),
       },
      
