@@ -1,9 +1,12 @@
 import { dialog, IpcMain } from "electron";
-import { actualizarArticulo, crearArticulo, eliminarArticulo, obtenerArticulos } from "../services/articulos/articulosService";
+import { actualizarArticulo, crearArticulo, eliminarArticulo, obtenerArticulos, obtenerArticuloById } from "../services/articulos/articulosService";
 
 export function handleArticulos(ipcMain: IpcMain) {
         ipcMain.handle('obtener-articulos', async () => {
             return await obtenerArticulos();
+        });
+        ipcMain.handle('obtener-articulo-by-id', async (event, articuloId) => {
+            return await obtenerArticuloById(articuloId);
         });
         ipcMain.handle('nuevo-articulo', async (event, nuevoArticulo) => {
             return await crearArticulo(nuevoArticulo);

@@ -444,20 +444,43 @@ export function useMovimientos() {
         }
     }
 
+    const obtenerArticuloById = async (articuloId) => {
 
-    const generarListadoPDF = (movimientos, articuloSeleccionado) => {
-        
+        try {
+            const response = await window.electronAPI.obtenerArticuloById(articuloId);
+            
+            if(response.success){
+                return {success: true, data: response.data}
+            }else{
+                throw new Error()
+            }
+            } catch (error) {
+                return {success: false}
+        }
+    }
+
+    const generarListadoPDF = async (movimientos) => {
+
         if (!movimientos || movimientos.length === 0) {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
             return;
         }
 
+
+        const { material_repuesto, marca, modelo_serie, articulo_id } = movimientos[0];
+
+        const response = await obtenerArticuloById(articulo_id);
+
+        if(articulo.success){ 
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al generar el PDF, intente nuevamente.', life: 3000 });
+            return;
+        }
+
+
+        const { cantidad: stock_articulo_seleccionado, unidad_medida } = response.data;
+
         
-        const {material_repuesto, marca, modelo_serie} = movimientos[0];
-        
-        const {cantidad: stock_articulo_seleccionado, unidad_medida} = articuloSeleccionado;
-        
-        
+
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
 
         // Agregar logo
@@ -482,14 +505,14 @@ export function useMovimientos() {
             doc.text(`${formatearFecha(new Date()) || '-'}`, 263, 15);
 
             // doc.text(`${formatearFecha(fechaActual.value)}`, 176, 10);
-      
-      
+
+
             doc.setFont('helvetica', 'bold');
             doc.rect(260, 22, 30, 5) //rectangulo n° req
             doc.text(`STOCK ARTÍCULO:`, 225, 26)
             doc.setFont('helvetica', 'normal');
             doc.text(`${stock_articulo_seleccionado} ${unidad_medida || ''}`, 263, 26)
-      
+
 
 
             //   if (tipoFiltradoPdf.value) {
@@ -716,7 +739,8 @@ export function useMovimientos() {
         formatearFecha,
         exportarExcel,
         eliminarMovimiento,
-        actualizarMovimiento
+        actualizarMovimiento,
+        obtenerArticuloById
     }
 
 }

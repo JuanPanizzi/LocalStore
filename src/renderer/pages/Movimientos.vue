@@ -267,6 +267,7 @@ export default defineComponent({
                 return;
             }
 
+            console.log('movimientos Movimientos.vue: 270', movimientos )
 
             generarListadoPDF(movimientos)
             

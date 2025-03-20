@@ -14,6 +14,17 @@ export const obtenerArticulos = async () => {
 
 }
 
+export const obtenerArticuloById = async (articuloId) => { 
+    try {
+        const result = db.prepare(`SELECT * FROM articulos WHERE id = ?`).get(articuloId);
+        return { success: true, data: result }
+    } catch (error) {
+        console.log('error al obtener articulo por id', error)
+        return { success: false }
+    }
+
+}
+
 export const crearArticulo = async (articulo) => {
     // console.log('articulo', articulo)
     const { material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida } = articulo;
