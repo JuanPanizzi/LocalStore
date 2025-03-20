@@ -461,12 +461,17 @@ export function useMovimientos() {
         appLogo.src = logo;
         appLogo.onload = () => {
             doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
-            doc.setFontSize(16);
+            doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
-            doc.text(`HISTORIAL ARTÍCULO `, doc.internal.pageSize.width / 2, 15, { align: "center" });
-            doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, doc.internal.pageSize.width / 2, 23, { align: "center" });
+            doc.text(`HISTORIAL DE MOVIMIENTOS `, 33, 19);
+            doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, 33, 26);
 
             doc.setFontSize(10);
+
+
+
+
+            
 
             //   if (tipoFiltradoPdf.value) {
             //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
