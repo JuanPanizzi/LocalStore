@@ -62,10 +62,9 @@
                                 <!-- Datos del artículo -->
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
-                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                            }}</p>
-                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
-                                            slotProps.data.cantidad }}</p>
+                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto}}</p>
+                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong> 
+                                        {{slotProps.data.cantidad }} <span v-if="slotProps.data.unidad_medida">{{slotProps.data.unidad_medida}}</span> </p>
                                     </div>
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>

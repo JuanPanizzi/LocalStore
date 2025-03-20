@@ -19,11 +19,17 @@
                 <label class="legend w-1/5 mr-4 text-left font-semibold">Cantidad:</label>
                 <InputNumber readonly v-model="formData.cantidad" class="w-4/5" />
             </div>
+            <div class=" flex justify-between items-center">
+                <label class="legend w-1/5 mr-4 text-left font-semibold">Unidad:</label>
+                <InputText  v-model="formData.unidad_medida" class="w-4/5" />
+            </div>
+
             <div class="flex flex-col col-span-2 items-center justify-center ">
                 <div class="py-5">
                     <!-- <label class="legend w-1/5 text-right font-semibold mr-2">Imagen:</label> -->
                     <Button label="Adjuntar Imagen" icon="pi pi-file" @click="elegirImagen" />
                 </div>
+                <p v-if="formData.imagen"> <b> Imagen Seleccionada: </b> </p>
                 <p>{{ formData.imagen }}</p>
             </div>
             
@@ -46,6 +52,7 @@ import { defineComponent, reactive, ref, watch } from 'vue';
 import { useArticulos } from '../../composables/useArticulos.js'
 import Toast from 'primevue/toast';
 import { useToast } from 'primevue/usetoast';
+import InputText from 'primevue/inputtext';
 
 export default defineComponent({
     name: 'DialogEditar',
@@ -112,7 +119,8 @@ export default defineComponent({
                 modelo: '',
                 material: '',
                 cantidad: 0,
-                imagen: ''
+                imagen: '',
+                unidad_medida: ''
             })
 
         }

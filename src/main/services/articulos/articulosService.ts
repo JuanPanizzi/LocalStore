@@ -73,7 +73,10 @@ export const eliminarArticulo = async (articuloId: number | string) => {
 }
 
 export const actualizarArticulo = async (articulo) => {
-    const { material_repuesto, marca, modelo_serie, cantidad, imagen, id } = articulo;
+    const { material_repuesto, marca, modelo_serie, cantidad, unidad_medida, imagen, id } = articulo;
+
+    
+
     try {
         // const stmt = db.prepare(`UPDATE articulos SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? WHERE id = ?`);
 
@@ -84,11 +87,11 @@ export const actualizarArticulo = async (articulo) => {
 
         const stmt = db.prepare(
             `UPDATE articulos 
-             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? 
+             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, unidad_medida = ?, imagen = ? 
              WHERE id = ? 
              RETURNING *`
         );
-        const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, imagen, id);
+        const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, unidad_medida, imagen, id);
 
         return { success: true, data: articuloActualizado }
 
