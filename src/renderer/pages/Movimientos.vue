@@ -269,6 +269,7 @@ export default defineComponent({
 
 
             generarListadoPDF(movimientos)
+            
         }
 
         const handleFilter = (event) => {

@@ -451,6 +451,9 @@ export function useMovimientos() {
             return;
         }
 
+        const {material_repuesto, marca, modelo_serie} = movimientos[0];
+        
+        
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
 
         // Agregar logo
@@ -460,7 +463,8 @@ export function useMovimientos() {
             doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
             doc.setFontSize(16);
             doc.setFont("helvetica", "bold");
-            doc.text(`HISTORIAL ARTÍCULO ${movimientos[0].marca.toUpperCase()} ${movimientos[0].modelo_serie.toUpperCase()}`, doc.internal.pageSize.width / 2, 15, { align: "center" });
+            doc.text(`HISTORIAL ARTÍCULO `, doc.internal.pageSize.width / 2, 15, { align: "center" });
+            doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, doc.internal.pageSize.width / 2, 23, { align: "center" });
 
             doc.setFontSize(10);
 
@@ -558,7 +562,7 @@ export function useMovimientos() {
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
             // const nombrePdf = tipoFiltradoPdf.value ? `INFCOR-${yyyy}-${mm}-${dd}-FILTRADO-POR-${tipoFiltradoPdf.value}.pdf` : `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
-            const nombrePdf = `INFMOV-${yyyy}-${mm}-${dd}.pdf`;
+            const nombrePdf = `INFMOV-${material_repuesto?.toUpperCase()}-${marca?.toUpperCase()}-${modelo_serie?.toUpperCase()}-FECHA-${yyyy}-${mm}-${dd}.pdf`;
 
             doc.save(nombrePdf);
         };
