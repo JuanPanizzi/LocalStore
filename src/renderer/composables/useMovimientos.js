@@ -33,25 +33,25 @@ export function useMovimientos() {
 
     }
 
-    const actualizarMovimiento = async (movimiento) => { 
+    const actualizarMovimiento = async (movimiento) => {
         try {
-                const response = await window.electronAPI.actualizarMovimiento(movimiento);
-                if(response.success){
-                    return { success: true, data: response.data}
-                }else{
-                    throw new Error();
-                }
+            const response = await window.electronAPI.actualizarMovimiento(movimiento);
+            if (response.success) {
+                return { success: true, data: response.data }
+            } else {
+                throw new Error();
+            }
         } catch (error) {
             console.log('error en actualizar movimiento', error)
             return { success: false }
         }
-     }
+    }
 
-    const eliminarMovimiento = async (movimiento) => { 
+    const eliminarMovimiento = async (movimiento) => {
 
         try {
-            const response = await window.electronAPI.eliminarMovimiento({...movimiento});
-            if(response.success){
+            const response = await window.electronAPI.eliminarMovimiento({ ...movimiento });
+            if (response.success) {
                 return { success: true, data: response.data }
             } else {
                 throw new Error(response.error)
@@ -60,12 +60,12 @@ export function useMovimientos() {
             console.log('error', error)
             return { success: false }
         }
-     }
+    }
 
-    const obtenerMovimientosArticulo = async (articulo_id) => { 
+    const obtenerMovimientosArticulo = async (articulo_id) => {
         try {
             const response = await window.electronAPI.obtenerMovimientosArticulo(articulo_id);
-            
+
             if (response.success) {
                 return { success: true, data: response.data };
             } else {
@@ -76,7 +76,7 @@ export function useMovimientos() {
             return { success: false };
 
         }
-     }
+    }
     const guardarMovimiento = async (movimiento) => {
         try {
             const response = await window.electronAPI.guardarMovimiento(movimiento);
@@ -210,14 +210,14 @@ export function useMovimientos() {
                             ...row,
                             fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
                         }));
-                        
+
                         // Mostrar advertencias si existen
                         if (response.warnings && response.warnings.length > 0) {
                             response.warnings.forEach((msg) => {
                                 toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 6000 });
                             });
                         }
-                        
+
                         resolve({ success: true, data: movimientos });
 
                     } else {
@@ -582,7 +582,7 @@ export function useMovimientos() {
             "Remito": item.remito || "-",
             "N° Almacenes": item.numero_almacenes || "-",
             "Observaciones": item.observaciones || "-",
-        
+
         }));
 
         // Crear una hoja de trabajo (worksheet)
@@ -654,16 +654,21 @@ export function useMovimientos() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Historial de Movimientos");
 
+        const today = new Date();
+        const yyyy = today.getUTCFullYear();
+        const mm = String(today.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(today.getUTCDate()).padStart(2, '0');
+
         // Exportar el archivo Excel
-        if(tipoExcel == "historial articulo"){
+        if (tipoExcel == "historial articulo") {
             const material = datosFiltrados[0].material_repuesto;
             const marca = datosFiltrados[0].marca;
             const modelo = datosFiltrados[1].modelo_serie
-            XLSX.writeFile(workbook, `INF-MOV-${material}-${marca}-${modelo}.xlsx`);
+            XLSX.writeFile(workbook, `INF-MOV-${material}-${marca}-${modelo}-FECHA-${yyyy}-${mm}-${dd}.xlsx`);
 
-        }else{
+        } else {
 
-            XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
+            XLSX.writeFile(workbook, `INF-MOVIMIENTOS-${yyyy}-${mm}-${dd}.xlsx`);
         }
     };
 
