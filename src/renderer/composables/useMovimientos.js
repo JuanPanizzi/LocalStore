@@ -259,7 +259,7 @@ export function useMovimientos() {
         return new Promise((resolve, reject) => {
             // console.log('datosFormulario useMovimientos', datosFormulario)
 
-            const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario;
+            const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, unidad_medida, id } = datosFormulario;
 
             // if (!registroGuardado.value) {
             //     toast.add({ severity: 'warn', summary: 'Error', detail: 'Debe guardar el registro antes de generar el PDF', life: 3000 });
@@ -311,7 +311,7 @@ export function useMovimientos() {
             doc.text(`CANTIDAD: `, 120, 40);
             doc.rect(144, 36, 60, 5) //rec codigo informe
             doc.setFont('helvetica', 'normal');
-            doc.text(`${cantidad}`, 146, 40)
+            doc.text(`${cantidad} ${unidad_medida || ''} `, 146, 40)
 
 
             doc.setFont('helvetica', 'bold');
