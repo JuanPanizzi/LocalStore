@@ -616,6 +616,12 @@ export function useMovimientos() {
 
 
     const exportarExcel = (datosFiltrados, tipoExcel) => {
+
+        if (!datosFiltrados || datosFiltrados.length === 0) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
+            return;
+        }
+
         // Mapear los datos al formato requerido}
         const formattedData = datosFiltrados.map((item) => ({
             "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
