@@ -446,17 +446,18 @@ export function useMovimientos() {
 
 
     const generarListadoPDF = (movimientos, articuloSeleccionado) => {
+        
         if (!movimientos || movimientos.length === 0) {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
             return;
         }
 
-        console.log('articuloSeleccionado en generarListadPdf 454', articuloSeleccionado)
+        
         const {material_repuesto, marca, modelo_serie} = movimientos[0];
         
         const {cantidad: stock_articulo_seleccionado} = articuloSeleccionado;
         
-        console.log('movimientos useMovimientos: 456', movimientos )
+        
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
 
         // Agregar logo
@@ -478,7 +479,7 @@ export function useMovimientos() {
             doc.rect(260, 11, 30, 5); //rectangulo fecha
             doc.text(`FECHA: `, 245, 15);
             doc.setFont('helvetica', 'normal');
-            doc.text(`10/11/23`, 263, 15);
+            doc.text(`${formatearFecha(new Date()) || '-'}`, 263, 15);
 
             // doc.text(`${formatearFecha(fechaActual.value)}`, 176, 10);
       
