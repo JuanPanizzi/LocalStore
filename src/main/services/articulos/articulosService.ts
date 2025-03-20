@@ -16,7 +16,7 @@ export const obtenerArticulos = async () => {
 
 export const crearArticulo = async (articulo) => {
     // console.log('articulo', articulo)
-    const { material_repuesto, marca, modelo_serie, cantidad, imagen } = articulo;
+    const { material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida } = articulo;
 
     try {
 
@@ -26,9 +26,9 @@ export const crearArticulo = async (articulo) => {
             return { success: false, error: "Ya existe un artículo con esa marca y modelo_serie" };
         }
 
-        const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen) VALUES (?,?,?,?,?)`);
+        const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?,?,?,?,?,?)`);
 
-        const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen);
+        const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida);
 
 
         if (result.changes === 0) {
@@ -41,7 +41,8 @@ export const crearArticulo = async (articulo) => {
             marca,
             modelo_serie,
             imagen,
-            cantidad
+            cantidad,
+            unidad_medida
         }
 
         return { success: true, data: nuevoArticulo }
