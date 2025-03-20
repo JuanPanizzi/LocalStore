@@ -110,7 +110,12 @@
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
-                        <Column field="cantidad" header="CANTIDAD" />
+                        <Column #body="slotProps" header="CANTIDAD" >
+                            {{ slotProps.data.cantidad }}
+                            <span v-if="slotProps.data.unidad_medida"> {{ slotProps.data.unidad_medida }}</span>
+                        </Column>
+                        <!-- <Column field="unidad_medida" header="UNIDAD" ></Column> -->
+                        
                     </DataTable>
                 </div>
             </div>
