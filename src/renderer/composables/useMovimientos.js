@@ -470,8 +470,23 @@ export function useMovimientos() {
 
 
 
+            // doc.setFontSize(9)
+            doc.setFont('helvetica', 'bold');
+            doc.rect(263, 6, 30, 5) //rectangulo fecha
+            doc.text(`FECHA: `, 248, 10);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`10/11/23`, 266, 10);
 
-            
+            // doc.text(`${formatearFecha(fechaActual.value)}`, 176, 10);
+      
+      
+            doc.setFont('helvetica', 'bold');
+            doc.rect(263, 17, 30, 5) //rectangulo n° req
+            doc.text(`STOCK ARTÍCULO:`, 228, 21)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`28`, 266, 21)
+      
+
 
             //   if (tipoFiltradoPdf.value) {
             //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
