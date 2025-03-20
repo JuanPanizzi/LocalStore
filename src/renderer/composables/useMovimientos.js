@@ -619,6 +619,8 @@ export function useMovimientos() {
 
     const exportarExcel = (datosFiltrados, tipoExcel) => {
 
+        console.log('datosFiltrados', datosFiltrados)
+
         if (!datosFiltrados || datosFiltrados.length === 0) {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
             return;
