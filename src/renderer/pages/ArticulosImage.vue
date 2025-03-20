@@ -62,10 +62,9 @@
                                 <!-- Datos del artículo -->
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
-                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto
-                                            }}</p>
-                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong> {{
-                                            slotProps.data.cantidad }}</p>
+                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto}}</p>
+                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong> 
+                                        {{slotProps.data.cantidad }} <span v-if="slotProps.data.unidad_medida">{{slotProps.data.unidad_medida}}</span> </p>
                                     </div>
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
@@ -110,7 +109,12 @@
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
-                        <Column field="cantidad" header="CANTIDAD" />
+                        <Column #body="slotProps" header="CANTIDAD" >
+                            {{ slotProps.data.cantidad }}
+                            <span v-if="slotProps.data.unidad_medida"> {{ slotProps.data.unidad_medida }}</span>
+                        </Column>
+                        <!-- <Column field="unidad_medida" header="UNIDAD" ></Column> -->
+                        
                     </DataTable>
                 </div>
             </div>
@@ -220,7 +224,8 @@ export default defineComponent({
             const { id, marca, modelo_serie, material_repuesto } = articulo
             dialog.open(HistorialArticulo, {
                 data: {
-                    articulo_id: id
+                     articulo_id: id,
+                    // articulo_seleccionado: {...articulo}
                 },
                 props: {
                     modal: true,
@@ -560,7 +565,7 @@ export default defineComponent({
             const { id } = articulo;
 
             confirm.require({
-                message: `¿Estás seguro de eliminar este artículo?`,
+                message: `¿Estás seguro de eliminar este artículo y todos sus movimientos del historial?`,
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
@@ -584,7 +589,7 @@ export default defineComponent({
                             dataArticulos.value.splice(indexArticulo, 1);
                         }
 
-                        toast.add({ severity: 'info', summary: 'Éxito', detail: `Artículo eliminado correctamente`, life: 5000 });
+                        toast.add({ severity: 'info', summary: 'Éxito', detail: `Se eliminó el artículo y su historial de movimientos correctamente.`, life: 5000 });
 
                     } else {
 
@@ -666,10 +671,9 @@ export default defineComponent({
             const response = await obtenerArticulos();
             if (response.success) {
                 dataArticulos.value = response.data;
-                console.log('',)
+               
             } else {
-                console.log('no se pudieron obtener los articulos')
-                console.log(response.error)
+              
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los datos, intente nuevamente', life: 3000 });
 
             }

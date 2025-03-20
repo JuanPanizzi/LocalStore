@@ -6,7 +6,7 @@
                 <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success"
                     @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
-                    style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo)" />
+                    style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo, dialogRef.data.articulo_id)" />
             </template>
         </Toolbar>
 
@@ -85,6 +85,7 @@
                 </template>
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
+            <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
             <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
@@ -339,6 +340,7 @@ export default defineComponent({
 
 
         onMounted(async () => {
+            console.log('dialogRef.value.data', dialogRef.value.data)
             const response = await obtenerMovimientosArticulo(dialogRef.value.data.articulo_id);
             if (response.success) {
 
@@ -359,7 +361,6 @@ export default defineComponent({
             stringToDate,
             formatearFecha,
             dialogRef,
-            generarListadoPDF,
             generarListadoPDF,
             exportarExcel,
             confirmarEliminacionMov,

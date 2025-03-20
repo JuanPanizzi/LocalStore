@@ -38,7 +38,7 @@ export const formatFechaDDMMYYYY = (fecha) => {
 
 
 export const formatFechaExcel = (fecha) => {
-  console.log('fehca format excel', fecha)
+  
 
   const dateParts = fecha.split("-");
   if (dateParts.length === 3) {

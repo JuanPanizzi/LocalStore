@@ -23,13 +23,18 @@
 
             </div>
 
-
-
-            <!-- <div class=" flex justify-between items-center">
+            <div class=" flex justify-between items-center">
 
                 <label class="legend w-1/5 text-left font-semibold">Cantidad:</label>
-                <InputNumber v-model="formData.cantidad" class="w-4/5" />
-            </div> -->
+                <InputNumber readonly v-model="formData.cantidad" class="w-4/5" />
+            </div>
+
+            <div class=" flex justify-between items-center">
+
+                <label class="legend w-1/5 text-left font-semibold">Unidad de medida:</label>
+                <InputText  v-model="formData.unidad_medida" class="w-4/5" />
+            </div>
+
             <div class="flex flex-col items-center justify-center ">
                 <div class="py-5">
                     <!-- <label class="legend w-1/5 text-right font-semibold mr-2">Imagen:</label> -->
@@ -43,7 +48,7 @@
                 @click="reiniciarFormulario" />
             <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="danger" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
-          
+
         </div>
     </Form>
 
@@ -73,7 +78,8 @@ export default defineComponent({
             marca: '',
             modelo_serie: '',
             cantidad: 0,
-            imagen: ''
+            imagen: '',
+            unidad_medida: ''
         })
         const seleccionarImagen = async () => {
 
@@ -98,6 +104,7 @@ export default defineComponent({
             formData.modelo_serie = '';
             formData.imagen = null;
             formData.cantidad = 0;
+            formData.unidad_medida = ''
         }
 
         const guardarArticulo = () => {

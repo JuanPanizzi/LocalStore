@@ -33,25 +33,25 @@ export function useMovimientos() {
 
     }
 
-    const actualizarMovimiento = async (movimiento) => { 
+    const actualizarMovimiento = async (movimiento) => {
         try {
-                const response = await window.electronAPI.actualizarMovimiento(movimiento);
-                if(response.success){
-                    return { success: true, data: response.data}
-                }else{
-                    throw new Error();
-                }
+            const response = await window.electronAPI.actualizarMovimiento(movimiento);
+            if (response.success) {
+                return { success: true, data: response.data }
+            } else {
+                throw new Error();
+            }
         } catch (error) {
             console.log('error en actualizar movimiento', error)
             return { success: false }
         }
-     }
+    }
 
-    const eliminarMovimiento = async (movimiento) => { 
+    const eliminarMovimiento = async (movimiento) => {
 
         try {
-            const response = await window.electronAPI.eliminarMovimiento({...movimiento});
-            if(response.success){
+            const response = await window.electronAPI.eliminarMovimiento({ ...movimiento });
+            if (response.success) {
                 return { success: true, data: response.data }
             } else {
                 throw new Error(response.error)
@@ -60,12 +60,12 @@ export function useMovimientos() {
             console.log('error', error)
             return { success: false }
         }
-     }
+    }
 
-    const obtenerMovimientosArticulo = async (articulo_id) => { 
+    const obtenerMovimientosArticulo = async (articulo_id) => {
         try {
             const response = await window.electronAPI.obtenerMovimientosArticulo(articulo_id);
-            
+
             if (response.success) {
                 return { success: true, data: response.data };
             } else {
@@ -76,7 +76,7 @@ export function useMovimientos() {
             return { success: false };
 
         }
-     }
+    }
     const guardarMovimiento = async (movimiento) => {
         try {
             const response = await window.electronAPI.guardarMovimiento(movimiento);
@@ -184,7 +184,8 @@ export function useMovimientos() {
                         orden_trabajo_asociada: normalizedRow["ot asociada"],
                         remito: normalizedRow["remito"],
                         numero_almacenes: normalizedRow["n° almacenes"],
-                        observaciones: normalizedRow["observaciones"]
+                        observaciones: normalizedRow["observaciones"],
+                        unidad_medida: normalizedRow["unidad de medida"]
 
                     }
                 });
@@ -209,14 +210,14 @@ export function useMovimientos() {
                             ...row,
                             fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
                         }));
-                        
+
                         // Mostrar advertencias si existen
                         if (response.warnings && response.warnings.length > 0) {
                             response.warnings.forEach((msg) => {
                                 toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 6000 });
                             });
                         }
-                        
+
                         resolve({ success: true, data: movimientos });
 
                     } else {
@@ -255,10 +256,12 @@ export function useMovimientos() {
 
 
     const generarPdf = (datosFormulario) => {
+        
+
         return new Promise((resolve, reject) => {
             // console.log('datosFormulario useMovimientos', datosFormulario)
 
-            const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, id } = datosFormulario;
+            const { numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, unidad_medida, cantidad_seleccionada, id } = datosFormulario;
 
             // if (!registroGuardado.value) {
             //     toast.add({ severity: 'warn', summary: 'Error', detail: 'Debe guardar el registro antes de generar el PDF', life: 3000 });
@@ -302,15 +305,15 @@ export function useMovimientos() {
 
             doc.setFont('helvetica', 'bold');
             doc.text(`TIPO DE MOVIMIENTO: `, 7, 40);
-            doc.rect(47, 36, 60, 5) //rec codigo informe
+            doc.rect(47, 36, 50, 5) //rec codigo informe
             doc.setFont('helvetica', 'normal');
             doc.text(`${tipo_movimiento}`, 49, 40)
 
             doc.setFont('helvetica', 'bold');
-            doc.text(`CANTIDAD: `, 120, 40);
-            doc.rect(144, 36, 60, 5) //rec codigo informe
+            doc.text(`CANTIDAD SELECCIONADA: `, 105, 40);
+            doc.rect(154, 36, 50, 5) //rec codigo informe
             doc.setFont('helvetica', 'normal');
-            doc.text(`${cantidad}`, 146, 40)
+            doc.text(`${cantidad_seleccionada} ${unidad_medida || ''} `, 156, 40)
 
 
             doc.setFont('helvetica', 'bold');
@@ -443,12 +446,41 @@ export function useMovimientos() {
         }
     }
 
+    const obtenerArticuloById = async (articuloId) => {
 
-    const generarListadoPDF = (movimientos) => {
+        try {
+            const response = await window.electronAPI.obtenerArticuloById(articuloId);
+            
+            if(response.success){
+                return {success: true, data: response.data}
+            }else{
+                throw new Error()
+            }
+            } catch (error) {
+                return {success: false}
+        }
+    }
+
+    const generarListadoPDF = async (movimientos) => {
+
         if (!movimientos || movimientos.length === 0) {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
             return;
         }
+
+
+        const { material_repuesto, marca, modelo_serie, articulo_id } = movimientos[0];
+
+        const response = await obtenerArticuloById(articulo_id);
+
+        if(!response.success){ 
+            toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al generar el PDF, intente nuevamente.', life: 3000 });
+            return;
+        }
+
+        const { cantidad: stock_articulo_seleccionado, unidad_medida } = response.data;
+
+        
 
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
 
@@ -456,12 +488,33 @@ export function useMovimientos() {
         const appLogo = new Image();
         appLogo.src = logo;
         appLogo.onload = () => {
-            doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
-            doc.setFontSize(16);
+            doc.addImage(appLogo, "PNG", 6, 10, 20, 20);
+            doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
-            doc.text(`HISTORIAL ARTÍCULO ${movimientos[0].marca.toUpperCase()} ${movimientos[0].modelo_serie.toUpperCase()}`, doc.internal.pageSize.width / 2, 15, { align: "center" });
+            doc.text(`HISTORIAL DE MOVIMIENTOS `, 29, 19);
+            doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, 29, 26);
 
             doc.setFontSize(10);
+
+
+
+            // doc.setFontSize(9)
+            doc.setFont('helvetica', 'bold');
+            doc.rect(260, 11, 30, 5); //rectangulo fecha
+            doc.text(`FECHA: `, 245, 15);
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${formatearFecha(new Date()) || '-'}`, 263, 15);
+
+            // doc.text(`${formatearFecha(fechaActual.value)}`, 176, 10);
+
+
+            doc.setFont('helvetica', 'bold');
+            doc.rect(260, 22, 30, 5) //rectangulo n° req
+            doc.text(`STOCK ARTÍCULO:`, 225, 26)
+            doc.setFont('helvetica', 'normal');
+            doc.text(`${stock_articulo_seleccionado} ${unidad_medida || ''}`, 263, 26)
+
+
 
             //   if (tipoFiltradoPdf.value) {
             //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
@@ -474,15 +527,16 @@ export function useMovimientos() {
                 { title: "MARCA", dataKey: "marca" },
                 { title: "MODELO / SERIE", dataKey: "modelo_serie" },
                 { title: "MOVIMIENTO", dataKey: "tipo_movimiento" },
-                { title: "Origen", dataKey: "origen" },
-                { title: "Destino", dataKey: "destino" },
-                { title: "Cantidad", dataKey: "cantidad" },
+                { title: "ORIGEN", dataKey: "origen" },
+                { title: "DESTINO", dataKey: "destino" },
+                { title: "CANTIDAD", dataKey: "cantidad" },
+                { title: "UNIDAD", dataKey: "unidad_medida" },
                 { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
                 { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
                 { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
                 { title: "REMITO", dataKey: "remito" },
                 { title: "N° ALMACENES", dataKey: "numero_almacenes" },
-                { title: "Observaciones", dataKey: "observaciones" },
+                { title: "OBSERVACIONES", dataKey: "observaciones" },
 
             ];
 
@@ -527,23 +581,24 @@ export function useMovimientos() {
                 startY: 40,
                 head: [columnas.map(col => col.title)],
                 body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
-                styles: { fontSize: 8, cellPadding: 1 },
-                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
+                styles: { fontSize: 6, cellPadding: 1 },
+                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6.5 },
                 columnStyles: {
-                    0: { cellWidth: 20 }, //Fecha
-                    1: { cellWidth: 20 }, //material / repuesto
-                    2: { cellWidth: 20 }, //marca
-                    3: { cellWidth: 25 },//modelo
-                    4: { cellWidth: 20 }, // movimiento
-                    5: { cellWidth: 20 }, // origen
-                    6: { cellWidth: 20 }, // destino
-                    7: { cellWidth: 20 }, // cantidad
-                    8: { cellWidth: 20 }, // pt asociado
-                    9: { cellWidth: 24 }, //  ot asociado 
-                    10: { cellWidth: 25 }, // informe asociado
-                    11: { cellWidth: 17 }, // remito
-                    12: { cellWidth: 19 }, // n° almacenes
-                    13: { cellWidth: 25 }, // observaciones
+                    0: { cellWidth: 19 }, //Fecha
+                    1: { cellWidth: 19 }, //material / repuesto
+                    2: { cellWidth: 19 }, //marca
+                    3: { cellWidth: 24 },//modelo
+                    4: { cellWidth: 19 }, // movimiento
+                    5: { cellWidth: 19 }, // origen
+                    6: { cellWidth: 19 }, // destino
+                    7: { cellWidth: 19 }, // cantidad
+                    8: { cellWidth: 16 }, // unidad medida
+                    9: { cellWidth: 19 }, // pt asociado
+                    10: { cellWidth: 23 }, //  ot asociado 
+                    11: { cellWidth: 24 }, // informe asociado
+                    12: { cellWidth: 16 }, // remito
+                    13: { cellWidth: 18 }, // n° almacenes
+                    14: { cellWidth: 22 }, // observaciones
                 },
                 margin: { left: 1, right: 1 },
                 theme: "grid"
@@ -555,7 +610,7 @@ export function useMovimientos() {
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
             // const nombrePdf = tipoFiltradoPdf.value ? `INFCOR-${yyyy}-${mm}-${dd}-FILTRADO-POR-${tipoFiltradoPdf.value}.pdf` : `INFCOR-${yyyy}-${mm}-${dd}.pdf`;
-            const nombrePdf = `INFMOV-${yyyy}-${mm}-${dd}.pdf`;
+            const nombrePdf = `INFMOV-${material_repuesto?.toUpperCase()}-${marca?.toUpperCase()}-${modelo_serie?.toUpperCase()}-FECHA-${yyyy}-${mm}-${dd}.pdf`;
 
             doc.save(nombrePdf);
         };
@@ -563,6 +618,13 @@ export function useMovimientos() {
 
 
     const exportarExcel = (datosFiltrados, tipoExcel) => {
+
+
+        if (!datosFiltrados || datosFiltrados.length === 0) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
+            return;
+        }
+
         // Mapear los datos al formato requerido}
         const formattedData = datosFiltrados.map((item) => ({
             "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
@@ -574,12 +636,14 @@ export function useMovimientos() {
             "Marca": item.marca || "-",
             "Modelo/Serie": item.modelo_serie || "-",
             "Cantidad": item.cantidad || "-",
+            "Unidad de Medida": item.unidad_medida || "-",
             "PT Asociado": item.permiso_trabajo_asociado || "-",
             "Informe Asociado": item.informe_asociado,
             "OT Asociada": item.orden_trabajo_asociada || "-",
             "Remito": item.remito || "-",
             "N° Almacenes": item.numero_almacenes || "-",
             "Observaciones": item.observaciones || "-",
+
         }));
 
         // Crear una hoja de trabajo (worksheet)
@@ -637,6 +701,7 @@ export function useMovimientos() {
             { wch: 50 }, // Marca
             { wch: 74 }, // Modelo/Serie
             { wch: 15 }, // Cantidad
+            { wch: 20 }, // Unidad de Medida
             { wch: 15 }, // PT asociado
             { wch: 30 }, // Informe Asociado
             { wch: 22 }, // OT Asociada
@@ -650,16 +715,21 @@ export function useMovimientos() {
         const workbook = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(workbook, worksheet, "Historial de Movimientos");
 
+        const today = new Date();
+        const yyyy = today.getUTCFullYear();
+        const mm = String(today.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(today.getUTCDate()).padStart(2, '0');
+
         // Exportar el archivo Excel
-        if(tipoExcel == "historial articulo"){
+        if (tipoExcel == "historial articulo") {
             const material = datosFiltrados[0].material_repuesto;
             const marca = datosFiltrados[0].marca;
             const modelo = datosFiltrados[1].modelo_serie
-            XLSX.writeFile(workbook, `INF-MOV-${material}-${marca}-${modelo}.xlsx`);
+            XLSX.writeFile(workbook, `INF-MOV-${material?.toUpperCase() || ''}-${marca?.toUpperCase() || ''}-${modelo?.toUpperCase() || ''}-FECHA-${yyyy}-${mm}-${dd}.xlsx`);
 
-        }else{
+        } else {
 
-            XLSX.writeFile(workbook, "INF-MOVIMIENTOS.xlsx");
+            XLSX.writeFile(workbook, `INF-MOVIMIENTOS-${yyyy}-${mm}-${dd}.xlsx`);
         }
     };
 
@@ -677,7 +747,8 @@ export function useMovimientos() {
         formatearFecha,
         exportarExcel,
         eliminarMovimiento,
-        actualizarMovimiento
+        actualizarMovimiento,
+        obtenerArticuloById
     }
 
 }

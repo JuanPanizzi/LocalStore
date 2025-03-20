@@ -1,4 +1,5 @@
 <template>
+  
     <Form class="px-3 py-5 border border-gray rounded-xl  max-w-[95vw] mx-auto">
 
         <div>
@@ -45,6 +46,12 @@
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
                 <InputNumber v-model="formData.cantidad_seleccionada" class="w-3/5" />
             </div>
+
+            <div class="flex justify-between items-center ">
+                <label class="mr-2  w-2/5  text-left font-semibold ">Unidad:</label>
+                <InputText readonly v-model="formData.unidad_medida" class="w-3/5" />
+            </div>
+
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
                 <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
@@ -176,7 +183,8 @@ export default defineComponent({
             orden_trabajo_asociada: null,
             remito: null,
             numero_almacenes: null,
-            observaciones: null
+            observaciones: null,
+            unidad_medida: props.articuloSeleccionado.unidad_medida
         });
 
         const camposRequeridos = computed(() => {
@@ -249,7 +257,8 @@ export default defineComponent({
                 numero_almacenes: '',
                 material_repuesto: '',
                 marca: '',
-                modelo_serie: ''
+                modelo_serie: '',
+                unidad_medida: ''
             };
         };
         return {

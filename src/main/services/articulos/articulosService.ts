@@ -14,9 +14,20 @@ export const obtenerArticulos = async () => {
 
 }
 
+export const obtenerArticuloById = async (articuloId) => { 
+    try {
+        const result = db.prepare(`SELECT * FROM articulos WHERE id = ?`).get(articuloId);
+        return { success: true, data: result }
+    } catch (error) {
+        console.log('error al obtener articulo por id', error)
+        return { success: false }
+    }
+
+}
+
 export const crearArticulo = async (articulo) => {
     // console.log('articulo', articulo)
-    const { material_repuesto, marca, modelo_serie, cantidad, imagen } = articulo;
+    const { material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida } = articulo;
 
     try {
 
@@ -26,9 +37,9 @@ export const crearArticulo = async (articulo) => {
             return { success: false, error: "Ya existe un artículo con esa marca y modelo_serie" };
         }
 
-        const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen) VALUES (?,?,?,?,?)`);
+        const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?,?,?,?,?,?)`);
 
-        const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen);
+        const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida);
 
 
         if (result.changes === 0) {
@@ -41,7 +52,8 @@ export const crearArticulo = async (articulo) => {
             marca,
             modelo_serie,
             imagen,
-            cantidad
+            cantidad,
+            unidad_medida
         }
 
         return { success: true, data: nuevoArticulo }
@@ -56,24 +68,45 @@ export const crearArticulo = async (articulo) => {
 export const eliminarArticulo = async (articuloId: number | string) => {
 
     try {
-        const result = db.prepare(`DELETE FROM articulos WHERE id = ?`).run(articuloId);
 
-        if (result.changes == 0) {
+        db.prepare("BEGIN TRANSACTION").run();
+
+
+        const eliminarMovimientosStmt = db.prepare(`DELETE FROM movimientos_materiales WHERE articulo_id = ?`)
+        eliminarMovimientosStmt.run(articuloId);
+        
+        // const resultEliminarMov = eliminarMovimientosStmt.run(articuloId);
+        // if(resultEliminarMov.changes === 0){
+        //     // db.prepare("ROLLBACK").run();
+        //     // return { success: false, error: 'Error al eliminar los movimientos' }
+        // console.log('no se pudo eliminar movimientos')
+        // }
+
+        const eliminarArticulosStmt = db.prepare(`DELETE FROM articulos WHERE id = ?`);
+        const resultEliminarArticulos = eliminarArticulosStmt.run(articuloId);
+
+        if (resultEliminarArticulos.changes === 0) {
+            db.prepare("ROLLBACK").run();
             return { success: false, error: 'No se encontró el articulo' }
         }
 
+        db.prepare("COMMIT").run();
         return { success: true };
 
-
     } catch (error) {
+
         console.log('error', error)
-        return { success: false }
+        db.prepare("ROLLBACK").run();
+        return { success: false };
     }
 
 }
 
 export const actualizarArticulo = async (articulo) => {
-    const { material_repuesto, marca, modelo_serie, cantidad, imagen, id } = articulo;
+    const { material_repuesto, marca, modelo_serie, cantidad, unidad_medida, imagen, id } = articulo;
+
+    
+
     try {
         // const stmt = db.prepare(`UPDATE articulos SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? WHERE id = ?`);
 
@@ -84,11 +117,11 @@ export const actualizarArticulo = async (articulo) => {
 
         const stmt = db.prepare(
             `UPDATE articulos 
-             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? 
+             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, unidad_medida = ?, imagen = ? 
              WHERE id = ? 
              RETURNING *`
         );
-        const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, imagen, id);
+        const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, unidad_medida, imagen, id);
 
         return { success: true, data: articuloActualizado }
 

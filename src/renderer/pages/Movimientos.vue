@@ -95,6 +95,7 @@
                 </template>
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
+            <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
             <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
@@ -111,7 +112,7 @@
             <FileUpload mode="basic" name="file" chooseLabel="Importar Excel" accept=".xlsx,.xls" auto="true"
                 @select="seleccionarExcel" />
             <Button label="Exportar Excel" icon="pi pi-file-export" class="ml-2" severity="success"
-                @click="exportarExcel(dataMovimientosFiltrada)" />
+                @click="generarExcel(dataMovimientosFiltrada)" />
 
         </div>
         <Toast />
@@ -266,8 +267,10 @@ export default defineComponent({
                 return;
             }
 
+            console.log('movimientos Movimientos.vue: 270', movimientos)
 
             generarListadoPDF(movimientos)
+
         }
 
         const handleFilter = (event) => {
@@ -277,7 +280,37 @@ export default defineComponent({
 
 
         const generarExcel = (datosFiltrados) => {
-            exportarExcel(datosFiltrados)
+
+            console.log('activeFilters', activeFilters.value)
+
+            let filtrosArticulo = [];
+            // {
+            //     "field": "Marca",
+            //         "value": "gpm",
+            //             "matchMode": "equals"
+            // }
+            for (let filtro of activeFilters.value) {
+
+                if (filtro.field == 'Marca' && filtro.value){
+                    filtrosArticulo.push(filtro.field)
+                }
+                
+                if (filtro.field == 'Modelo / Serie' && filtro.value){
+                    filtrosArticulo.push(filtro.field)
+                }
+                if(filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')){
+                    break;
+                }
+
+            }
+
+            if(filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')){
+
+                exportarExcel(datosFiltrados, 'historial articulo')
+            }else{
+                exportarExcel(datosFiltrados)
+            }
+
         }
 
         onMounted(async () => {
@@ -286,9 +319,9 @@ export default defineComponent({
             if (response.success) {
                 // dataMovimientos.value = response.data;
                 dataMovimientos.value = response.data.map(mov => ({
-                        ...mov,
-                        fecha: stringToDate(mov.fecha)
-                    })
+                    ...mov,
+                    fecha: stringToDate(mov.fecha)
+                })
                 )
 
             } else {
