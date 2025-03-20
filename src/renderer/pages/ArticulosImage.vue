@@ -224,7 +224,8 @@ export default defineComponent({
             const { id, marca, modelo_serie, material_repuesto } = articulo
             dialog.open(HistorialArticulo, {
                 data: {
-                    articulo_id: id
+                    // articulo_id: id,
+                    articulo_seleccionado: {...articulo}
                 },
                 props: {
                     modal: true,

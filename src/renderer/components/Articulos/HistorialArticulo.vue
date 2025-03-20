@@ -6,7 +6,7 @@
                 <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success"
                     @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
-                    style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo)" />
+                    style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo, dialogRef.data.articulo_seleccionado)" />
             </template>
         </Toolbar>
 
@@ -340,7 +340,8 @@ export default defineComponent({
 
 
         onMounted(async () => {
-            const response = await obtenerMovimientosArticulo(dialogRef.value.data.articulo_id);
+            console.log('dialogRef.value.data', dialogRef.value.data)
+            const response = await obtenerMovimientosArticulo(dialogRef.value.data.articulo_seleccionado.id);
             if (response.success) {
 
                 dataMovimientosArticulo.value = response.data.map(mov => ({
