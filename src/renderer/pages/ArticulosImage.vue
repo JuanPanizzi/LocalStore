@@ -671,10 +671,9 @@ export default defineComponent({
             const response = await obtenerArticulos();
             if (response.success) {
                 dataArticulos.value = response.data;
-                console.log('',)
+               
             } else {
-                console.log('no se pudieron obtener los articulos')
-                console.log(response.error)
+              
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los datos, intente nuevamente', life: 3000 });
 
             }
