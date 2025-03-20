@@ -564,7 +564,7 @@ export default defineComponent({
             const { id } = articulo;
 
             confirm.require({
-                message: `¿Estás seguro de eliminar este artículo y todos sus movimientos?`,
+                message: `¿Estás seguro de eliminar este artículo y todos sus movimientos del historial?`,
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
