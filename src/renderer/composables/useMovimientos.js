@@ -460,11 +460,11 @@ export function useMovimientos() {
         const appLogo = new Image();
         appLogo.src = logo;
         appLogo.onload = () => {
-            doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
+            doc.addImage(appLogo, "PNG", 6, 10, 20, 20);
             doc.setFontSize(14);
             doc.setFont("helvetica", "bold");
-            doc.text(`HISTORIAL DE MOVIMIENTOS `, 33, 19);
-            doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, 33, 26);
+            doc.text(`HISTORIAL DE MOVIMIENTOS `, 29, 19);
+            doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, 29, 26);
 
             doc.setFontSize(10);
 
@@ -472,19 +472,19 @@ export function useMovimientos() {
 
             // doc.setFontSize(9)
             doc.setFont('helvetica', 'bold');
-            doc.rect(263, 6, 30, 5) //rectangulo fecha
-            doc.text(`FECHA: `, 248, 10);
+            doc.rect(260, 11, 30, 5); //rectangulo fecha
+            doc.text(`FECHA: `, 245, 15);
             doc.setFont('helvetica', 'normal');
-            doc.text(`10/11/23`, 266, 10);
+            doc.text(`10/11/23`, 263, 15);
 
             // doc.text(`${formatearFecha(fechaActual.value)}`, 176, 10);
       
       
             doc.setFont('helvetica', 'bold');
-            doc.rect(263, 17, 30, 5) //rectangulo n° req
-            doc.text(`STOCK ARTÍCULO:`, 228, 21)
+            doc.rect(260, 22, 30, 5) //rectangulo n° req
+            doc.text(`STOCK ARTÍCULO:`, 225, 26)
             doc.setFont('helvetica', 'normal');
-            doc.text(`28`, 266, 21)
+            doc.text(`28`, 263, 26)
       
 
 
