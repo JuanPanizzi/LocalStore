@@ -57,18 +57,36 @@ export const crearArticulo = async (articulo) => {
 export const eliminarArticulo = async (articuloId: number | string) => {
 
     try {
-        const result = db.prepare(`DELETE FROM articulos WHERE id = ?`).run(articuloId);
 
-        if (result.changes == 0) {
+        db.prepare("BEGIN TRANSACTION").run();
+
+
+        const eliminarMovimientosStmt = db.prepare(`DELETE FROM movimientos_materiales WHERE articulo_id = ?`)
+        eliminarMovimientosStmt.run(articuloId);
+        
+        // const resultEliminarMov = eliminarMovimientosStmt.run(articuloId);
+        // if(resultEliminarMov.changes === 0){
+        //     // db.prepare("ROLLBACK").run();
+        //     // return { success: false, error: 'Error al eliminar los movimientos' }
+        // console.log('no se pudo eliminar movimientos')
+        // }
+
+        const eliminarArticulosStmt = db.prepare(`DELETE FROM articulos WHERE id = ?`);
+        const resultEliminarArticulos = eliminarArticulosStmt.run(articuloId);
+
+        if (resultEliminarArticulos.changes === 0) {
+            db.prepare("ROLLBACK").run();
             return { success: false, error: 'No se encontró el articulo' }
         }
 
+        db.prepare("COMMIT").run();
         return { success: true };
 
-
     } catch (error) {
+
         console.log('error', error)
-        return { success: false }
+        db.prepare("ROLLBACK").run();
+        return { success: false };
     }
 
 }

@@ -564,7 +564,7 @@ export default defineComponent({
             const { id } = articulo;
 
             confirm.require({
-                message: `¿Estás seguro de eliminar este artículo?`,
+                message: `¿Estás seguro de eliminar este artículo y todos sus movimientos?`,
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
@@ -588,7 +588,7 @@ export default defineComponent({
                             dataArticulos.value.splice(indexArticulo, 1);
                         }
 
-                        toast.add({ severity: 'info', summary: 'Éxito', detail: `Artículo eliminado correctamente`, life: 5000 });
+                        toast.add({ severity: 'info', summary: 'Éxito', detail: `Se eliminó el artículo y los movimientos del mismo correctamente.`, life: 5000 });
 
                     } else {
 
