@@ -85,6 +85,7 @@
                 </template>
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
+            <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
             <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
