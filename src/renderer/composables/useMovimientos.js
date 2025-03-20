@@ -455,7 +455,7 @@ export function useMovimientos() {
         
         const {material_repuesto, marca, modelo_serie} = movimientos[0];
         
-        const {cantidad: stock_articulo_seleccionado} = articuloSeleccionado;
+        const {cantidad: stock_articulo_seleccionado, unidad_medida} = articuloSeleccionado;
         
         
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
@@ -488,7 +488,7 @@ export function useMovimientos() {
             doc.rect(260, 22, 30, 5) //rectangulo n° req
             doc.text(`STOCK ARTÍCULO:`, 225, 26)
             doc.setFont('helvetica', 'normal');
-            doc.text(`${stock_articulo_seleccionado}`, 263, 26)
+            doc.text(`${stock_articulo_seleccionado} ${unidad_medida || ''}`, 263, 26)
       
 
 
