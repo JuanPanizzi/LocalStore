@@ -475,15 +475,16 @@ export function useMovimientos() {
                 { title: "MARCA", dataKey: "marca" },
                 { title: "MODELO / SERIE", dataKey: "modelo_serie" },
                 { title: "MOVIMIENTO", dataKey: "tipo_movimiento" },
-                { title: "Origen", dataKey: "origen" },
-                { title: "Destino", dataKey: "destino" },
-                { title: "Cantidad", dataKey: "cantidad" },
+                { title: "ORIGEN", dataKey: "origen" },
+                { title: "DESTINO", dataKey: "destino" },
+                { title: "CANTIDAD", dataKey: "cantidad" },
+                { title: "UNIDAD", dataKey: "unidad_medida" },
                 { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
                 { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
                 { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
                 { title: "REMITO", dataKey: "remito" },
                 { title: "N° ALMACENES", dataKey: "numero_almacenes" },
-                { title: "Observaciones", dataKey: "observaciones" },
+                { title: "OBSERVACIONES", dataKey: "observaciones" },
 
             ];
 
@@ -528,23 +529,24 @@ export function useMovimientos() {
                 startY: 40,
                 head: [columnas.map(col => col.title)],
                 body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
-                styles: { fontSize: 8, cellPadding: 1 },
-                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
+                styles: { fontSize: 6, cellPadding: 1 },
+                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6.5 },
                 columnStyles: {
-                    0: { cellWidth: 20 }, //Fecha
-                    1: { cellWidth: 20 }, //material / repuesto
-                    2: { cellWidth: 20 }, //marca
-                    3: { cellWidth: 25 },//modelo
-                    4: { cellWidth: 20 }, // movimiento
-                    5: { cellWidth: 20 }, // origen
-                    6: { cellWidth: 20 }, // destino
-                    7: { cellWidth: 20 }, // cantidad
-                    8: { cellWidth: 20 }, // pt asociado
-                    9: { cellWidth: 24 }, //  ot asociado 
-                    10: { cellWidth: 25 }, // informe asociado
-                    11: { cellWidth: 17 }, // remito
-                    12: { cellWidth: 19 }, // n° almacenes
-                    13: { cellWidth: 25 }, // observaciones
+                    0: { cellWidth: 19 }, //Fecha
+                    1: { cellWidth: 19 }, //material / repuesto
+                    2: { cellWidth: 19 }, //marca
+                    3: { cellWidth: 24 },//modelo
+                    4: { cellWidth: 19 }, // movimiento
+                    5: { cellWidth: 19 }, // origen
+                    6: { cellWidth: 19 }, // destino
+                    7: { cellWidth: 19 }, // cantidad
+                    8: { cellWidth: 16 }, // unidad medida
+                    9: { cellWidth: 19 }, // pt asociado
+                    10: { cellWidth: 23 }, //  ot asociado 
+                    11: { cellWidth: 24 }, // informe asociado
+                    12: { cellWidth: 16 }, // remito
+                    13: { cellWidth: 18 }, // n° almacenes
+                    14: { cellWidth: 22 }, // observaciones
                 },
                 margin: { left: 1, right: 1 },
                 theme: "grid"

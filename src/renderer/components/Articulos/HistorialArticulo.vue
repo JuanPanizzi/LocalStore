@@ -361,7 +361,6 @@ export default defineComponent({
             formatearFecha,
             dialogRef,
             generarListadoPDF,
-            generarListadoPDF,
             exportarExcel,
             confirmarEliminacionMov,
             visibleRight,
