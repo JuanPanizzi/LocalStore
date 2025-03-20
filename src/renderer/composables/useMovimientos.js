@@ -184,7 +184,8 @@ export function useMovimientos() {
                         orden_trabajo_asociada: normalizedRow["ot asociada"],
                         remito: normalizedRow["remito"],
                         numero_almacenes: normalizedRow["n° almacenes"],
-                        observaciones: normalizedRow["observaciones"]
+                        observaciones: normalizedRow["observaciones"],
+                        unidad_medida: normalizedRow["unidad de medida"]
 
                     }
                 });

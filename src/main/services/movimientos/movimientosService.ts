@@ -96,8 +96,8 @@ export async function guardarExcelMovimientos(data) {
     // 2. Preparar la inserción de nuevos datos en movimientos_materiales
     const insert = db.prepare(`
       INSERT INTO movimientos_materiales 
-      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,? )
+      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie, unidad_medida) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?, ? )
     `);
 
     const insertMany = db.transaction((movimientos) => {
@@ -118,7 +118,8 @@ export async function guardarExcelMovimientos(data) {
           movimiento.remito,
           movimiento.numero_almacenes,
           movimiento.numero_movimiento,
-          movimiento.modelo_serie
+          movimiento.modelo_serie,
+          movimiento.unidad_medida
         );
       }
     });
@@ -158,14 +159,15 @@ export async function guardarExcelMovimientos(data) {
       if (!articuloExistente) {
         // Insertar un nuevo artículo usando la cantidad del último movimiento
         const result = db.prepare(
-          "INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen) VALUES (?, ?, ?, ?, ?)"
+          "INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?, ?, ?, ?, ?, ?)"
         ).run(
           movimiento.material_repuesto,
           movimiento.marca,
           movimiento.modelo_serie,
           0, //de momento se inicia la cantidad
           //movimiento.cantidad, // Se usa la cantidad del último movimiento
-          null
+          null,
+          movimiento.unidad_medida
         );
         // Obtener el ID del artículo insertado
         const newArticleId = result.lastInsertRowid;
