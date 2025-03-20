@@ -471,11 +471,10 @@ export function useMovimientos() {
 
         const response = await obtenerArticuloById(articulo_id);
 
-        if(articulo.success){ 
+        if(!response.success){ 
             toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al generar el PDF, intente nuevamente.', life: 3000 });
             return;
         }
-
 
         const { cantidad: stock_articulo_seleccionado, unidad_medida } = response.data;
 
