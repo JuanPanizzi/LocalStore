@@ -49,8 +49,8 @@
                     { label: 'Fechas Anteriores a:', value: 'dateBefore' }
                 ]">
                 <template #body="{ data }">
-                    <!-- {{ data.fecha }} -->
-                    {{ formatearFecha(data.fecha) }}
+                    {{ data.fecha }}
+                    <!-- {{ formatearFecha(data.fecha) }} -->
                 </template>
                 <template #filter="{ filterModel }">
                     <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />
@@ -142,7 +142,7 @@ import { useMovimientos } from '../composables/useMovimientos';
 import FileUpload from 'primevue/fileupload';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import DatePicker from 'primevue/datepicker';
-import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
+import { stringToDate, formatearFecha, formatFechaDDMMYYYY } from '../utils/funcionesFecha.js'
 import Tag from 'primevue/tag';
 import Badge from 'primevue/badge';
 import ConfirmPopup from 'primevue/confirmpopup';
@@ -315,6 +315,7 @@ export default defineComponent({
             const response = await importarExcel(event);
 
             if (response.success) {
+                console.log('response.data', response.data)
                 dataMovimientos.value = response.data;
                 toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
             } else {
@@ -407,7 +408,8 @@ export default defineComponent({
                 // dataMovimientos.value = response.data;
                 dataMovimientos.value = response.data.map(mov => ({
                     ...mov,
-                    fecha: stringToDate(mov.fecha)
+                    // fecha: stringToDate(mov.fecha)
+                    fecha: formatFechaDDMMYYYY(mov.fecha)
                 })
                 )
 
@@ -435,7 +437,8 @@ export default defineComponent({
             exportarExcel,
             generarExcel,
             confirm,
-            confirmarEliminacionMov
+            confirmarEliminacionMov,
+            formatFechaDDMMYYYY
 
 
         }
