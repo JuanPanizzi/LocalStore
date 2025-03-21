@@ -109,13 +109,7 @@ export const actualizarArticulo = async (articulo) => {
     
 
     try {
-        // const stmt = db.prepare(`UPDATE articulos SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, imagen = ? WHERE id = ?`);
-
-        // const result = stmt.run(material_repuesto, marca, modelo_serie, cantidad, imagen, id);
-        // if(result.changes == 0){
-        //     return { success: false, error: 'No se encontró el informe' }
-        // }
-
+        
         db.prepare("BEGIN TRANSACTION").run();
 
         const actualizarMovimientosStmt = db.prepare(`

@@ -32,6 +32,15 @@
                     </div>
                 </template>
 </Column> -->
+            <Column field="" header="">
+                <template #body="slotProps">
+
+                    <Button icon="pi pi-trash" severity="danger" outlined
+                        @click="confirmarEliminacionMov(slotProps.data)" />
+
+                </template>
+            </Column>
+
             <Column field="numero_movimiento" header="ID"></Column>
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
@@ -118,6 +127,9 @@
         <Toast />
     </section>
     <DialogEditarMov />
+
+    <ConfirmPopup />
+
 </template>
 <script>
 import Button from 'primevue/button';
@@ -133,6 +145,8 @@ import DatePicker from 'primevue/datepicker';
 import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
 import Tag from 'primevue/tag';
 import Badge from 'primevue/badge';
+import ConfirmPopup from 'primevue/confirmpopup';
+import { useConfirm } from 'primevue/useconfirm';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -144,7 +158,8 @@ export default defineComponent({
         FileUpload,
         DatePicker,
         Tag,
-        Badge
+        Badge,
+        ConfirmPopup
     },
 
     setup() {
@@ -221,8 +236,80 @@ export default defineComponent({
             origen: "Origen",
             destino: "Destino"
         }
-        const toast = useToast()
-        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF, exportarExcel } = useMovimientos();
+        const toast = useToast();
+        const confirm = useConfirm();
+
+        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF, exportarExcel, eliminarMovimiento } = useMovimientos();
+
+        const confirmarEliminacionMov = (movimiento) => {
+
+            const { id, tipo_movimiento, cantidad } = movimiento;
+
+            confirm.require({
+                message:
+                    tipo_movimiento === 'SALIDA'
+                        ? (cantidad > 1
+                            ? `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock`
+                            : `¿Estás Seguro? Se reestablecerá ${cantidad} artículo en el stock`)
+                        : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                            ? (cantidad > 1
+                                ? `¿Estás Seguro? Se eliminarán ${cantidad} artículos del stock`
+                                : `¿Estás Seguro? Se eliminará ${cantidad} artículo del stock`)
+                            : '¿Estás seguro de eliminar este movimiento? Se reestablecerán las cantidades correspondientes en el stock del artículo'),
+                header: 'Atención',
+                icon: 'pi pi-info-circle',
+                rejectLabel: 'Cancelar',
+                rejectProps: {
+                    label: 'Cancelar',
+                    severity: 'secondary',
+                    outlined: true
+                },
+                acceptProps: {
+                    label: 'Eliminar',
+                    severity: 'danger'
+                },
+                accept: async () => {
+
+                    const response = await eliminarMovimiento(movimiento);
+
+                    if (response.success) {
+                        const indexMovimiento = dataMovimientos.value.findIndex(mov => mov.id == id);
+
+                        if (indexMovimiento !== -1) {
+
+                            dataMovimientos.value.splice(indexMovimiento, 1);
+
+                            //emit('save', { movimiento_articulo_eliminado: movimiento });
+
+                            const mensaje = tipo_movimiento === 'SALIDA'
+                                ? (cantidad > 1
+                                    ? `Se han restablecido ${cantidad} artículos en el stock`
+                                    : `Se ha restablecido ${cantidad} artículo en el stock`)
+                                : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                                    ? (cantidad > 1
+                                        ? `Se han eliminado ${cantidad} artículos del stock`
+                                        : `Se ha eliminado ${cantidad} artículo del stock`)
+                                    : '')
+
+                            toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
+                        } else {
+                            toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
+                        }
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                    }
+
+                },
+                // reject: () => {
+                // }
+            });
+
+        }
+
+
+
+
+
 
         const seleccionarExcel = async (event) => {
             const response = await importarExcel(event);
@@ -291,23 +378,23 @@ export default defineComponent({
             // }
             for (let filtro of activeFilters.value) {
 
-                if (filtro.field == 'Marca' && filtro.value){
+                if (filtro.field == 'Marca' && filtro.value) {
                     filtrosArticulo.push(filtro.field)
                 }
-                
-                if (filtro.field == 'Modelo / Serie' && filtro.value){
+
+                if (filtro.field == 'Modelo / Serie' && filtro.value) {
                     filtrosArticulo.push(filtro.field)
                 }
-                if(filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')){
+                if (filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')) {
                     break;
                 }
 
             }
 
-            if(filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')){
+            if (filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')) {
 
                 exportarExcel(datosFiltrados, 'historial articulo')
-            }else{
+            } else {
                 exportarExcel(datosFiltrados)
             }
 
@@ -346,7 +433,9 @@ export default defineComponent({
             generarListadoPDF,
             generarPdfArticulo,
             exportarExcel,
-            generarExcel
+            generarExcel,
+            confirm,
+            confirmarEliminacionMov
 
 
         }

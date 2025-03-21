@@ -287,7 +287,7 @@ export default defineComponent({
                             ? (cantidad > 1
                                 ? `¿Estás Seguro? Se eliminarán ${cantidad} artículos del stock`
                                 : `¿Estás Seguro? Se eliminará ${cantidad} artículo del stock`)
-                            : ''),
+                            : '¿Estás seguro de eliminar este movimiento? Se reestablecerán las cantidades correspondientes en el stock del artículo'),
                 header: 'Atención',
                 icon: 'pi pi-info-circle',
                 rejectLabel: 'Cancelar',
