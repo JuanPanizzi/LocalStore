@@ -25,9 +25,6 @@
                             Cargando...
                         </p>
 
-                        <!-- <i class="pi pi-spin pi-spinner" style="font-size: 2rem"></i> -->
-                        <!-- <i class="pi pi-spin pi-cog" style="font-size: 2rem"></i> -->
-
                     </div>
                     <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden"
@@ -225,7 +222,6 @@ export default defineComponent({
             dialog.open(HistorialArticulo, {
                 data: {
                      articulo_id: id,
-                    // articulo_seleccionado: {...articulo}
                 },
                 props: {
                     modal: true,
@@ -273,13 +269,6 @@ export default defineComponent({
         };
 
 
-        // const filters = ref({
-        //   global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        //   material_repuesto: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        //   marca: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        //   modelo_serie: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-
-        // })
 
         const responsiveOptions = ref([
             {
@@ -312,23 +301,6 @@ export default defineComponent({
         // Artículo seleccionado en el DataTable
         const selectedArticulo = ref(null)
 
-        // Computed para el Carousel: si hay un artículo seleccionado, rota la lista para que ese aparezca primero; de lo contrario, muestra la lista filtrada original
-        // const carouselItems = computed(() => {
-        //     if (selectedArticulo.value) {
-        //         const index = filteredArticulos.value.findIndex(
-        //             item => item.id === selectedArticulo.value.id
-        //         );
-        //         if (index !== -1) {
-        //             return [
-        //                 ...filteredArticulos.value.slice(index),
-        //                 ...filteredArticulos.value.slice(0, index)
-        //             ];
-        //         }
-        //     }
-        //     return filteredArticulos.value;
-        // })
-
-
         // Función para actualizar el artículo seleccionado al marcar una fila en el DataTable
         function onArticuloSelect(event) {
             console.log("Fila seleccionada:", event.data);
@@ -341,8 +313,6 @@ export default defineComponent({
             marca: '',
             modelo_serie: ''
         })
-        // Se crea una versión debounced de 'filters' con 300ms de retardo
-        // Creamos una copia de los filtros que se actualizará con debounce
         const debouncedFilters = ref({ ...filters.value });
 
         // Función debounced que actualizará 'debouncedFilters' después de 300ms sin cambios
@@ -359,29 +329,7 @@ export default defineComponent({
             { deep: true }
         );
 
-        // const filteredArticulos = computed(() => {
-        //     return (dataArticulos.value || []).filter(item => {
-        //         const materialMatch = (item.material_repuesto || '').toLowerCase().includes((filters.value.material_repuesto || '').toLowerCase());
-        //         const marcaMatch = (item.marca || '').toLowerCase().includes((filters.value.marca || '').toLowerCase());
-        //         const modeloMatch = (item.modelo_serie || '').toLowerCase().includes((filters.value.modelo_serie || '').toLowerCase());
-        //         return materialMatch && marcaMatch && modeloMatch;
-        //     });
-        // });
-        // Computed que utiliza los filtros debounced para realizar el filtrado
-        // const filteredArticulos = computed(() => {
-        //     return dataArticulos.value.filter(item => {
-        //         const materialMatch = (item.material_repuesto || '')
-        //             .toLowerCase()
-        //             .includes((debouncedFilters.value.material_repuesto || '').toLowerCase())
-        //         const marcaMatch = (item.marca || '')
-        //             .toLowerCase()
-        //             .includes((debouncedFilters.value.marca || '').toLowerCase())
-        //         const modeloMatch = (item.modelo_serie || '')
-        //             .toLowerCase()
-        //             .includes((debouncedFilters.value.modelo_serie || '').toLowerCase())
-        //         return materialMatch && marcaMatch && modeloMatch
-        //     })
-        // })
+       
         // Computed que utiliza los filtros debounced para filtrar los artículos
         const filteredArticulos = computed(() => {
             return dataArticulos.value.filter(item => {
@@ -505,7 +453,6 @@ export default defineComponent({
             showIngresoSalida.value.accion = accion;
             articuloSeleccionado.value = { ...articulo }
 
-            // console.log('articuloSeleccionado.value', articuloSeleccionado.value)
         }
         async function guardarArticulo(datosFormulario) {
 
