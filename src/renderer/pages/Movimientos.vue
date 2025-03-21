@@ -316,7 +316,16 @@ export default defineComponent({
 
             if (response.success) {
                 console.log('response.data', response.data)
-                dataMovimientos.value = response.data;
+                dataMovimientos.value = response.data.sort((a, b) => {
+                    const [diaA, mesA, anioA] = a.fecha.split('/');
+                    const [diaB, mesB, anioB] = b.fecha.split('/');
+
+                    const dateA = new Date(anioA, mesA - 1, diaA);
+                    const dateB = new Date(anioB, mesB - 1, diaB);
+
+                    // Para order descendente (más reciente primero) restamos dateB - dateA
+                    return dateB - dateA;
+                });
                 toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
             } else {
 
