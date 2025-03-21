@@ -326,7 +326,7 @@ export default defineComponent({
                         toast.add({ severity: "error", summary: `Error`, detail: "Faltan columnas en el archivo excel, intente nuevamente.", life: 5000 });
                         break;
                     case 'Fechas inválidas':
-                        toast.add({ severity: "error", summary: `Error`, detail: "Se encontraron fechas inválidas en el archivo excel, intente nuevamente.", life: 5000 });
+                        toast.add({ severity: "error", summary: `Fechas Inválidas`, detail: "Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en el archivo excel, intente nuevamente.", life: 5000 });
 
                         break;
                 }
