@@ -164,7 +164,7 @@ export async function guardarExcelMovimientos(data) {
           movimiento.material_repuesto,
           movimiento.marca,
           movimiento.modelo_serie,
-          0, // Se inicia en 0
+          10, // Se inicia en 10
           null, // imagen
           movimiento.unidad_medida
         );
