@@ -44,7 +44,7 @@
 
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
-                <InputNumber v-model="formData.cantidad_seleccionada" class="w-3/5" />
+                <InputNumber v-model="formData.cantidad_seleccionada" :invalid="camposIncompletos.cantidad_seleccionada && !formData.cantidad_seleccionada" class="w-3/5" />
             </div>
 
             <div class="flex justify-between items-center ">
@@ -163,7 +163,8 @@ export default defineComponent({
         const toast = useToast();
         const camposIncompletos = ref({
             origen: null,
-            destino: null
+            destino: null,
+            cantidad_seleccionada: null
         })
 
         const formData = reactive({
@@ -229,6 +230,11 @@ export default defineComponent({
             if (!formData.destino) {
                 camposIncompletos.value.destino = true;
                 toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de destino.", life: 5000 });
+                return;
+            }
+            if (formData.cantidad_seleccionada < 1) {
+                camposIncompletos.value.cantidad_seleccionada = true;
+                toast.add({ severity: "error", summary: `Cantidad Inválida`, detail: "Debe seleccionar una cantidad mayor a cero", life: 5000 });
                 return;
             }
 
