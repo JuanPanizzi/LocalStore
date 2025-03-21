@@ -90,52 +90,52 @@ const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
 
 export async function guardarExcelMovimientos(data) {
   try {
-    // 1. Eliminar todos los registros existentes en movimientos_materiales
-    db.prepare(`DELETE FROM movimientos_materiales`).run();
+    
+    
+    db.prepare("BEGIN TRANSACTION").run();
 
-    // 2. Preparar la inserción de nuevos datos en movimientos_materiales
+    // Eliminar todos los registros existentes
+    db.prepare(`DELETE FROM movimientos_materiales`).run();
+    db.prepare(`DELETE FROM articulos`).run();
+
+    // Preparar la inserción de nuevos datos en movimientos_materiales
     const insert = db.prepare(`
       INSERT INTO movimientos_materiales 
       (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie, unidad_medida) 
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?, ? )
     `);
 
-    const insertMany = db.transaction((movimientos) => {
-      for (const movimiento of movimientos) {
-        // Se inserta sin asignar el articulo_id (podría ser null)
-        insert.run(
-          movimiento.fecha,
-          movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
-          movimiento.origen,
-          movimiento.destino,
-          movimiento.material_repuesto,
-          movimiento.marca,
-          movimiento.articulo_id, // En este momento puede estar vacío
-          movimiento.cantidad,
-          movimiento.permiso_trabajo_asociado,
-          movimiento.informe_asociado,
-          movimiento.orden_trabajo_asociada,
-          movimiento.remito,
-          movimiento.numero_almacenes,
-          movimiento.numero_movimiento,
-          movimiento.modelo_serie,
-          movimiento.unidad_medida
-        );
-      }
-    });
-
-    insertMany(data);
-
-    // 3. Obtener los datos insertados para enviarlos al frontend
-    const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
-    if (insertedData.length === 0) {
-      return { success: false, error: "No se insertaron los datos" };
+   
+    for (const movimiento of data) {
+      insert.run(
+        movimiento.fecha,
+        movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
+        movimiento.origen,
+        movimiento.destino,
+        movimiento.material_repuesto,
+        movimiento.marca,
+        movimiento.articulo_id, // Puede ser null en este momento
+        movimiento.cantidad,
+        movimiento.permiso_trabajo_asociado,
+        movimiento.informe_asociado,
+        movimiento.orden_trabajo_asociada,
+        movimiento.remito,
+        movimiento.numero_almacenes,
+        movimiento.numero_movimiento,
+        movimiento.modelo_serie,
+        movimiento.unidad_medida
+      );
     }
 
-    // 4. Agrupar por artículo para obtener el último movimiento de cada uno (basado en la fecha)
+    //  Obtener los datos insertados para enviarlos al frontend
+    const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
+    if (insertedData.length === 0) {
+      throw new Error("No se insertaron los datos");
+    }
+
+    //  Agrupar por artículo para obtener el último movimiento de cada uno (basado en la fecha)
     const ultimosMovimientos = new Map();
     data.forEach((movimiento) => {
-      // Definir la clave única para cada artículo: combinación de marca y modelo_serie
       const key = `${movimiento.marca}_${movimiento.modelo_serie}`;
       if (!ultimosMovimientos.has(key)) {
         ultimosMovimientos.set(key, movimiento);
@@ -148,9 +148,9 @@ export async function guardarExcelMovimientos(data) {
       }
     });
 
-    // 5. Procesar cada grupo de artículo para verificar su existencia y actualizar movimientos
+    // Procesar cada grupo de artículo para verificar su existencia y actualizar movimientos
     let warnings: string[] = [];
-    ultimosMovimientos.forEach((movimiento, key) => {
+    ultimosMovimientos.forEach((movimiento) => {
       // Buscar el artículo en la tabla articulos por la combinación marca y modelo_serie
       const articuloExistente = db
         .prepare("SELECT * FROM articulos WHERE marca = ? AND modelo_serie = ?")
@@ -164,20 +164,19 @@ export async function guardarExcelMovimientos(data) {
           movimiento.material_repuesto,
           movimiento.marca,
           movimiento.modelo_serie,
-          0, //de momento se inicia la cantidad //movimiento.cantidad, // Se usa la cantidad del último movimiento
-          null, //imagen
+          0, // Se inicia en 0
+          null, // imagen
           movimiento.unidad_medida
         );
-        // Obtener el ID del artículo insertado
         const newArticleId = result.lastInsertRowid;
-        // Actualizar los movimientos que corresponden a este artículo
+        // Actualizar los movimientos correspondientes a este artículo
         db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
           .run(newArticleId, movimiento.marca, movimiento.modelo_serie);
       } else {
-        // Actualizar los movimientos para que tengan el ID del artículo existente
+        // Actualizar los movimientos con el ID del artículo existente
         db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
           .run(articuloExistente.id, movimiento.marca, movimiento.modelo_serie);
-        // Comparar la cantidad del último movimiento con la cantidad del artículo en BD y generar una advertencia si difieren
+        // Comparar la cantidad y generar advertencia si difieren
         if (articuloExistente.cantidad !== movimiento.cantidad) {
           warnings.push(
             `El artículo (Marca: ${movimiento.marca}, Modelo/Serie: ${movimiento.modelo_serie}) tiene cantidad en BD: ${articuloExistente.cantidad} y el último movimiento en Excel indica: ${movimiento.cantidad}.`
@@ -186,13 +185,20 @@ export async function guardarExcelMovimientos(data) {
       }
     });
 
-    // 6. Retornar el resultado junto con las advertencias (si existen)
+    // Confirmar la transacción
+    db.prepare("COMMIT").run();
+
+    // Retornar el resultado junto con las advertencias (si existen)
     return { success: true, data: insertedData, warnings };
+
   } catch (error) {
+    // En caso de error, revertir todas las operaciones realizadas en la transacción
+    db.prepare("ROLLBACK").run();
     console.error('[!] Hubo un error al reemplazar datos:', error);
     return { success: false, error: error };
   }
 }
+
 
 
 
