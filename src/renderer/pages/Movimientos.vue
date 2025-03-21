@@ -32,6 +32,15 @@
                     </div>
                 </template>
 </Column> -->
+            <Column field="" header="">
+                <template #body="slotProps">
+
+                    <Button icon="pi pi-trash" severity="danger" outlined
+                        @click="confirmarEliminacionMov(slotProps.data)" />
+
+                </template>
+            </Column>
+
             <Column field="numero_movimiento" header="ID"></Column>
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
@@ -40,8 +49,8 @@
                     { label: 'Fechas Anteriores a:', value: 'dateBefore' }
                 ]">
                 <template #body="{ data }">
-                    <!-- {{ data.fecha }} -->
-                    {{ formatearFecha(data.fecha) }}
+                    {{ data.fecha }}
+                    <!-- {{ formatearFecha(data.fecha) }} -->
                 </template>
                 <template #filter="{ filterModel }">
                     <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />
@@ -118,6 +127,9 @@
         <Toast />
     </section>
     <DialogEditarMov />
+
+    <ConfirmPopup />
+
 </template>
 <script>
 import Button from 'primevue/button';
@@ -130,9 +142,11 @@ import { useMovimientos } from '../composables/useMovimientos';
 import FileUpload from 'primevue/fileupload';
 import { FilterMatchMode, FilterOperator } from '@primevue/core/api';
 import DatePicker from 'primevue/datepicker';
-import { stringToDate, formatearFecha } from '../utils/funcionesFecha.js'
+import { stringToDate, formatearFecha, formatFechaDDMMYYYY } from '../utils/funcionesFecha.js'
 import Tag from 'primevue/tag';
 import Badge from 'primevue/badge';
+import ConfirmPopup from 'primevue/confirmpopup';
+import { useConfirm } from 'primevue/useconfirm';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -144,7 +158,8 @@ export default defineComponent({
         FileUpload,
         DatePicker,
         Tag,
-        Badge
+        Badge,
+        ConfirmPopup
     },
 
     setup() {
@@ -221,14 +236,96 @@ export default defineComponent({
             origen: "Origen",
             destino: "Destino"
         }
-        const toast = useToast()
-        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF, exportarExcel } = useMovimientos();
+        const toast = useToast();
+        const confirm = useConfirm();
+
+        const { importarExcel, guardarExcelMovimientos, obtenerMovimientos, generarListadoPDF, exportarExcel, eliminarMovimiento } = useMovimientos();
+
+        const confirmarEliminacionMov = (movimiento) => {
+
+            const { id, tipo_movimiento, cantidad } = movimiento;
+
+            confirm.require({
+                message:
+                    tipo_movimiento === 'SALIDA'
+                        ? (cantidad > 1
+                            ? `¿Estás Seguro? Se reestablecerán ${cantidad} artículos en el stock`
+                            : `¿Estás Seguro? Se reestablecerá ${cantidad} artículo en el stock`)
+                        : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                            ? (cantidad > 1
+                                ? `¿Estás Seguro? Se eliminarán ${cantidad} artículos del stock`
+                                : `¿Estás Seguro? Se eliminará ${cantidad} artículo del stock`)
+                            : '¿Estás seguro de eliminar este movimiento? Se reestablecerán las cantidades correspondientes en el stock del artículo'),
+                header: 'Atención',
+                icon: 'pi pi-info-circle',
+                rejectLabel: 'Cancelar',
+                rejectProps: {
+                    label: 'Cancelar',
+                    severity: 'secondary',
+                    outlined: true
+                },
+                acceptProps: {
+                    label: 'Eliminar',
+                    severity: 'danger'
+                },
+                accept: async () => {
+
+                    const response = await eliminarMovimiento(movimiento);
+
+                    if (response.success) {
+                        const indexMovimiento = dataMovimientos.value.findIndex(mov => mov.id == id);
+
+                        if (indexMovimiento !== -1) {
+
+                            dataMovimientos.value.splice(indexMovimiento, 1);
+
+                            //emit('save', { movimiento_articulo_eliminado: movimiento });
+
+                            const mensaje = tipo_movimiento === 'SALIDA'
+                                ? (cantidad > 1
+                                    ? `Se han restablecido ${cantidad} artículos en el stock`
+                                    : `Se ha restablecido ${cantidad} artículo en el stock`)
+                                : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
+                                    ? (cantidad > 1
+                                        ? `Se han eliminado ${cantidad} artículos del stock`
+                                        : `Se ha eliminado ${cantidad} artículo del stock`)
+                                    : '')
+
+                            toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
+                        } else {
+                            toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
+                        }
+                    } else {
+                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                    }
+
+                },
+                // reject: () => {
+                // }
+            });
+
+        }
+
+
+
+
+
 
         const seleccionarExcel = async (event) => {
             const response = await importarExcel(event);
 
             if (response.success) {
-                dataMovimientos.value = response.data;
+                console.log('response.data', response.data)
+                dataMovimientos.value = response.data.sort((a, b) => {
+                    const [diaA, mesA, anioA] = a.fecha.split('/');
+                    const [diaB, mesB, anioB] = b.fecha.split('/');
+
+                    const dateA = new Date(anioA, mesA - 1, diaA);
+                    const dateB = new Date(anioB, mesB - 1, diaB);
+
+                    // Para order descendente (más reciente primero) restamos dateB - dateA
+                    return dateB - dateA;
+                });
                 toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
             } else {
 
@@ -238,7 +335,7 @@ export default defineComponent({
                         toast.add({ severity: "error", summary: `Error`, detail: "Faltan columnas en el archivo excel, intente nuevamente.", life: 5000 });
                         break;
                     case 'Fechas inválidas':
-                        toast.add({ severity: "error", summary: `Error`, detail: "Se encontraron fechas inválidas en el archivo excel, intente nuevamente.", life: 5000 });
+                        toast.add({ severity: "error", summary: `Fechas Inválidas`, detail: "Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en el archivo excel, intente nuevamente.", life: 5000 });
 
                         break;
                 }
@@ -291,23 +388,23 @@ export default defineComponent({
             // }
             for (let filtro of activeFilters.value) {
 
-                if (filtro.field == 'Marca' && filtro.value){
+                if (filtro.field == 'Marca' && filtro.value) {
                     filtrosArticulo.push(filtro.field)
                 }
-                
-                if (filtro.field == 'Modelo / Serie' && filtro.value){
+
+                if (filtro.field == 'Modelo / Serie' && filtro.value) {
                     filtrosArticulo.push(filtro.field)
                 }
-                if(filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')){
+                if (filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')) {
                     break;
                 }
 
             }
 
-            if(filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')){
+            if (filtrosArticulo.includes('Marca') && filtrosArticulo.includes('Modelo / Serie')) {
 
                 exportarExcel(datosFiltrados, 'historial articulo')
-            }else{
+            } else {
                 exportarExcel(datosFiltrados)
             }
 
@@ -320,7 +417,8 @@ export default defineComponent({
                 // dataMovimientos.value = response.data;
                 dataMovimientos.value = response.data.map(mov => ({
                     ...mov,
-                    fecha: stringToDate(mov.fecha)
+                    // fecha: stringToDate(mov.fecha)
+                    fecha: formatFechaDDMMYYYY(mov.fecha)
                 })
                 )
 
@@ -346,7 +444,10 @@ export default defineComponent({
             generarListadoPDF,
             generarPdfArticulo,
             exportarExcel,
-            generarExcel
+            generarExcel,
+            confirm,
+            confirmarEliminacionMov,
+            formatFechaDDMMYYYY
 
 
         }

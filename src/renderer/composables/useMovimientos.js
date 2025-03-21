@@ -14,11 +14,10 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerMovimientos();
-            //console.log('response', response.data)
+           
 
             if (response.success) {
-                // console.log('datos obtenidos correctamente', response.data)
-
+                
                 return { success: true, data: response.data }
             } else {
                 throw new Error(response.error)
@@ -193,8 +192,8 @@ export function useMovimientos() {
 
                 if (fechasInvalidas.length > 0) {
                     const columnasInvalidas = [...new Set(fechasInvalidas.map(item => item.columna))];
-                    const mensaje = `Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en las siguientes columnas: ${columnasInvalidas.map(col => `"${col}"`).join(", ")}`;
-                    toast.add({ severity: "error", summary: "Fechas Inválidas", detail: mensaje, life: 9000 });
+                    // const mensaje = `Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en las siguientes columnas: ${columnasInvalidas.map(col => `"${col}"`).join(", ")}`;
+                    // toast.add({ severity: "error", summary: "Fechas Inválidas", detail: mensaje, life: 9000 });
                     return resolve({ success: false, message: "Fechas inválidas" });
                 }
 
