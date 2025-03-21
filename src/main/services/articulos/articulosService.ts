@@ -122,10 +122,10 @@ export const actualizarArticulo = async (articulo) => {
             UPDATE movimientos_materiales 
             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, unidad_medida = ?
             WHERE articulo_id = ?
-             RETURNING *`)
+             `)
 
         
-        const movimientosActualizados = actualizarMovimientosStmt.all(material_repuesto, marca, modelo_serie, cantidad, unidad_medida,  id);
+        actualizarMovimientosStmt.run(material_repuesto, marca, modelo_serie, cantidad, unidad_medida,  id);
 
 
         const stmt = db.prepare(
