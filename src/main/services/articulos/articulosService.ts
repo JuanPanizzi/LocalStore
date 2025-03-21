@@ -103,6 +103,7 @@ export const eliminarArticulo = async (articuloId: number | string) => {
 }
 
 export const actualizarArticulo = async (articulo) => {
+    
     const { material_repuesto, marca, modelo_serie, cantidad, unidad_medida, imagen, id } = articulo;
 
     
@@ -115,6 +116,18 @@ export const actualizarArticulo = async (articulo) => {
         //     return { success: false, error: 'No se encontró el informe' }
         // }
 
+        db.prepare("BEGIN TRANSACTION").run();
+
+        const actualizarMovimientosStmt = db.prepare(`
+            UPDATE movimientos_materiales 
+            SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, unidad_medida = ?
+            WHERE articulo_id = ?
+             RETURNING *`)
+
+        
+        const movimientosActualizados = actualizarMovimientosStmt.all(material_repuesto, marca, modelo_serie, cantidad, unidad_medida,  id);
+
+
         const stmt = db.prepare(
             `UPDATE articulos 
              SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, unidad_medida = ?, imagen = ? 
@@ -123,12 +136,19 @@ export const actualizarArticulo = async (articulo) => {
         );
         const articuloActualizado = stmt.get(material_repuesto, marca, modelo_serie, cantidad, unidad_medida, imagen, id);
 
+        db.prepare("COMMIT").run();
+
+
         return { success: true, data: articuloActualizado }
 
     } catch (error) {
+
         console.log('error al actualizar articulo', error)
+        db.prepare("ROLLBACK").run();
         return {success: false}
     }
+
+
 }
 
 // export const obtenerUltimoMovimiento = async () => {
