@@ -315,7 +315,7 @@ export default defineComponent({
             const response = await importarExcel(event);
 
             if (response.success) {
-                console.log('response.data', response.data)
+                // console.log('response.data', response.data)
                 dataMovimientos.value = response.data.sort((a, b) => {
                     const [diaA, mesA, anioA] = a.fecha.split('/');
                     const [diaB, mesB, anioB] = b.fecha.split('/');
