@@ -178,7 +178,7 @@ export function useMovimientos() {
                         marca: normalizedRow["marca"],
                         modelo_serie: normalizedRow["modelo/serie"],
                         cantidad: normalizedRow["cantidad"],
-                        inventario_remanente: normalizedRow["inventario_remanente"],
+                        inventario_remanente: normalizedRow["inventario"],
                         permiso_trabajo_asociado: normalizedRow["pt asociado"],
                         informe_asociado: normalizedRow["informe asociado"],
                         orden_trabajo_asociada: normalizedRow["ot asociada"],

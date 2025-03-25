@@ -104,6 +104,7 @@
                 </template>
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
+            <Column field="inventario_remanente" header="INVENTARRIO REMANENTE"></Column>
             <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
