@@ -528,36 +528,49 @@ export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
       }
     }
 
-    // Por cada grupo, encontrar el movimiento con numero_movimiento "mayor" según la comparación
+    // Array para almacenar los articulos cuyos movimientos en el excel tienen todos como ID un cero y que se retornarán al frontend
+    const movimientosSinID: string[] = [];
+
+    // Por cada grupo (artículo), encontrar el movimiento "último"
     for (const [key, movimientos] of grouped.entries()) {
-      let ultimo = movimientos[0];
-      // console.log("Grupo:", key);
-      movimientos.forEach(m => {
-        // console.log("   => numero_movimiento:", m.numero_movimiento, 
-        //             "marca:", `"${m.marca}"`, 
-        //             "modelo:", `"${m.modelo_serie}"`);
-      });
-      for (let i = 1; i < movimientos.length; i++) {
-        const current = movimientos[i];
-        // Si current es "mayor" que ultimo, lo reemplazamos
-        if (compareNumeroMov(current.numero_movimiento, ultimo.numero_movimiento) > 0) {
-          // console.log('ultimo', current)
-          ultimo = current;
+      let ultimo: any;
+
+      // Verificamos si TODOS los movimientos de este artículo tienen numero_movimiento igual a "0"
+      const allZero = movimientos.every(mov => mov.numero_movimiento.toString() === "0");
+
+      if (allZero) {
+        // Si todos tienen 0, usamos la fecha para determinar el último movimiento
+        ultimo = movimientos.reduce((a, b) =>
+          new Date(a.fecha).getTime() > new Date(b.fecha).getTime() ? a : b
+        );
+     
+        movimientosSinID.push(
+          `[${ultimo.material_repuesto}- ${ultimo.marca} - ${ultimo.modelo_serie}]`
+        );
+      } else {
+        // En el caso normal, usamos la comparación personalizada por numero_movimiento
+        ultimo = movimientos[0];
+        for (let i = 1; i < movimientos.length; i++) {
+          const current = movimientos[i];
+          if (compareNumeroMov(current.numero_movimiento, ultimo.numero_movimiento) > 0) {
+            ultimo = current;
+          }
         }
       }
 
-      // Ahora 'ultimo' es el movimiento más reciente para este artículo
-      // Actualizamos la columna 'cantidad' de la tabla 'articulos'
+      // Actualizamos el stock en la tabla "articulos" con el inventario_remanente del último movimiento
       db.prepare(`
-        UPDATE articulos
-        SET cantidad = ?
-        WHERE id = ?
-      `).run(ultimo.inventario_remanente, ultimo.articulo_id);
+    UPDATE articulos
+    SET cantidad = ?
+    WHERE id = ?
+  `).run(ultimo.inventario_remanente, ultimo.articulo_id);
     }
+
 
     // Confirmar transacción
     db.prepare("COMMIT").run();
-    return { success: true, data: movimientosGuardados };
+    console.log('movimientosSinID: 572 MOVIMIENTOS SERVIE', movimientosSinID)
+    return { success: true, data: movimientosGuardados, movimientosSinID };
 
   } catch (error) {
     db.prepare("ROLLBACK").run();

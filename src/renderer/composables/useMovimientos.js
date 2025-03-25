@@ -205,6 +205,8 @@ export function useMovimientos() {
                     const response = await guardarExcelMovimientos(formattedData);
 
                     if (response.success) {
+
+                        console.log('response success useMov: 208', response)
                         // Solo si el reemplazo es exitoso, formatear las fechas para el frontend
                         const movimientos = response.data.map((row) => ({
                             ...row,
@@ -212,10 +214,15 @@ export function useMovimientos() {
                         }));
 
                         // Mostrar advertencias si existen
-                        if (response.warnings && response.warnings.length > 0) {
-                            response.warnings.forEach((msg) => {
-                                toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 6000 });
+                        if (response.movimientosSinID && response.movimientosSinID.length > 0) {
+                            
+                            let msg = "Los siguientes artículos registran movimientos con ID igual a cero, por lo que se les asignó como STOCK el valor del inventario remanente en el movimiento más reciente: "
+                            response.movimientosSinID.forEach((art) => {
+
+                                msg += ` ${art} `;
                             });
+                            toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 30000 });
+
                         }
 
                         resolve({ success: true, data: movimientos });
@@ -242,10 +249,7 @@ export function useMovimientos() {
 
             if (response.success) {
 
-
-
-
-                return { success: true, data: response.data }
+                return { success: true, data: response.data, movimientosSinID: response.movimientosSinID }
 
             }
         } catch (error) {
