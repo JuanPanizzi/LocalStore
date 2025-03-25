@@ -121,7 +121,7 @@ export function useMovimientos() {
 
 
                 // Definir las columnas requeridas
-                const columnasRequeridas = ["FECHA", "ID", "MOVIMIENTO", "DESTINO", "ORIGEN", "MATERIAL/REPUESTO", "MARCA", "MODELO/SERIE", "CANTIDAD", "PT ASOCIADO", "INFORME ASOCIADO", "OT ASOCIADA", "REMITO", "N° ALMACENES"];
+                const columnasRequeridas = ["FECHA", "ID", "MOVIMIENTO", "DESTINO", "ORIGEN", "MATERIAL/REPUESTO", "MARCA", "MODELO/SERIE", "CANTIDAD", "PT ASOCIADO", "INFORME ASOCIADO", "OT ASOCIADA", "REMITO", "N° ALMACENES", "INVENTARIO"];
 
                 // Normalizar columnas requeridas a minúsculas
                 const columnasRequeridasNormalizadas = columnasRequeridas.map(col => col.toLowerCase());
@@ -178,6 +178,7 @@ export function useMovimientos() {
                         marca: normalizedRow["marca"],
                         modelo_serie: normalizedRow["modelo/serie"],
                         cantidad: normalizedRow["cantidad"],
+                        inventario_remanente: normalizedRow["inventario_remanente"],
                         permiso_trabajo_asociado: normalizedRow["pt asociado"],
                         informe_asociado: normalizedRow["informe asociado"],
                         orden_trabajo_asociada: normalizedRow["ot asociada"],
