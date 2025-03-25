@@ -1,6 +1,28 @@
 
 import db from '../../database/database'
 
+interface Movimiento {
+  fecha: string;
+  tipo_movimiento?: string | null;
+  origen: string;
+  destino: string;
+  material_repuesto: string;
+  marca: string;
+  articulo_id?: number | null;
+  cantidad: number;
+  permiso_trabajo_asociado?: string;
+  informe_asociado?: string;
+  orden_trabajo_asociada?: string;
+  remito?: string | null;
+  numero_almacenes?: string;
+  numero_movimiento: string | number;   // Este campo puede venir como string o number, lo convertimos a string en la inserción
+  modelo_serie: string;
+  unidad_medida?: string;
+  inventario_remanente: number;
+}
+
+
+
 export async function obtenerMovimientos() {
 
   try {
@@ -334,7 +356,7 @@ export const eliminarMovimiento = (movimiento) => {
 // }
 
 
-export async function guardarExcelMovimientos(data) {
+export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
   try {
     db.prepare("BEGIN TRANSACTION").run();
 
@@ -367,7 +389,7 @@ export async function guardarExcelMovimientos(data) {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-    for (const movimiento of data) {
+    for (const movimiento of movimientosData) {
       insertMov.run(
         movimiento.fecha,
         movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
@@ -389,8 +411,8 @@ export async function guardarExcelMovimientos(data) {
       );
     }
 
-    const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
-    if (insertedData.length === 0) {
+    const movimientosGuardados = db.prepare("SELECT * FROM movimientos_materiales").all();
+    if (movimientosGuardados.length === 0) {
       throw new Error("No se insertaron datos en movimientos_materiales.");
     }
 
@@ -398,7 +420,7 @@ export async function guardarExcelMovimientos(data) {
     //    Agrupamos por (marca, modelo_serie) para insertar en 'articulos'
     const articuloMap = new Map(); // key = "marca__modelo_serie"
 
-    for (const mov of data) {
+    for (const mov of movimientosData) {
       const key = `${mov.marca}__${mov.modelo_serie}`;
       if (!articuloMap.has(key)) {
         articuloMap.set(key, mov);
@@ -535,7 +557,7 @@ export async function guardarExcelMovimientos(data) {
 
     // Confirmar transacción
     db.prepare("COMMIT").run();
-    return { success: true, data: insertedData };
+    return { success: true, data: movimientosGuardados };
 
   } catch (error) {
     db.prepare("ROLLBACK").run();
