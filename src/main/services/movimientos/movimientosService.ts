@@ -88,25 +88,135 @@ const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
 
 
 
+// export async function guardarExcelMovimientos(data) {
+//   console.log('data movimientosService: 92', data)
+//   try {
+    
+    
+//     db.prepare("BEGIN TRANSACTION").run();
+
+//     // Eliminar todos los registros existentes
+//     db.prepare(`DELETE FROM movimientos_materiales`).run();
+//     db.prepare(`DELETE FROM articulos`).run();
+
+//     // Preparar la inserción de nuevos datos en movimientos_materiales
+//     const insert = db.prepare(`
+//       INSERT INTO movimientos_materiales 
+//       (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie, unidad_medida, inventario_remanente) 
+//       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?, ?, ? )
+//     `);
+
+   
+//     for (const movimiento of data) {
+//       insert.run(
+//         movimiento.fecha,
+//         movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
+//         movimiento.origen,
+//         movimiento.destino,
+//         movimiento.material_repuesto,
+//         movimiento.marca,
+//         movimiento.articulo_id, // Puede ser null en este momento
+//         movimiento.cantidad,
+//         movimiento.permiso_trabajo_asociado,
+//         movimiento.informe_asociado,
+//         movimiento.orden_trabajo_asociada,
+//         movimiento.remito,
+//         movimiento.numero_almacenes,
+//         movimiento.numero_movimiento,
+//         movimiento.modelo_serie,
+//         movimiento.unidad_medida,
+//         movimiento.inventario_remanente
+//       );
+//     }
+
+//     //  Obtener los datos insertados para enviarlos al frontend
+//     const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
+//     if (insertedData.length === 0) {
+//       throw new Error("No se insertaron los datos");
+//     }
+
+//     //  Agrupar por artículo para obtener el último movimiento de cada uno (basado en la fecha)
+//     const ultimosMovimientos = new Map();
+//     data.forEach((movimiento) => {
+//       const key = `${movimiento.marca}_${movimiento.modelo_serie}`;
+//       if (!ultimosMovimientos.has(key)) {
+//         ultimosMovimientos.set(key, movimiento);
+//       } else {
+//         const fechaActual = new Date(movimiento.fecha);
+//         const fechaGuardada = new Date(ultimosMovimientos.get(key).fecha);
+//         if (fechaActual > fechaGuardada) {
+//           ultimosMovimientos.set(key, movimiento);
+//         }
+//       }
+//     });
+
+//     // Procesar cada grupo de artículo para verificar su existencia y actualizar movimientos
+//     let warnings: string[] = [];
+//     ultimosMovimientos.forEach((movimiento) => {
+//       // Buscar el artículo en la tabla articulos por la combinación marca y modelo_serie
+//       const articuloExistente = db
+//         .prepare("SELECT * FROM articulos WHERE marca = ? AND modelo_serie = ?")
+//         .get(movimiento.marca, movimiento.modelo_serie);
+
+//       if (!articuloExistente) {
+//         // Insertar un nuevo artículo usando la cantidad del último movimiento
+//         const result = db.prepare(
+//           "INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?, ?, ?, ?, ?, ?)"
+//         ).run(
+//           movimiento.material_repuesto,
+//           movimiento.marca,
+//           movimiento.modelo_serie,
+//           0, // Se inicia en 0
+//           null, // imagen
+//           movimiento.unidad_medida
+//         );
+//         const newArticleId = result.lastInsertRowid;
+//         // Actualizar los movimientos correspondientes a este artículo
+//         db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
+//           .run(newArticleId, movimiento.marca, movimiento.modelo_serie);
+//       } else {
+//         // Actualizar los movimientos con el ID del artículo existente
+//         db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
+//           .run(articuloExistente.id, movimiento.marca, movimiento.modelo_serie);
+//         // Comparar la cantidad y generar advertencia si difieren
+//         if (articuloExistente.cantidad !== movimiento.cantidad) {
+//           warnings.push(
+//             `El artículo (Marca: ${movimiento.marca}, Modelo/Serie: ${movimiento.modelo_serie}) tiene cantidad en BD: ${articuloExistente.cantidad} y el último movimiento en Excel indica: ${movimiento.cantidad}.`
+//           );
+//         }
+//       }
+//     });
+
+//     // Confirmar la transacción
+//     db.prepare("COMMIT").run();
+
+//     // Retornar el resultado junto con las advertencias (si existen)
+//     return { success: true, data: insertedData, warnings };
+
+//   } catch (error) {
+//     // En caso de error, revertir todas las operaciones realizadas en la transacción
+//     db.prepare("ROLLBACK").run();
+//     console.error('[!] Hubo un error al reemplazar datos:', error);
+//     return { success: false, error: error };
+//   }
+// }
 export async function guardarExcelMovimientos(data) {
-  console.log('data movimientosService: 92', data)
   try {
-    
-    
     db.prepare("BEGIN TRANSACTION").run();
 
-    // Eliminar todos los registros existentes
+    // 1) Eliminar todos los registros existentes
     db.prepare(`DELETE FROM movimientos_materiales`).run();
     db.prepare(`DELETE FROM articulos`).run();
 
-    // Preparar la inserción de nuevos datos en movimientos_materiales
+    // 2) Insertar todos los movimientos en movimientos_materiales
     const insert = db.prepare(`
       INSERT INTO movimientos_materiales 
-      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie, unidad_medida, inventario_remanente) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?, ?, ? )
+        (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad,
+         permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito,
+         numero_almacenes, numero_movimiento, modelo_serie, unidad_medida, inventario_remanente) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-   
     for (const movimiento of data) {
       insert.run(
         movimiento.fecha,
@@ -115,7 +225,7 @@ export async function guardarExcelMovimientos(data) {
         movimiento.destino,
         movimiento.material_repuesto,
         movimiento.marca,
-        movimiento.articulo_id, // Puede ser null en este momento
+        null, // articulo_id se seteará luego
         movimiento.cantidad,
         movimiento.permiso_trabajo_asociado,
         movimiento.informe_asociado,
@@ -129,72 +239,94 @@ export async function guardarExcelMovimientos(data) {
       );
     }
 
-    //  Obtener los datos insertados para enviarlos al frontend
+    // Verificar que se hayan insertado movimientos
     const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
     if (insertedData.length === 0) {
-      throw new Error("No se insertaron los datos");
+      throw new Error("No se insertaron los datos en movimientos_materiales.");
     }
 
-    //  Agrupar por artículo para obtener el último movimiento de cada uno (basado en la fecha)
-    const ultimosMovimientos = new Map();
-    data.forEach((movimiento) => {
-      const key = `${movimiento.marca}_${movimiento.modelo_serie}`;
-      if (!ultimosMovimientos.has(key)) {
-        ultimosMovimientos.set(key, movimiento);
-      } else {
-        const fechaActual = new Date(movimiento.fecha);
-        const fechaGuardada = new Date(ultimosMovimientos.get(key).fecha);
-        if (fechaActual > fechaGuardada) {
-          ultimosMovimientos.set(key, movimiento);
-        }
-      }
-    });
+    // 3) Crear o actualizar artículos (inicialmente con cantidad = 0)
+    //    agrupa por (marca, modelo_serie)
+    const articuloMap = new Map(); // key: "marca_modelo_serie", value: movimiento (último)
 
-    // Procesar cada grupo de artículo para verificar su existencia y actualizar movimientos
-    let warnings: string[] = [];
-    ultimosMovimientos.forEach((movimiento) => {
-      // Buscar el artículo en la tabla articulos por la combinación marca y modelo_serie
-      const articuloExistente = db
-        .prepare("SELECT * FROM articulos WHERE marca = ? AND modelo_serie = ?")
-        .get(movimiento.marca, movimiento.modelo_serie);
+    for (const movimiento of data) {
+      const key = `${movimiento.marca}__${movimiento.modelo_serie}`;
+      if (!articuloMap.has(key)) {
+        articuloMap.set(key, movimiento);
+      }
+    }
+
+    for (const [key, movimiento] of articuloMap.entries()) {
+      // Verificar si ya existe el artículo
+      const articuloExistente = db.prepare(`
+        SELECT * FROM articulos
+        WHERE marca = ? AND modelo_serie = ?
+      `).get(movimiento.marca, movimiento.modelo_serie);
 
       if (!articuloExistente) {
-        // Insertar un nuevo artículo usando la cantidad del último movimiento
-        const result = db.prepare(
-          "INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?, ?, ?, ?, ?, ?)"
-        ).run(
+        // Insertar el artículo con cantidad 0
+        const result = db.prepare(`
+          INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `).run(
           movimiento.material_repuesto,
           movimiento.marca,
           movimiento.modelo_serie,
-          0, // Se inicia en 0
-          null, // imagen
+          0,     // Stock inicial en 0
+          null,  // Sin imagen
           movimiento.unidad_medida
         );
         const newArticleId = result.lastInsertRowid;
-        // Actualizar los movimientos correspondientes a este artículo
-        db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
-          .run(newArticleId, movimiento.marca, movimiento.modelo_serie);
-      } else {
-        // Actualizar los movimientos con el ID del artículo existente
-        db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
-          .run(articuloExistente.id, movimiento.marca, movimiento.modelo_serie);
-        // Comparar la cantidad y generar advertencia si difieren
-        if (articuloExistente.cantidad !== movimiento.cantidad) {
-          warnings.push(
-            `El artículo (Marca: ${movimiento.marca}, Modelo/Serie: ${movimiento.modelo_serie}) tiene cantidad en BD: ${articuloExistente.cantidad} y el último movimiento en Excel indica: ${movimiento.cantidad}.`
-          );
-        }
-      }
-    });
 
-    // Confirmar la transacción
+        // Actualizar los movimientos con ese ID de artículo
+        db.prepare(`
+          UPDATE movimientos_materiales
+          SET articulo_id = ?
+          WHERE marca = ? AND modelo_serie = ?
+        `).run(newArticleId, movimiento.marca, movimiento.modelo_serie);
+
+      } else {
+        // El artículo ya existe, así que solo actualizamos el articulo_id en movimientos_materiales
+        db.prepare(`
+          UPDATE movimientos_materiales
+          SET articulo_id = ?
+          WHERE marca = ? AND modelo_serie = ?
+        `).run(articuloExistente.id, movimiento.marca, movimiento.modelo_serie);
+      }
+    }
+
+    // 4) Actualizar la columna 'cantidad' en 'articulos' con el inventario_remanente
+    //    del último movimiento (basado en el mayor numero_movimiento) para cada artículo.
+    //
+    //    *Aquí asumimos que "último movimiento" se identifica por el mayor valor de numero_movimiento.*
+
+    const lastMovements = db.prepare(`
+      SELECT mm.marca, mm.modelo_serie, mm.inventario_remanente, mm.articulo_id
+      FROM movimientos_materiales mm
+      JOIN (
+        SELECT marca, modelo_serie, MAX(numero_movimiento) AS max_mov
+        FROM movimientos_materiales
+        GROUP BY marca, modelo_serie
+      ) sub ON sub.marca = mm.marca
+           AND sub.modelo_serie = mm.modelo_serie
+           AND sub.max_mov = mm.numero_movimiento
+    `).all();
+
+    for (const row of lastMovements) {
+      // row.articulo_id es el ID del artículo
+      db.prepare(`
+        UPDATE articulos
+        SET cantidad = ?
+        WHERE id = ?
+      `).run(row.inventario_remanente, row.articulo_id);
+    }
+
+    // Confirmar transacción
     db.prepare("COMMIT").run();
 
-    // Retornar el resultado junto con las advertencias (si existen)
-    return { success: true, data: insertedData, warnings };
-
+    return { success: true, data: insertedData };
+    
   } catch (error) {
-    // En caso de error, revertir todas las operaciones realizadas en la transacción
     db.prepare("ROLLBACK").run();
     console.error('[!] Hubo un error al reemplazar datos:', error);
     return { success: false, error: error };
