@@ -33,7 +33,7 @@ function createWindow() {
     height: 980,
     show: false,
     webPreferences: {
-      preload: join(app.getAppPath(),  'preload.js'),
+      preload: join(app.getAppPath(), 'main',  'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     }
@@ -62,23 +62,23 @@ function createWindow() {
   }, 5000);
 
   const template = [
-    {
-      label: 'Archivo',
-      submenu: [
-        { role: 'quit', label: 'Salir' }
-      ]
-    },
+    // {
+    //   label: 'Archivo',
+    //   submenu: [
+    //     { role: 'quit', label: 'Salir' }
+    //   ]
+    // },
 
-      {
-        label: 'Ver',
-        submenu: [ 
-          { role: 'forceReload', label: 'Forzar recarga' },
-          { role: 'toggleDevTools', label: 'Alternar herramientas de desarrollo' }, 
-        ]
-      }, 
-    {
-      label: 'Ayuda',
-      submenu: [
+    //   {
+    //     label: 'Ver',
+    //     submenu: [ 
+    //       { role: 'forceReload', label: 'Forzar recarga' },
+    //       { role: 'toggleDevTools', label: 'Alternar herramientas de desarrollo' }, 
+    //     ]
+    //   }, 
+    // {
+    //   label: 'Ayuda',
+    //   submenu: [
         // {
 
         //   label: 'Documentación',
@@ -93,12 +93,12 @@ function createWindow() {
  
         //   }
         // },
-        {
-          label: 'Acerca de',
-          click: createAboutWindow
-        }
-      ]
-    }
+    //     {
+    //       label: 'Acerca de',
+    //       click: createAboutWindow
+    //     }
+    //   ]
+    // }
   ];
 
   const menu = Menu.buildFromTemplate(template as Electron.MenuItemConstructorOptions[]);
