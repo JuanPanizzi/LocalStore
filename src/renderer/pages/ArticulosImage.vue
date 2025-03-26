@@ -1,7 +1,8 @@
 <template>
+   
     <section class="min-h-screen card mx-2 p-8 bg-[#0F172A]">
         <div class="max-w-[97%] mx-auto space-y-8">
-            <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
+            <!-- Filtros -->
             <div class="bg-slate-800 p-4 rounded-lg shadow-md">
                 <h2 class="text-xl font-bold text-white mb-4">Filtrar Artículos</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -15,7 +16,7 @@
 
             <!-- Contenedor de Carousel y DataTable -->
             <div class="flex flex-col md:flex-row gap-8">
-                <!-- Carousel dentro de un contenedor estilizado -->
+                <!-- Carousel dentro de un contenedor  -->
                 <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
                     <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
                     <!-- Condicional para mostrar mensaje de carga -->
@@ -26,7 +27,8 @@
                         </p>
 
                     </div>
-                    <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
+                    <Carousel  :key="filteredArticulos.length"
+                    v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden"
                         emptyMessage="Sin resultados">
 
