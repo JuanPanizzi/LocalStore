@@ -79,22 +79,22 @@ export const eliminarMovimiento = (movimiento) => {
 
     if (tipo_movimiento == 'INGRESO' || tipo_movimiento == 'ENTRADA') {
 
-       // Obtener el stock actual del artículo
-       const stmtObtenerStock = db.prepare("SELECT cantidad FROM articulos WHERE id = ?");
-       const row = stmtObtenerStock.get(articulo_id);
-       if (!row) {
-         throw new Error("Artículo no encontrado");
-       }
-       const stockActual = row.cantidad;
- 
-       // Si la cantidad a restar es mayor que el stock, abortar
-       if (stockActual < cantidad) {
-         db.exec("ROLLBACK");
-         return { 
-           success: false, 
-           message: "No se puede eliminar una cantidad mayor a la que hay en el stock actual del artículo." 
-         };
-        }
+      // Obtener el stock actual del artículo
+      const stmtObtenerStock = db.prepare("SELECT cantidad FROM articulos WHERE id = ?");
+      const row = stmtObtenerStock.get(articulo_id);
+      if (!row) {
+        throw new Error("Artículo no encontrado");
+      }
+      const stockActual = row.cantidad;
+
+      // Si la cantidad a restar es mayor que el stock, abortar
+      if (stockActual < cantidad) {
+        db.exec("ROLLBACK");
+        return {
+          success: false,
+          message: "No se puede eliminar una cantidad mayor a la que hay en el stock actual del artículo."
+        };
+      }
 
 
 
@@ -127,7 +127,26 @@ export const eliminarMovimiento = (movimiento) => {
 }
 
 
-
+// Función auxiliar para extraer número y unidad de una cadena
+function extraerNumeroYUnidad(valor, unidadExistente) {
+  if (typeof valor === 'string') {
+    // Esta expresión regular captura el número (con posible parte decimal)
+    // y opcionalmente letras (sin incluir espacios al final)
+    const regex = /^([\d.]+)\s*([a-zA-Z]+)?/;
+    const match = valor.match(regex);
+    if (match) {
+      const numero = match[1]; // la parte numérica
+      const unidadExtraida = match[2] || "";
+      // Si no se envió unidad_medida, usamos la unidad extraída
+      if (!unidadExistente && unidadExtraida) {
+        unidadExistente = unidadExtraida;
+      }
+      return { numero, unidad: unidadExistente };
+    }
+  }
+  // Si no es string o no hay coincidencia, retornamos el valor original
+  return { numero: valor, unidad: unidadExistente };
+}
 
 export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
   try {
@@ -163,6 +182,20 @@ export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
     `);
 
     for (const movimiento of movimientosData) {
+
+      // Procesar el campo "cantidad"
+      let resultado = extraerNumeroYUnidad(movimiento.cantidad, movimiento.unidad_medida);
+      movimiento.cantidad = resultado.numero;
+      movimiento.unidad_medida = resultado.unidad; // se asigna si estaba vacío
+
+      // Procesar el campo "inventario_remanente"
+      resultado = extraerNumeroYUnidad(movimiento.inventario_remanente, movimiento.unidad_medida);
+      movimiento.inventario_remanente = resultado.numero;
+      // Si aún no se asignó unidad_medida y se extrajo de inventario_remanente, se asigna
+      if (!movimiento.unidad_medida && resultado.unidad) {
+        movimiento.unidad_medida = resultado.unidad;
+      }
+
       insertMov.run(
         movimiento.fecha,
         movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
