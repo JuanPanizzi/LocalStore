@@ -468,8 +468,8 @@ export default defineComponent({
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 5000 });
 
             } else {
-                if (response.error == 'Ya existe un artículo con esa marca y modelo') {
-                    toast.add({ severity: 'error', summary: 'Error', detail: `${response.error}`, life: 5000 });
+                if (response.message == 'Ya existe un artículo con esa marca y modelo') {
+                    toast.add({ severity: 'error', summary: 'Artículo repetido', detail: `${response.message}`, life: 5000 });
                     return;
                 }
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 5000 });

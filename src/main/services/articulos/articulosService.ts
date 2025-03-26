@@ -34,7 +34,7 @@ export const crearArticulo = async (articulo) => {
         const articuloRepetido = db.prepare(`SELECT id FROM articulos WHERE marca = ? COLLATE NOCASE AND modelo_serie = ? COLLATE NOCASE`).get(marca, modelo_serie);
 
         if (articuloRepetido) {
-            return { success: false, error: "Ya existe un artículo con esa marca y modelo_serie" };
+            return { success: false, message: "Ya existe un artículo con esa marca y modelo" };
         }
 
         const stmt = db.prepare(`INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?,?,?,?,?,?)`);

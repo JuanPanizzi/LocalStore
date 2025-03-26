@@ -25,8 +25,8 @@ export function useArticulos(){
             if(response.success){
                 return {success: true, data: response.data}
             }else{
-                if(response.error == 'Ya existe un artículo con esa marca y modelo'){
-                    return {success: false, error: response.error}
+                if(response.message == 'Ya existe un artículo con esa marca y modelo'){
+                    return {success: false, message: response.message}
                 }
                 throw new Error();
             }
