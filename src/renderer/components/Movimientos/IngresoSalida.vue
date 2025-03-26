@@ -95,9 +95,9 @@
                 <p class="mr-2  w-2/5 text-left  font-semibold">N° Pieza de Almacén:</p>
                 <InputText v-model="formData.numero_almacenes" class="w-3/5" />
             </div>
-            <div class="input-group flex items-center">
-                <p class="mr-2  w-2/5 text-left  font-semibold">Observaciones:</p>
-                <InputText v-model="formData.observaciones" class="w-3/5" />
+            <div class="input-group flex items-center col-span-2">
+                <p class=" w-1/5 text-left  font-semibold">Observaciones:</p>
+                <InputText v-model="formData.observaciones" class="w-4/5" />
             </div>
 
 
