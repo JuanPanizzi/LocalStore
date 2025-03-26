@@ -207,7 +207,7 @@ export function useMovimientos() {
 
                     if (response.success) {
 
-                        console.log('response success useMov: 208', response)
+                        // console.log('response success useMov: 208', response)
                         // Solo si el reemplazo es exitoso, formatear las fechas para el frontend
                         const movimientos = response.data.map((row) => ({
                             ...row,
@@ -636,9 +636,8 @@ export function useMovimientos() {
 
         // Mapear los datos al formato requerido}
         const formattedData = datosFiltrados.map((item) => (
-            console.log('item.fecha', item.fecha),
-            console.log( 'formatearFecha(item.fecha)' , formatearFecha(item.fecha)),
-            
+            // console.log('item.fecha', item.fecha),
+            // console.log( 'formatearFecha(item.fecha)' , formatearFecha(item.fecha)),
             {
             // "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
             "Fecha": item.fecha || "-",

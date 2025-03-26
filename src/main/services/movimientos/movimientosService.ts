@@ -330,7 +330,7 @@ export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
 
     // Confirmar transacción
     db.prepare("COMMIT").run();
-    console.log('movimientosSinID:', movimientosSinID);
+    // console.log('movimientosSinID:', movimientosSinID);
     return { success: true, data: movimientosGuardados, movimientosSinID };
 
   } catch (error) {
