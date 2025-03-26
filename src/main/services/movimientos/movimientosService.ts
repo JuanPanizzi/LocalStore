@@ -182,7 +182,9 @@ export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
     `);
 
     for (const movimiento of movimientosData) {
-
+      // console.log('movimiento.numero_almacenes', movimiento.numero_almacenes)
+      // console.log('typeof(movimiento.numero_almacenes)', typeof(movimiento.numero_almacenes))
+      
       // Procesar el campo "cantidad"
       let resultado = extraerNumeroYUnidad(movimiento.cantidad, movimiento.unidad_medida);
       movimiento.cantidad = resultado.numero;
@@ -207,9 +209,9 @@ export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
         movimiento.cantidad,
         movimiento.permiso_trabajo_asociado,
         movimiento.informe_asociado,
-        movimiento.orden_trabajo_asociada,
+        movimiento.orden_trabajo_asociada?.toString(),
         movimiento.remito,
-        movimiento.numero_almacenes,
+        movimiento.numero_almacenes?.toString(),
         movimiento.numero_movimiento.toString(), // Convertir a string para tratar correctamente sufijos
         movimiento.modelo_serie,
         movimiento.unidad_medida,
