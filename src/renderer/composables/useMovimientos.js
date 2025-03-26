@@ -589,7 +589,8 @@ export function useMovimientos() {
                     let valor = item[col.dataKey];
 
                     // Si es el campo "fecha", formatearlo
-                    if (col.dataKey === "fecha" && valor) {
+                    if (col.dataKey === "fecha" && valor instanceof Date) {
+
                         valor = formatearFecha(valor);
                     }
 
