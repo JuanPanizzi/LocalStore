@@ -11,13 +11,13 @@
         <!-- <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag> -->
 
         <div v-if="activeFilters.length" class="mb-4">
-            <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 "></Tag>
+            <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 text-2xl"></Tag>
 
             <div class="flex flex-wrap gap-2">
                 <Tag v-for="(filter, index) in activeFilters" :key="index" :value="`${filter.field}: ${filter.value}`"
-                    severity="secondary" class="p-2" icon="pi pi-filter" />
+                    severity="secondary" class="mb-2 text-2xl" icon="pi pi-filter" />
             </div>
-            <Button label="Limpiar filtros" icon="pi pi-refresh" @click="clearFilters" class="mt-2" size="small" />
+            <Button label="Reestablecer Filtros" icon="pi pi-filter-slash" @click="clearFilters" class="mt-2 text-md" size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
             paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
