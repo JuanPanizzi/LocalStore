@@ -383,7 +383,7 @@ export default defineComponent({
 
         const generarExcel = (datosFiltrados) => {
 
-            console.log('activeFilters', activeFilters.value)
+            // console.log('activeFilters', activeFilters.value)
 
             let filtrosArticulo = [];
             // {
