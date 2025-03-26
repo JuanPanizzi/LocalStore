@@ -33,7 +33,8 @@ const createArticulosSQL = `
     marca TEXT,
     modelo_serie TEXT,
     imagen TEXT,
-    cantidad INTEGER
+    cantidad INTEGER,
+    unidad_medida TEXT,
   );
 `;
 try {
