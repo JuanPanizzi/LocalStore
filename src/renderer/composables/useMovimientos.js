@@ -538,6 +538,7 @@ export function useMovimientos() {
                 { title: "DESTINO", dataKey: "destino" },
                 { title: "CANTIDAD", dataKey: "cantidad" },
                 { title: "UNIDAD", dataKey: "unidad_medida" },
+                { title: "INVENTARIO REMANENTE", dataKey: "inventario_remanente" },
                 { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
                 { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
                 { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
@@ -589,23 +590,24 @@ export function useMovimientos() {
                 head: [columnas.map(col => col.title)],
                 body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
                 styles: { fontSize: 6, cellPadding: 1 },
-                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6.5 },
+                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
                 columnStyles: {
-                    0: { cellWidth: 19 }, //Fecha
-                    1: { cellWidth: 19 }, //material / repuesto
-                    2: { cellWidth: 19 }, //marca
-                    3: { cellWidth: 24 },//modelo
-                    4: { cellWidth: 19 }, // movimiento
-                    5: { cellWidth: 19 }, // origen
-                    6: { cellWidth: 19 }, // destino
-                    7: { cellWidth: 19 }, // cantidad
-                    8: { cellWidth: 16 }, // unidad medida
-                    9: { cellWidth: 19 }, // pt asociado
-                    10: { cellWidth: 23 }, //  ot asociado 
-                    11: { cellWidth: 24 }, // informe asociado
-                    12: { cellWidth: 16 }, // remito
-                    13: { cellWidth: 18 }, // n° almacenes
-                    14: { cellWidth: 22 }, // observaciones
+                    0: { cellWidth: 18 }, //Fecha
+                    1: { cellWidth: 18 }, //material / repuesto
+                    2: { cellWidth: 18 }, //marca
+                    3: { cellWidth: 23 },//modelo
+                    4: { cellWidth: 18 }, // movimiento
+                    5: { cellWidth: 18 }, // origen
+                    6: { cellWidth: 18 }, // destino
+                    7: { cellWidth: 15 }, // cantidad
+                    8: { cellWidth: 12 }, // unidad medida
+                    9: { cellWidth: 16 }, // inventario_remanente
+                    10: { cellWidth: 18 }, // pt asociado
+                    11: { cellWidth: 22 }, //  ot asociado 
+                    12: { cellWidth: 23 }, // informe asociado
+                    13: { cellWidth: 15 }, // remito
+                    14: { cellWidth: 17 }, // n° almacenes
+                    15: { cellWidth: 25 }, // observaciones
                 },
                 margin: { left: 1, right: 1 },
                 theme: "grid"
