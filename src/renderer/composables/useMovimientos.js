@@ -14,10 +14,10 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerMovimientos();
-           
+
 
             if (response.success) {
-                
+
                 return { success: true, data: response.data }
             } else {
                 throw new Error(response.error)
@@ -199,6 +199,28 @@ export function useMovimientos() {
                     return resolve({ success: false, message: "Fechas inválidas" });
                 }
 
+                // Filtrar sólo los registros cuyo numero_movimiento NO sea "0"
+                const validMovimientos = formattedData.filter(item => {
+                    const idStr = String(item.numero_movimiento).trim();
+                    return idStr !== "0";
+                });
+
+                // Buscar duplicados comparando el valor completo (número + sufijo)
+                const duplicate = validMovimientos.find((item, index, self) => {
+                    const currentId = String(item.numero_movimiento).trim();
+                    return self.findIndex(other => String(other.numero_movimiento).trim() === currentId) !== index;
+                });
+
+                if (duplicate) {
+                    toast.add({
+                        severity: "error",
+                        summary: "ID duplicado",
+                        detail: `El número de movimiento "${String(duplicate.numero_movimiento).trim()}" se encuentra duplicado.  Por favor, modifíquelo para que el archivo excel se pueda importar correctamente.`,
+                        life: 10000
+                    });
+                    return resolve({ success: false, message: "Número de movimiento duplicado" });
+                }
+
 
 
                 // Intentar reemplazar los datos en la base de datos
@@ -216,7 +238,7 @@ export function useMovimientos() {
 
                         // Mostrar advertencias si existen
                         if (response.movimientosSinID && response.movimientosSinID.length > 0) {
-                            
+
                             // let msg = "Los siguientes artículos registran movimientos con ID igual a cero, por lo que se les asignó como STOCK el valor del inventario remanente en el movimiento más reciente: "
                             // response.movimientosSinID.forEach((art) => {
 
@@ -263,7 +285,7 @@ export function useMovimientos() {
 
 
     const generarPdf = (datosFormulario) => {
-        
+
 
         return new Promise((resolve, reject) => {
             // console.log('datosFormulario useMovimientos', datosFormulario)
@@ -457,14 +479,14 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerArticuloById(articuloId);
-            
-            if(response.success){
-                return {success: true, data: response.data}
-            }else{
+
+            if (response.success) {
+                return { success: true, data: response.data }
+            } else {
                 throw new Error()
             }
-            } catch (error) {
-                return {success: false}
+        } catch (error) {
+            return { success: false }
         }
     }
 
@@ -480,14 +502,14 @@ export function useMovimientos() {
 
         const response = await obtenerArticuloById(articulo_id);
 
-        if(!response.success){ 
+        if (!response.success) {
             toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al generar el PDF, intente nuevamente.', life: 3000 });
             return;
         }
 
         const { cantidad: stock_articulo_seleccionado, unidad_medida } = response.data;
 
-        
+
 
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
 
@@ -639,26 +661,26 @@ export function useMovimientos() {
             // console.log('item.fecha', item.fecha),
             // console.log( 'formatearFecha(item.fecha)' , formatearFecha(item.fecha)),
             {
-            // "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
-            "Fecha": item.fecha || "-",
-            "ID": item.numero_movimiento || "-",
-            "Movimiento": item.tipo_movimiento || "-",
-            "Origen": item.origen || "-",
-            "Destino": item.destino || "-",
-            "Material/Repuesto": item.material_repuesto || "-",
-            "Marca": item.marca || "-",
-            "Modelo/Serie": item.modelo_serie || "-",
-            "Cantidad": item.cantidad || "-",
-            "Inventario": item.inventario_remanente || "-",
-            "Unidad de Medida": item.unidad_medida || "-",
-            "PT Asociado": item.permiso_trabajo_asociado || "-",
-            "Informe Asociado": item.informe_asociado,
-            "OT Asociada": item.orden_trabajo_asociada || "-",
-            "Remito": item.remito || "-",
-            "N° Almacenes": item.numero_almacenes || "-",
-            "Observaciones": item.observaciones || "-",
+                // "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
+                "Fecha": item.fecha || "-",
+                "ID": item.numero_movimiento || "-",
+                "Movimiento": item.tipo_movimiento || "-",
+                "Origen": item.origen || "-",
+                "Destino": item.destino || "-",
+                "Material/Repuesto": item.material_repuesto || "-",
+                "Marca": item.marca || "-",
+                "Modelo/Serie": item.modelo_serie || "-",
+                "Cantidad": item.cantidad || "-",
+                "Inventario": item.inventario_remanente || "-",
+                "Unidad de Medida": item.unidad_medida || "-",
+                "PT Asociado": item.permiso_trabajo_asociado || "-",
+                "Informe Asociado": item.informe_asociado,
+                "OT Asociada": item.orden_trabajo_asociada || "-",
+                "Remito": item.remito || "-",
+                "N° Almacenes": item.numero_almacenes || "-",
+                "Observaciones": item.observaciones || "-",
 
-        }));
+            }));
 
         // Crear una hoja de trabajo (worksheet)
         const worksheet = XLSX.utils.json_to_sheet(formattedData);
