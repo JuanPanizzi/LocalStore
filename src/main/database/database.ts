@@ -34,7 +34,7 @@ const createArticulosSQL = `
     modelo_serie TEXT,
     imagen TEXT,
     cantidad INTEGER,
-    unidad_medida TEXT,
+    unidad_medida TEXT
   );
 `;
 try {
@@ -106,7 +106,7 @@ const createMovimientosSQL = `
     unidad_medida TEXT,
     inventario_remanente INTEGER,
     numero_movimiento TEXT,
-    observaciones TEXT,
+    observaciones TEXT
   );
 `;
 try {
