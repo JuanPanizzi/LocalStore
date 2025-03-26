@@ -54,11 +54,11 @@ export function useMovimientos() {
                 return { success: true, data: response.data }
             } else {
                 // throw new Error(response.error)
-                return { success: false, message: response.message || 'Error al eliminar el movimiento' };
+                return { success: false, message: response.message || 'Error al eliminar el movimiento, intente nuevamente' };
             }
         } catch (error) {
             console.log('error', error)
-            return { success: false, message: error.message || 'Error desconocido' };
+            return { success: false, message: 'Error al eliminar el movimiento, intente nuevamente' };
         }
     }
 

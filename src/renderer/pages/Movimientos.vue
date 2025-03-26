@@ -297,7 +297,7 @@ export default defineComponent({
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
                     } else {
-                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                        toast.add({ severity: 'error', summary: 'Error al eliminar movimiento', detail:  response.message || 'Error al eliminar el movimiento, intente nuevamente', life: 6000 });
                     }
 
                 },

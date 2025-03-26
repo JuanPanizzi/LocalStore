@@ -121,7 +121,7 @@ export const eliminarMovimiento = (movimiento) => {
   } catch (error) {
     console.log('error', error)
     db.exec("ROLLBACK");
-    return { success: false, message: "Error al eliminar el movimiento", error };
+    return { success: false, error };
   }
 
 }
