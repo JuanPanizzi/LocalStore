@@ -649,8 +649,8 @@ export function useMovimientos() {
             "Marca": item.marca || "-",
             "Modelo/Serie": item.modelo_serie || "-",
             "Cantidad": item.cantidad || "-",
-            "Unidad de Medida": item.unidad_medida || "-",
             "Inventario": item.inventario_remanente || "-",
+            "Unidad de Medida": item.unidad_medida || "-",
             "PT Asociado": item.permiso_trabajo_asociado || "-",
             "Informe Asociado": item.informe_asociado,
             "OT Asociada": item.orden_trabajo_asociada || "-",
@@ -715,8 +715,8 @@ export function useMovimientos() {
             { wch: 50 }, // Marca
             { wch: 74 }, // Modelo/Serie
             { wch: 15 }, // Cantidad
-            { wch: 20 }, // Unidad de Medida
             { wch: 20 }, // Inventario
+            { wch: 20 }, // Unidad de Medida
             { wch: 15 }, // PT asociado
             { wch: 30 }, // Informe Asociado
             { wch: 22 }, // OT Asociada
