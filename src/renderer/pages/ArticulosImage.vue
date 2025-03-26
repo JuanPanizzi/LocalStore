@@ -545,7 +545,7 @@ export default defineComponent({
                             dataArticulos.value.splice(indexArticulo, 1);
                         }
 
-                        toast.add({ severity: 'info', summary: 'Éxito', detail: `Se eliminó el artículo y su historial de movimientos correctamente.`, life: 5000 });
+                        toast.add({ severity: 'success', summary: 'Éxito', detail: `Se eliminó el artículo y su historial de movimientos correctamente.`, life: 5000 });
 
                     } else {
 
