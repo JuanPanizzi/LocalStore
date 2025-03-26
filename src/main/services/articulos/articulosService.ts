@@ -112,6 +112,24 @@ export const actualizarArticulo = async (articulo) => {
         
         db.prepare("BEGIN TRANSACTION").run();
 
+
+         // Validar que no exista otro artículo con la misma combinación de marca y modelo_serie
+         const duplicado = db.prepare(`
+            SELECT id 
+            FROM articulos 
+            WHERE marca = ? 
+              AND modelo_serie = ? 
+              AND id != ?
+        `).get(marca, modelo_serie, id);
+
+        if (duplicado) {
+            db.prepare("ROLLBACK").run();
+            return { 
+                success: false, 
+                message: "Ya existe un artículo con la misma marca y modelo" 
+            };
+        }
+
         const actualizarMovimientosStmt = db.prepare(`
             UPDATE movimientos_materiales 
             SET material_repuesto = ?, marca = ?, modelo_serie = ?, cantidad = ?, unidad_medida = ?

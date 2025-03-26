@@ -492,6 +492,13 @@ export default defineComponent({
                 showDialogEditar.value = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo editado correctamente', life: 5000 });
             } else {
+
+                if(response.message == 'Ya existe un artículo con la misma marca y modelo'){
+                    toast.add({ severity: 'error', summary: 'Error', detail: 'Ya existe un artículo con la misma marca y modelo seleccionados', life: 5000 });
+                    // showDialogEditar.value = false;
+                    return;
+                }
+
                 showDialogEditar.value = false;
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo, intente nuevamente', life: 5000 });
             }

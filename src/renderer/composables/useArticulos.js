@@ -61,7 +61,14 @@ export function useArticulos(){
             const response = await window.electronAPI.actualizarArticulo(articulo);
             if(response.success){
                 return {success: true, data: response.data}
+            }else{
+                if(response.message == 'Ya existe un artículo con la misma marca y modelo'){
+                    return {success: false, message: response.message}
+                }else{
+                    throw new Error();
+                }
             }
+            
         } catch (error) {
             return {success: false}
         }
