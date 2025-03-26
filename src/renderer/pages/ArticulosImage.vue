@@ -98,10 +98,10 @@
                             Cargando...
                         </p>
                     </div>
+                    <!-- selectionMode="single" :selection="selectedArticulo" 
+                    @row-select="onArticuloSelect" -->
                     <DataTable v-else :value="filteredArticulos" paginator :rows="4" class="mx-auto"
-                        selectionMode="single" :selection="selectedArticulo" @row-select="onArticuloSelect"
                         dataKey="id">
-
                         <template #empty>
                             <h1 class="text-center ">Sin resultados</h1>
                         </template>
