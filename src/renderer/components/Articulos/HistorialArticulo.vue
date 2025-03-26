@@ -6,7 +6,8 @@
                 <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success"
                     @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
-                    style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo, dialogRef.data.articulo_id)" />
+                    style="margin-left: .5em;"
+                    @click="generarListadoPDF(dataMovimientosArticulo, dialogRef.data.articulo_id)" />
             </template>
         </Toolbar>
 
@@ -86,7 +87,7 @@
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
             <Column field="inventario_remanente" header="INVENTARIO REMANENTE"></Column>
-            
+
             <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
@@ -316,21 +317,23 @@ export default defineComponent({
                             emit('save', { movimiento_articulo_eliminado: movimiento });
 
                             const mensaje = tipo_movimiento === 'SALIDA'
+                                ? (cantidad > 1
+                                    ? `Se han restablecido ${cantidad} artículos en el stock`
+                                    : `Se ha restablecido ${cantidad} artículo en el stock`)
+                                : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
                                     ? (cantidad > 1
-                                        ? `Se han restablecido ${cantidad} artículos en el stock`
-                                        : `Se ha restablecido ${cantidad} artículo en el stock`)
-                                    : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
-                                        ? (cantidad > 1
-                                            ? `Se han eliminado ${cantidad} artículos del stock`
-                                            : `Se ha eliminado ${cantidad} artículo del stock`)
-                                        : '')
+                                        ? `Se han eliminado ${cantidad} artículos del stock`
+                                        : `Se ha eliminado ${cantidad} artículo del stock`)
+                                    : '')
 
-                                    toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
+                            toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
                         } else {
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
                     } else {
-                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                        toast.add({ severity: 'error', summary: 'Error al eliminar el movimiento', detail: response.message || 'Error al eliminar el movimiento, intente nuevamente',
+                            life: 3000
+                        });
                     }
 
                 },
