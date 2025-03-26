@@ -460,6 +460,11 @@ export default defineComponent({
         }
         async function guardarArticulo(datosFormulario) {
 
+            if(!datosFormulario.material_repuesto || !datosFormulario.marca || !datosFormulario.modelo_serie ){
+                toast.add({ severity: 'error', summary: 'Campos Incompletos', detail: 'Debe completar los campos de Material, Marca y Modelo', life: 5000 });
+                return;
+            }
+            
             const response = await crearArticulo(datosFormulario);
 
             if (response.success) {
