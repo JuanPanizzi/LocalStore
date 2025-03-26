@@ -661,6 +661,9 @@ export function useMovimientos() {
         const formattedData = datosFiltrados.map((item) => (
             // console.log('item.fecha', item.fecha),
             // console.log( 'formatearFecha(item.fecha)' , formatearFecha(item.fecha)),
+            console.log('item.cantidad', item.cantidad),
+            console.log('item.material', item.inventario_remanente),
+
             {
                 // "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
                 "Fecha": item.fecha || "-",
@@ -671,8 +674,8 @@ export function useMovimientos() {
                 "Material/Repuesto": item.material_repuesto || "-",
                 "Marca": item.marca || "-",
                 "Modelo/Serie": item.modelo_serie || "-",
-                "Cantidad": item.cantidad || "-",
-                "Inventario": item.inventario_remanente || "-",
+                "Cantidad": (item.cantidad != null) ? item.cantidad.toString() : "-",
+                "Inventario": (item.inventario_remanente != null) ? item.inventario_remanente.toString() : "-",
                 "Unidad de Medida": item.unidad_medida || "-",
                 "PT Asociado": item.permiso_trabajo_asociado || "-",
                 "Informe Asociado": item.informe_asociado,
