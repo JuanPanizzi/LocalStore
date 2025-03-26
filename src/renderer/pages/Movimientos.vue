@@ -327,7 +327,7 @@ export default defineComponent({
                     // Para order descendente (más reciente primero) restamos dateB - dateA
                     return dateB - dateA;
                 });
-                toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
+                toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 10000 });
             } else {
 
                 switch (response.message) {

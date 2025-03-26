@@ -217,12 +217,14 @@ export function useMovimientos() {
                         // Mostrar advertencias si existen
                         if (response.movimientosSinID && response.movimientosSinID.length > 0) {
                             
-                            let msg = "Los siguientes artículos registran movimientos con ID igual a cero, por lo que se les asignó como STOCK el valor del inventario remanente en el movimiento más reciente: "
-                            response.movimientosSinID.forEach((art) => {
+                            // let msg = "Los siguientes artículos registran movimientos con ID igual a cero, por lo que se les asignó como STOCK el valor del inventario remanente en el movimiento más reciente: "
+                            // response.movimientosSinID.forEach((art) => {
 
-                                msg += ` ${art} `;
-                            });
-                            toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 30000 });
+                            //     msg += ` ${art} `;
+                            // });
+                            let msg = 'A los artículos que registran en todos sus movimientos un valor de ID igual a cero, se les ha asignado como valor de stock, el valor del inventario remanente de su movimiento con la fecha más reciente'
+
+                            toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 15000 });
 
                         }
 
