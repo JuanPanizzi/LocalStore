@@ -13,6 +13,7 @@
 
         <DataTable :value="dataMovimientosArticulo" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
             style="max-width: 90vw">
+            <template #empty> <Message severity="secondary" outlined class="my-8 py-5" variant="outlined">Sin Resultados</Message> </template>
             <Column>
                 <template #body="slotProps">
                     <div class="flex">
@@ -200,6 +201,7 @@ import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Textarea from 'primevue/textarea';
 import Select from 'primevue/select';
+import Message from 'primevue/message';
 
 
 export default defineComponent({
@@ -215,7 +217,8 @@ export default defineComponent({
         Drawer,
         InputNumber,
         DatePicker,
-        Textarea
+        Textarea,
+        Message
 
     },
 

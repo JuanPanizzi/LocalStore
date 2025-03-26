@@ -32,6 +32,8 @@
                     </div>
                 </template>
 </Column> -->
+<template #empty> <Message severity="secondary" outlined class="my-8 py-3" variant="outlined">Sin Resultados</Message> </template>
+
             <Column field="" header="">
                 <template #body="slotProps">
 
@@ -148,6 +150,7 @@ import Tag from 'primevue/tag';
 import Badge from 'primevue/badge';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm';
+import Message from 'primevue/message';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -160,7 +163,8 @@ export default defineComponent({
         DatePicker,
         Tag,
         Badge,
-        ConfirmPopup
+        ConfirmPopup,
+        Message
     },
 
     setup() {
