@@ -133,7 +133,7 @@
                 :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`
                     : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`">
                 <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-                    :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
+                    :numeroInformeMovimiento="numeroInformeMovimiento" :movimientoRealizado="movimientoRealizado"  @guardarMovimiento="crearMovimiento"
                     @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
                     @nuevoPdf="nuevoPdf" />
             </Dialog>
@@ -217,8 +217,10 @@ export default defineComponent({
         const showIngresoSalida = ref({ show: false, accion: '' });
         const articuloSeleccionado = ref(null);
         const registroGuardado = ref(false);
-        const isLoading = ref(true);
+        const movimientoRealizado = ref(false);
 
+        const isLoading = ref(true);
+        
 
 
         const abrirHistorial = (articulo) => {
@@ -598,6 +600,7 @@ export default defineComponent({
                 // showIngresoSalida.value.show = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
                 registroGuardado.value = true;
+                movimientoRealizado.value = true;
             } else {
 
                 if (response.error == 'El artículo no existe') {
@@ -619,6 +622,7 @@ export default defineComponent({
                 showIngresoSalida.value.show = false;
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
                 registroGuardado.value = false;
+                movimientoRealizado.value = false;
             }
         }
 
@@ -686,7 +690,8 @@ export default defineComponent({
             abrirHistorial,
             isLoading,
             actualizarImagenDirecta,
-            debouncedFilters
+            debouncedFilters,
+            movimientoRealizado
 
         }
     }
