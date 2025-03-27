@@ -484,14 +484,11 @@ export default defineComponent({
         }
         const editarArticulo = async (articulo) => {
 
-           
-
             if( !articulo.material_repuesto || !articulo.marca || !articulo.modelo_serie ){
                 toast.add({ severity: 'error', summary: 'Campos Incompletos', detail: 'Debe completar los campos de Material, Marca y Modelo', life: 5000 });
                 return;
             }
 
-        
             const response = await actualizarArticulo(articulo);
 
             if (response.success) {
