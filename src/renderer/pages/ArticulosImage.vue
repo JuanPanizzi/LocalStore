@@ -455,10 +455,10 @@ export default defineComponent({
             //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
             numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
 
+            movimientoRealizado.value = false;
             showIngresoSalida.value.show = show;
             showIngresoSalida.value.accion = accion;
             articuloSeleccionado.value = { ...articulo }
-
         }
         async function guardarArticulo(datosFormulario) {
 

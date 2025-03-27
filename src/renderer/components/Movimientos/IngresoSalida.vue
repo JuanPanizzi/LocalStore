@@ -9,13 +9,13 @@
 
                 <div class=" flex items-center mb-3">
                     <label class=" text-right mr-3 font-semibold">ARTÍCULO EN STOCK:</label>
-                    <InputText v-model="formData.cantidad" readonly class="w-64" />
+                    <InputText v-model="formData.cantidad" readonly class="w-64" :disabled="movimientoRealizado" />
                 </div>
 
                 <div class="flex flex-col ">
                     <div class="input-group flex items-center mb-3">
                         <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                        <InputText v-model="formData.numero_movimiento" readonly class="w-64" />
+                        <InputText v-model="formData.numero_movimiento" readonly class="w-64" :disabled="movimientoRealizado" />
                     </div>
                     <div :class="`input-group flex items-center `">
                         <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
@@ -31,15 +31,15 @@
 
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
-                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly />
+                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
-                <InputText v-model="formData.marca" class="w-3/5" readonly />
+                <InputText v-model="formData.marca" class="w-3/5" readonly :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Modelo / Serie:</p>
-                <InputText v-model="formData.modelo_serie" class="w-3/5" readonly />
+                <InputText v-model="formData.modelo_serie" class="w-3/5" readonly :disabled="movimientoRealizado" />
             </div>
 
             <div class="flex justify-between items-center ">
@@ -51,12 +51,12 @@
 
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Unidad:</label>
-                <InputText readonly v-model="formData.unidad_medida" class="w-3/5" />
+                <InputText readonly v-model="formData.unidad_medida" class="w-3/5" :disabled="movimientoRealizado" />
             </div>
 
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
-                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" />
+                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
