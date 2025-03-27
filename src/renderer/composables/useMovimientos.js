@@ -14,10 +14,10 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerMovimientos();
-           
+
 
             if (response.success) {
-                
+
                 return { success: true, data: response.data }
             } else {
                 throw new Error(response.error)
@@ -53,11 +53,12 @@ export function useMovimientos() {
             if (response.success) {
                 return { success: true, data: response.data }
             } else {
-                throw new Error(response.error)
+                // throw new Error(response.error)
+                return { success: false, message: response.message || 'Error al eliminar el movimiento, intente nuevamente' };
             }
         } catch (error) {
             console.log('error', error)
-            return { success: false }
+            return { success: false, message: 'Error al eliminar el movimiento, intente nuevamente' };
         }
     }
 
@@ -121,7 +122,7 @@ export function useMovimientos() {
 
 
                 // Definir las columnas requeridas
-                const columnasRequeridas = ["FECHA", "ID", "MOVIMIENTO", "DESTINO", "ORIGEN", "MATERIAL/REPUESTO", "MARCA", "MODELO/SERIE", "CANTIDAD", "PT ASOCIADO", "INFORME ASOCIADO", "OT ASOCIADA", "REMITO", "N° ALMACENES"];
+                const columnasRequeridas = ["FECHA", "ID", "MOVIMIENTO", "DESTINO", "ORIGEN", "MATERIAL/REPUESTO", "MARCA", "MODELO/SERIE", "CANTIDAD", "PT ASOCIADO", "INFORME ASOCIADO", "OT ASOCIADA", "REMITO", "N° ALMACENES", "INVENTARIO"];
 
                 // Normalizar columnas requeridas a minúsculas
                 const columnasRequeridasNormalizadas = columnasRequeridas.map(col => col.toLowerCase());
@@ -178,6 +179,7 @@ export function useMovimientos() {
                         marca: normalizedRow["marca"],
                         modelo_serie: normalizedRow["modelo/serie"],
                         cantidad: normalizedRow["cantidad"],
+                        inventario_remanente: normalizedRow["inventario"],
                         permiso_trabajo_asociado: normalizedRow["pt asociado"],
                         informe_asociado: normalizedRow["informe asociado"],
                         orden_trabajo_asociada: normalizedRow["ot asociada"],
@@ -197,6 +199,28 @@ export function useMovimientos() {
                     return resolve({ success: false, message: "Fechas inválidas" });
                 }
 
+                // Filtrar sólo los registros cuyo numero_movimiento NO sea "0"
+                const validMovimientos = formattedData.filter(item => {
+                    const idStr = String(item.numero_movimiento).trim();
+                    return idStr !== "0";
+                });
+
+                // Buscar duplicados comparando el valor completo (número + sufijo)
+                const duplicate = validMovimientos.find((item, index, self) => {
+                    const currentId = String(item.numero_movimiento).trim();
+                    return self.findIndex(other => String(other.numero_movimiento).trim() === currentId) !== index;
+                });
+
+                if (duplicate) {
+                    toast.add({
+                        severity: "error",
+                        summary: "ID duplicado",
+                        detail: `El número de movimiento "${String(duplicate.numero_movimiento).trim()}" se encuentra duplicado.  Por favor, modifíquelo para que el archivo excel se pueda importar correctamente.`,
+                        life: 10000
+                    });
+                    return resolve({ success: false, message: "Número de movimiento duplicado" });
+                }
+
 
 
                 // Intentar reemplazar los datos en la base de datos
@@ -204,6 +228,8 @@ export function useMovimientos() {
                     const response = await guardarExcelMovimientos(formattedData);
 
                     if (response.success) {
+
+                        // console.log('response success useMov: 208', response)
                         // Solo si el reemplazo es exitoso, formatear las fechas para el frontend
                         const movimientos = response.data.map((row) => ({
                             ...row,
@@ -211,10 +237,17 @@ export function useMovimientos() {
                         }));
 
                         // Mostrar advertencias si existen
-                        if (response.warnings && response.warnings.length > 0) {
-                            response.warnings.forEach((msg) => {
-                                toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 6000 });
-                            });
+                        if (response.movimientosSinID && response.movimientosSinID.length > 0) {
+
+                            // let msg = "Los siguientes artículos registran movimientos con ID igual a cero, por lo que se les asignó como STOCK el valor del inventario remanente en el movimiento más reciente: "
+                            // response.movimientosSinID.forEach((art) => {
+
+                            //     msg += ` ${art} `;
+                            // });
+                            let msg = 'A los artículos que registran en todos sus movimientos un valor de ID igual a cero, se les ha asignado como valor de stock, el valor del inventario remanente de su movimiento con la fecha más reciente'
+
+                            toast.add({ severity: "warn", summary: "Advertencia", detail: msg, life: 15000 });
+
                         }
 
                         resolve({ success: true, data: movimientos });
@@ -241,10 +274,7 @@ export function useMovimientos() {
 
             if (response.success) {
 
-
-
-
-                return { success: true, data: response.data }
+                return { success: true, data: response.data, movimientosSinID: response.movimientosSinID }
 
             }
         } catch (error) {
@@ -255,7 +285,7 @@ export function useMovimientos() {
 
 
     const generarPdf = (datosFormulario) => {
-        
+
 
         return new Promise((resolve, reject) => {
             // console.log('datosFormulario useMovimientos', datosFormulario)
@@ -449,14 +479,14 @@ export function useMovimientos() {
 
         try {
             const response = await window.electronAPI.obtenerArticuloById(articuloId);
-            
-            if(response.success){
-                return {success: true, data: response.data}
-            }else{
+
+            if (response.success) {
+                return { success: true, data: response.data }
+            } else {
                 throw new Error()
             }
-            } catch (error) {
-                return {success: false}
+        } catch (error) {
+            return { success: false }
         }
     }
 
@@ -472,14 +502,14 @@ export function useMovimientos() {
 
         const response = await obtenerArticuloById(articulo_id);
 
-        if(!response.success){ 
+        if (!response.success) {
             toast.add({ severity: 'error', summary: 'Error', detail: 'Hubo un error al generar el PDF, intente nuevamente.', life: 3000 });
             return;
         }
 
         const { cantidad: stock_articulo_seleccionado, unidad_medida } = response.data;
 
-        
+
 
         const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
 
@@ -530,6 +560,7 @@ export function useMovimientos() {
                 { title: "DESTINO", dataKey: "destino" },
                 { title: "CANTIDAD", dataKey: "cantidad" },
                 { title: "UNIDAD", dataKey: "unidad_medida" },
+                { title: "INVENTARIO REMANENTE", dataKey: "inventario_remanente" },
                 { title: "PT ASOCIADO", dataKey: "permiso_trabajo_asociado" },
                 { title: "OT ASOCIADA", dataKey: "orden_trabajo_asociada" },
                 { title: "INFORME ASOCIADO", dataKey: "informe_asociado" },
@@ -558,7 +589,8 @@ export function useMovimientos() {
                     let valor = item[col.dataKey];
 
                     // Si es el campo "fecha", formatearlo
-                    if (col.dataKey === "fecha" && valor) {
+                    if (col.dataKey === "fecha" && valor instanceof Date) {
+
                         valor = formatearFecha(valor);
                     }
 
@@ -581,23 +613,24 @@ export function useMovimientos() {
                 head: [columnas.map(col => col.title)],
                 body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
                 styles: { fontSize: 6, cellPadding: 1 },
-                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6.5 },
+                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
                 columnStyles: {
-                    0: { cellWidth: 19 }, //Fecha
-                    1: { cellWidth: 19 }, //material / repuesto
-                    2: { cellWidth: 19 }, //marca
-                    3: { cellWidth: 24 },//modelo
-                    4: { cellWidth: 19 }, // movimiento
-                    5: { cellWidth: 19 }, // origen
-                    6: { cellWidth: 19 }, // destino
-                    7: { cellWidth: 19 }, // cantidad
-                    8: { cellWidth: 16 }, // unidad medida
-                    9: { cellWidth: 19 }, // pt asociado
-                    10: { cellWidth: 23 }, //  ot asociado 
-                    11: { cellWidth: 24 }, // informe asociado
-                    12: { cellWidth: 16 }, // remito
-                    13: { cellWidth: 18 }, // n° almacenes
-                    14: { cellWidth: 22 }, // observaciones
+                    0: { cellWidth: 18 }, //Fecha
+                    1: { cellWidth: 18 }, //material / repuesto
+                    2: { cellWidth: 18 }, //marca
+                    3: { cellWidth: 23 },//modelo
+                    4: { cellWidth: 18 }, // movimiento
+                    5: { cellWidth: 18 }, // origen
+                    6: { cellWidth: 18 }, // destino
+                    7: { cellWidth: 15 }, // cantidad
+                    8: { cellWidth: 12 }, // unidad medida
+                    9: { cellWidth: 16 }, // inventario_remanente
+                    10: { cellWidth: 18 }, // pt asociado
+                    11: { cellWidth: 22 }, //  ot asociado 
+                    12: { cellWidth: 23 }, // informe asociado
+                    13: { cellWidth: 15 }, // remito
+                    14: { cellWidth: 17 }, // n° almacenes
+                    15: { cellWidth: 25 }, // observaciones
                 },
                 margin: { left: 1, right: 1 },
                 theme: "grid"
@@ -623,27 +656,34 @@ export function useMovimientos() {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
             return;
         }
-
+        // console.log('datosFiltrados', datosFiltrados)
         // Mapear los datos al formato requerido}
-        const formattedData = datosFiltrados.map((item) => ({
-            "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
-            "ID": item.numero_movimiento || "-",
-            "Movimiento": item.tipo_movimiento || "-",
-            "Origen": item.origen || "-",
-            "Destino": item.destino || "-",
-            "Material/Repuesto": item.material_repuesto || "-",
-            "Marca": item.marca || "-",
-            "Modelo/Serie": item.modelo_serie || "-",
-            "Cantidad": item.cantidad || "-",
-            "Unidad de Medida": item.unidad_medida || "-",
-            "PT Asociado": item.permiso_trabajo_asociado || "-",
-            "Informe Asociado": item.informe_asociado,
-            "OT Asociada": item.orden_trabajo_asociada || "-",
-            "Remito": item.remito || "-",
-            "N° Almacenes": item.numero_almacenes || "-",
-            "Observaciones": item.observaciones || "-",
+        const formattedData = datosFiltrados.map((item) => (
 
-        }));
+            {
+                "Fecha": item.fecha == null
+                    ? ""
+                    : (item.fecha instanceof Date
+                        ? formatearFecha(item.fecha)
+                        : item.fecha),
+                "ID": item.numero_movimiento?.toString() || "",
+                "Movimiento": item.tipo_movimiento || "",
+                "Origen": item.origen || "",
+                "Destino": item.destino || "",
+                "Material/Repuesto": item.material_repuesto || "",
+                "Marca": item.marca || "",
+                "Modelo/Serie": item.modelo_serie || "",
+                "Cantidad": item.cantidad?.toString() || "",
+                "Inventario": item.inventario_remanente?.toString() || "",
+                "Unidad de Medida": item.unidad_medida || "",
+                "PT Asociado": item.permiso_trabajo_asociado || "",
+                "Informe Asociado": item.informe_asociado,
+                "OT Asociada": item.orden_trabajo_asociada?.toString() || "",
+                "Remito": item.remito?.toString() || "",
+                "N° Almacenes": item.numero_almacenes?.toString() || "",
+                "Observaciones": item.observaciones || "",
+
+            }));
 
         // Crear una hoja de trabajo (worksheet)
         const worksheet = XLSX.utils.json_to_sheet(formattedData);
@@ -700,6 +740,7 @@ export function useMovimientos() {
             { wch: 50 }, // Marca
             { wch: 74 }, // Modelo/Serie
             { wch: 15 }, // Cantidad
+            { wch: 20 }, // Inventario
             { wch: 20 }, // Unidad de Medida
             { wch: 15 }, // PT asociado
             { wch: 30 }, // Informe Asociado

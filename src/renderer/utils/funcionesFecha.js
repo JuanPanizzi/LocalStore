@@ -64,7 +64,7 @@ export function formatFechaDate(dateString) {
 
 // convierte objeto date a dd/mm/aaaa
 export const formatearFecha = (fecha) => {
-
+// console.log('fecha que esta llegando fomratearFecha: 67', fecha)
   const fechaDate = new Date(fecha);
   const año = fechaDate.getFullYear();
   const mes = String(fechaDate.getMonth() + 1).padStart(2, '0');

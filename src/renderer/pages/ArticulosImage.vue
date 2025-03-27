@@ -1,7 +1,8 @@
 <template>
+   
     <section class="min-h-screen card mx-2 p-8 bg-[#0F172A]">
         <div class="max-w-[97%] mx-auto space-y-8">
-            <!-- Filtros en un contenedor con fondo claro, borde y sombra -->
+            <!-- Filtros -->
             <div class="bg-slate-800 p-4 rounded-lg shadow-md">
                 <h2 class="text-xl font-bold text-white mb-4">Filtrar Artículos</h2>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -15,7 +16,7 @@
 
             <!-- Contenedor de Carousel y DataTable -->
             <div class="flex flex-col md:flex-row gap-8">
-                <!-- Carousel dentro de un contenedor estilizado -->
+                <!-- Carousel dentro de un contenedor  -->
                 <div class="md:w-1/2 bg-slate-800 p-4 rounded-lg shadow-md">
                     <h3 class="text-lg font-bold text-white mb-2 text-center">Vista Previa del Artículo</h3>
                     <!-- Condicional para mostrar mensaje de carga -->
@@ -26,7 +27,8 @@
                         </p>
 
                     </div>
-                    <Carousel v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
+                    <Carousel  :key="filteredArticulos.length"
+                    v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
                         :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden"
                         emptyMessage="Sin resultados">
 
@@ -96,8 +98,10 @@
                             Cargando...
                         </p>
                     </div>
+                    <!-- selectionMode="single"  -->
                     <DataTable v-else :value="filteredArticulos" paginator :rows="4" class="mx-auto"
-                        selectionMode="single" :selection="selectedArticulo" @row-select="onArticuloSelect"
+                        :selection="selectedArticulo" 
+                        @row-select="onArticuloSelect"
                         dataKey="id">
 
                         <template #empty>
@@ -129,7 +133,7 @@
                 :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`
                     : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`">
                 <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-                    :numeroInformeMovimiento="numeroInformeMovimiento" @guardarMovimiento="crearMovimiento"
+                    :numeroInformeMovimiento="numeroInformeMovimiento" :movimientoRealizado="movimientoRealizado"  @guardarMovimiento="crearMovimiento"
                     @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
                     @nuevoPdf="nuevoPdf" />
             </Dialog>
@@ -213,8 +217,10 @@ export default defineComponent({
         const showIngresoSalida = ref({ show: false, accion: '' });
         const articuloSeleccionado = ref(null);
         const registroGuardado = ref(false);
-        const isLoading = ref(true);
+        const movimientoRealizado = ref(false);
 
+        const isLoading = ref(true);
+        
 
 
         const abrirHistorial = (articulo) => {
@@ -449,13 +455,18 @@ export default defineComponent({
             //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
             numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
 
+            movimientoRealizado.value = false;
             showIngresoSalida.value.show = show;
             showIngresoSalida.value.accion = accion;
             articuloSeleccionado.value = { ...articulo }
-
         }
         async function guardarArticulo(datosFormulario) {
 
+            if(!datosFormulario.material_repuesto || !datosFormulario.marca || !datosFormulario.modelo_serie ){
+                toast.add({ severity: 'error', summary: 'Campos Incompletos', detail: 'Debe completar los campos de Material, Marca y Modelo', life: 5000 });
+                return;
+            }
+            
             const response = await crearArticulo(datosFormulario);
 
             if (response.success) {
@@ -464,8 +475,8 @@ export default defineComponent({
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo guardado correctamente', life: 5000 });
 
             } else {
-                if (response.error == 'Ya existe un artículo con esa marca y modelo') {
-                    toast.add({ severity: 'error', summary: 'Error', detail: `${response.error}`, life: 5000 });
+                if (response.message == 'Ya existe un artículo con esa marca y modelo') {
+                    toast.add({ severity: 'error', summary: 'Artículo repetido', detail: `${response.message}`, life: 5000 });
                     return;
                 }
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el artículo, intente nuevamente', life: 5000 });
@@ -483,6 +494,13 @@ export default defineComponent({
                 showDialogEditar.value = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo editado correctamente', life: 5000 });
             } else {
+
+                if(response.message == 'Ya existe un artículo con la misma marca y modelo'){
+                    toast.add({ severity: 'error', summary: 'Error', detail: 'Ya existe un artículo con la misma marca y modelo seleccionados', life: 5000 });
+                    // showDialogEditar.value = false;
+                    return;
+                }
+
                 showDialogEditar.value = false;
                 toast.add({ severity: 'error', summary: 'Error', detail: 'Error al actualizar el artículo, intente nuevamente', life: 5000 });
             }
@@ -536,7 +554,7 @@ export default defineComponent({
                             dataArticulos.value.splice(indexArticulo, 1);
                         }
 
-                        toast.add({ severity: 'info', summary: 'Éxito', detail: `Se eliminó el artículo y su historial de movimientos correctamente.`, life: 5000 });
+                        toast.add({ severity: 'success', summary: 'Éxito', detail: `Se eliminó el artículo y su historial de movimientos correctamente.`, life: 5000 });
 
                     } else {
 
@@ -582,6 +600,7 @@ export default defineComponent({
                 // showIngresoSalida.value.show = false;
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Movimiento creado correctamente', life: 5000 });
                 registroGuardado.value = true;
+                movimientoRealizado.value = true;
             } else {
 
                 if (response.error == 'El artículo no existe') {
@@ -603,6 +622,7 @@ export default defineComponent({
                 showIngresoSalida.value.show = false;
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo crear el movimiento, intente nuevamente', life: 3000 });
                 registroGuardado.value = false;
+                movimientoRealizado.value = false;
             }
         }
 
@@ -670,7 +690,8 @@ export default defineComponent({
             abrirHistorial,
             isLoading,
             actualizarImagenDirecta,
-            debouncedFilters
+            debouncedFilters,
+            movimientoRealizado
 
         }
     }

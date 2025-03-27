@@ -6,12 +6,14 @@
                 <Button outlined label="Exportar Excel" icon="pi pi-file-excel" class="p-button-success"
                     @click="exportarExcel(dataMovimientosArticulo, 'historial articulo')" />
                 <Button outlined label="Generar PDF" icon="pi pi-file-pdf" class="p-button-danger"
-                    style="margin-left: .5em;" @click="generarListadoPDF(dataMovimientosArticulo, dialogRef.data.articulo_id)" />
+                    style="margin-left: .5em;"
+                    @click="generarListadoPDF(dataMovimientosArticulo, dialogRef.data.articulo_id)" />
             </template>
         </Toolbar>
 
         <DataTable :value="dataMovimientosArticulo" paginator :rows="5" tableStyle="min-width: 50rem" showGridlines
             style="max-width: 90vw">
+            <template #empty> <Message severity="secondary" outlined class="my-8 py-5" variant="outlined">Sin Resultados</Message> </template>
             <Column>
                 <template #body="slotProps">
                     <div class="flex">
@@ -85,6 +87,8 @@
                 </template>
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
+            <Column field="inventario_remanente" header="INVENTARIO REMANENTE"></Column>
+
             <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
@@ -197,6 +201,7 @@ import InputNumber from 'primevue/inputnumber';
 import DatePicker from 'primevue/datepicker';
 import Textarea from 'primevue/textarea';
 import Select from 'primevue/select';
+import Message from 'primevue/message';
 
 
 export default defineComponent({
@@ -212,7 +217,8 @@ export default defineComponent({
         Drawer,
         InputNumber,
         DatePicker,
-        Textarea
+        Textarea,
+        Message
 
     },
 
@@ -314,21 +320,23 @@ export default defineComponent({
                             emit('save', { movimiento_articulo_eliminado: movimiento });
 
                             const mensaje = tipo_movimiento === 'SALIDA'
+                                ? (cantidad > 1
+                                    ? `Se han restablecido ${cantidad} artículos en el stock`
+                                    : `Se ha restablecido ${cantidad} artículo en el stock`)
+                                : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
                                     ? (cantidad > 1
-                                        ? `Se han restablecido ${cantidad} artículos en el stock`
-                                        : `Se ha restablecido ${cantidad} artículo en el stock`)
-                                    : ((tipo_movimiento === 'INGRESO' || tipo_movimiento === 'ENTRADA')
-                                        ? (cantidad > 1
-                                            ? `Se han eliminado ${cantidad} artículos del stock`
-                                            : `Se ha eliminado ${cantidad} artículo del stock`)
-                                        : '')
+                                        ? `Se han eliminado ${cantidad} artículos del stock`
+                                        : `Se ha eliminado ${cantidad} artículo del stock`)
+                                    : '')
 
-                                    toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
+                            toast.add({ severity: 'success', summary: 'Movimiento eliminado correctamente', detail: `${mensaje}`, life: 5000 });
                         } else {
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
                     } else {
-                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                        toast.add({ severity: 'error', summary: 'Error al eliminar el movimiento', detail: response.message || 'Error al eliminar el movimiento, intente nuevamente',
+                            life: 3000
+                        });
                     }
 
                 },

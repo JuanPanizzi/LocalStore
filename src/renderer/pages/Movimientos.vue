@@ -10,18 +10,18 @@
         <!-- Filtros activos usando el componente Badge -->
         <!-- <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag> -->
 
-        <div v-if="activeFilters.length" class="mb-4">
-            <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 "></Tag>
+        <div v-if="activeFilters.length" class=" mx-auto" style="max-width: 90vw">
+            <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 text-2xl"></Tag>
 
             <div class="flex flex-wrap gap-2">
                 <Tag v-for="(filter, index) in activeFilters" :key="index" :value="`${filter.field}: ${filter.value}`"
-                    severity="secondary" class="p-2" icon="pi pi-filter" />
+                    severity="secondary" class="mb-2 text-2xl" icon="pi pi-filter" />
             </div>
-            <Button label="Limpiar filtros" icon="pi pi-refresh" @click="clearFilters" class="mt-2" size="small" />
+            <Button label="Reestablecer Filtros" icon="pi pi-filter-slash" @click="clearFilters" class="mt-2 text-md" size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
             paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
-            class="mx-auto mt-24"
+            class="mx-auto mt-16"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
@@ -32,6 +32,8 @@
                     </div>
                 </template>
 </Column> -->
+<template #empty> <Message severity="secondary" outlined class="my-8 py-3" variant="outlined">Sin Resultados</Message> </template>
+
             <Column field="" header="">
                 <template #body="slotProps">
 
@@ -104,6 +106,7 @@
                 </template>
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
+            <Column field="inventario_remanente" header="INVENTARIO REMANENTE"></Column>
             <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
@@ -147,6 +150,7 @@ import Tag from 'primevue/tag';
 import Badge from 'primevue/badge';
 import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from 'primevue/useconfirm';
+import Message from 'primevue/message';
 
 export default defineComponent({
     name: 'Movimientos',
@@ -159,7 +163,8 @@ export default defineComponent({
         DatePicker,
         Tag,
         Badge,
-        ConfirmPopup
+        ConfirmPopup,
+        Message
     },
 
     setup() {
@@ -296,7 +301,7 @@ export default defineComponent({
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
                     } else {
-                        toast.add({ severity: 'error', summary: 'Error', detail: 'Error al eliminar el movimiento, intente nuevamente', life: 3000 });
+                        toast.add({ severity: 'error', summary: 'Error al eliminar movimiento', detail:  response.message || 'Error al eliminar el movimiento, intente nuevamente', life: 6000 });
                     }
 
                 },
@@ -315,18 +320,18 @@ export default defineComponent({
             const response = await importarExcel(event);
 
             if (response.success) {
-                console.log('response.data', response.data)
+                // console.log('response.data', response.data)
                 dataMovimientos.value = response.data.sort((a, b) => {
-                    const [diaA, mesA, anioA] = a.fecha.split('/');
-                    const [diaB, mesB, anioB] = b.fecha.split('/');
+                    const [dayA, monthA, yearA] = a.fecha.split('/');
+                    const [dayB, monthB, yearB] = b.fecha.split('/');
 
-                    const dateA = new Date(anioA, mesA - 1, diaA);
-                    const dateB = new Date(anioB, mesB - 1, diaB);
+                    const dateA = new Date(yearA, monthA - 1, dayA);
+                    const dateB = new Date(yearB, monthB - 1, dayB);
 
                     // Para order descendente (más reciente primero) restamos dateB - dateA
                     return dateB - dateA;
                 });
-                toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 3000 });
+                toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 10000 });
             } else {
 
                 switch (response.message) {
@@ -378,7 +383,7 @@ export default defineComponent({
 
         const generarExcel = (datosFiltrados) => {
 
-            console.log('activeFilters', activeFilters.value)
+            // console.log('activeFilters', activeFilters.value)
 
             let filtrosArticulo = [];
             // {

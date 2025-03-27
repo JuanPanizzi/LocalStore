@@ -25,8 +25,8 @@ export function useArticulos(){
             if(response.success){
                 return {success: true, data: response.data}
             }else{
-                if(response.error == 'Ya existe un artículo con esa marca y modelo'){
-                    return {success: false, error: response.error}
+                if(response.message == 'Ya existe un artículo con esa marca y modelo'){
+                    return {success: false, message: response.message}
                 }
                 throw new Error();
             }
@@ -61,7 +61,14 @@ export function useArticulos(){
             const response = await window.electronAPI.actualizarArticulo(articulo);
             if(response.success){
                 return {success: true, data: response.data}
+            }else{
+                if(response.message == 'Ya existe un artículo con la misma marca y modelo'){
+                    return {success: false, message: response.message}
+                }else{
+                    throw new Error();
+                }
             }
+            
         } catch (error) {
             return {success: false}
         }

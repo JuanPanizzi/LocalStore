@@ -1,6 +1,28 @@
 
 import db from '../../database/database'
 
+interface Movimiento {
+  fecha: string;
+  tipo_movimiento?: string | null;
+  origen: string;
+  destino: string;
+  material_repuesto: string;
+  marca: string;
+  articulo_id?: number | null;
+  cantidad: number;
+  permiso_trabajo_asociado?: string;
+  informe_asociado?: string;
+  orden_trabajo_asociada?: string;
+  remito?: string | null;
+  numero_almacenes?: string;
+  numero_movimiento: string | number;   // Este campo puede venir como string o number, lo convertimos a string en la inserción
+  modelo_serie: string;
+  unidad_medida?: string;
+  inventario_remanente: number;
+}
+
+
+
 export async function obtenerMovimientos() {
 
   try {
@@ -47,7 +69,7 @@ export const obtenerMovimientosArticulo = (articulo_id) => {
 
 export const eliminarMovimiento = (movimiento) => {
 
-const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
+  const { tipo_movimiento, cantidad, articulo_id, id } = movimiento
 
 
   try {
@@ -55,12 +77,31 @@ const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
     db.exec("BEGIN TRANSACTION");
 
 
-    if(tipo_movimiento == 'INGRESO' || tipo_movimiento == 'ENTRADA'){
+    if (tipo_movimiento == 'INGRESO' || tipo_movimiento == 'ENTRADA') {
+
+      // Obtener el stock actual del artículo
+      const stmtObtenerStock = db.prepare("SELECT cantidad FROM articulos WHERE id = ?");
+      const row = stmtObtenerStock.get(articulo_id);
+      if (!row) {
+        throw new Error("Artículo no encontrado");
+      }
+      const stockActual = row.cantidad;
+
+      // Si la cantidad a restar es mayor que el stock, abortar
+      if (stockActual < cantidad) {
+        db.exec("ROLLBACK");
+        return {
+          success: false,
+          message: "No se puede eliminar una cantidad mayor a la que hay en el stock actual del artículo."
+        };
+      }
+
+
 
       const stmtActualizar = db.prepare(`UPDATE articulos SET cantidad = cantidad - ? WHERE id = ?`);
       stmtActualizar.run(cantidad, articulo_id)
-    
-    } else if( tipo_movimiento == 'SALIDA'){
+
+    } else if (tipo_movimiento == 'SALIDA') {
 
       const stmtActualizar = db.prepare(`UPDATE articulos SET cantidad = cantidad + ? WHERE id = ?`);
       stmtActualizar.run(cantidad, articulo_id)
@@ -80,124 +121,261 @@ const {tipo_movimiento, cantidad, articulo_id, id} = movimiento
   } catch (error) {
     console.log('error', error)
     db.exec("ROLLBACK");
-    return { success: false }
+    return { success: false, error };
   }
 
 }
 
 
+// Función auxiliar para extraer número y unidad de una cadena
+function extraerNumeroYUnidad(valor, unidadExistente) {
+  if (typeof valor === 'string') {
+    // Esta expresión regular captura el número (con posible parte decimal)
+    // y opcionalmente letras (sin incluir espacios al final)
+    const regex = /^([\d.]+)\s*([a-zA-Z]+)?/;
+    const match = valor.match(regex);
+    if (match) {
+      const numero = match[1]; // la parte numérica
+      const unidadExtraida = match[2] || "";
+      // Si no se envió unidad_medida, usamos la unidad extraída
+      if (!unidadExistente && unidadExtraida) {
+        unidadExistente = unidadExtraida;
+      }
+      return { numero, unidad: unidadExistente };
+    }
+  }
+  // Si no es string o no hay coincidencia, retornamos el valor original
+  return { numero: valor, unidad: unidadExistente };
+}
 
-
-export async function guardarExcelMovimientos(data) {
+export async function guardarExcelMovimientos(movimientosData: Movimiento[]) {
   try {
-    
-    
     db.prepare("BEGIN TRANSACTION").run();
 
-    // Eliminar todos los registros existentes
-    db.prepare(`DELETE FROM movimientos_materiales`).run();
-    db.prepare(`DELETE FROM articulos`).run();
+    // 1) Limpiar tablas
+    db.prepare("DELETE FROM movimientos_materiales").run();
+    db.prepare("DELETE FROM articulos").run();
 
-    // Preparar la inserción de nuevos datos en movimientos_materiales
-    const insert = db.prepare(`
-      INSERT INTO movimientos_materiales 
-      (fecha, tipo_movimiento, origen, destino, material_repuesto, marca, articulo_id, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, numero_movimiento, modelo_serie, unidad_medida) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ? ,? ,? ,? ,? ,?, ? )
+    // 2) Insertar todos los movimientos en la tabla movimientos_materiales
+    const insertMov = db.prepare(`
+      INSERT INTO movimientos_materiales
+      (
+        fecha,
+        tipo_movimiento,
+        origen,
+        destino,
+        material_repuesto,
+        marca,
+        articulo_id,
+        cantidad,
+        permiso_trabajo_asociado,
+        informe_asociado,
+        orden_trabajo_asociada,
+        remito,
+        numero_almacenes,
+        numero_movimiento,
+        modelo_serie,
+        unidad_medida,
+        inventario_remanente
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `);
 
-   
-    for (const movimiento of data) {
-      insert.run(
+    for (const movimiento of movimientosData) {
+      // console.log('movimiento.numero_almacenes', movimiento.numero_almacenes)
+      // console.log('typeof(movimiento.numero_almacenes)', typeof(movimiento.numero_almacenes))
+      
+      // Procesar el campo "cantidad"
+      let resultado = extraerNumeroYUnidad(movimiento.cantidad, movimiento.unidad_medida);
+      movimiento.cantidad = resultado.numero;
+      movimiento.unidad_medida = resultado.unidad; // se asigna si estaba vacío
+
+      // Procesar el campo "inventario_remanente"
+      resultado = extraerNumeroYUnidad(movimiento.inventario_remanente, movimiento.unidad_medida);
+      movimiento.inventario_remanente = resultado.numero;
+      // Si aún no se asignó unidad_medida y se extrajo de inventario_remanente, se asigna
+      if (!movimiento.unidad_medida && resultado.unidad) {
+        movimiento.unidad_medida = resultado.unidad;
+      }
+
+      insertMov.run(
         movimiento.fecha,
         movimiento.tipo_movimiento ? movimiento.tipo_movimiento.toUpperCase() : null,
         movimiento.origen,
         movimiento.destino,
         movimiento.material_repuesto,
         movimiento.marca,
-        movimiento.articulo_id, // Puede ser null en este momento
+        null, // Se completará luego con el ID del artículo
         movimiento.cantidad,
         movimiento.permiso_trabajo_asociado,
         movimiento.informe_asociado,
-        movimiento.orden_trabajo_asociada,
+        movimiento.orden_trabajo_asociada?.toString(),
         movimiento.remito,
-        movimiento.numero_almacenes,
-        movimiento.numero_movimiento,
+        movimiento.numero_almacenes?.toString(),
+        movimiento.numero_movimiento.toString(), // Convertir a string para tratar correctamente sufijos
         movimiento.modelo_serie,
-        movimiento.unidad_medida
+        movimiento.unidad_medida,
+        movimiento.inventario_remanente
       );
     }
 
-    //  Obtener los datos insertados para enviarlos al frontend
-    const insertedData = db.prepare("SELECT * FROM movimientos_materiales").all();
-    if (insertedData.length === 0) {
-      throw new Error("No se insertaron los datos");
+    const movimientosGuardados = db.prepare("SELECT * FROM movimientos_materiales").all();
+    if (movimientosGuardados.length === 0) {
+      throw new Error("No se insertaron datos en movimientos_materiales.");
     }
 
-    //  Agrupar por artículo para obtener el último movimiento de cada uno (basado en la fecha)
-    const ultimosMovimientos = new Map();
-    data.forEach((movimiento) => {
-      const key = `${movimiento.marca}_${movimiento.modelo_serie}`;
-      if (!ultimosMovimientos.has(key)) {
-        ultimosMovimientos.set(key, movimiento);
-      } else {
-        const fechaActual = new Date(movimiento.fecha);
-        const fechaGuardada = new Date(ultimosMovimientos.get(key).fecha);
-        if (fechaActual > fechaGuardada) {
-          ultimosMovimientos.set(key, movimiento);
-        }
-      }
-    });
+    // Función de normalización: trim, toLowerCase y quitar todos los espacios internos
+    const normalizar = (valor: string) =>
+      valor ? valor.trim().toLowerCase().replace(/\s+/g, '') : "";
 
-    // Procesar cada grupo de artículo para verificar su existencia y actualizar movimientos
-    let warnings: string[] = [];
-    ultimosMovimientos.forEach((movimiento) => {
-      // Buscar el artículo en la tabla articulos por la combinación marca y modelo_serie
-      const articuloExistente = db
-        .prepare("SELECT * FROM articulos WHERE marca = ? AND modelo_serie = ?")
-        .get(movimiento.marca, movimiento.modelo_serie);
+    // 3) Crear o actualizar artículos (stock = 0 inicialmente)
+    // Agrupamos por (marca, modelo_serie) utilizando valores normalizados
+    const articuloMap = new Map<string, Movimiento>();
+
+    for (const mov of movimientosData) {
+      const normalizedMarca = normalizar(mov.marca);
+      const normalizedModelo = normalizar(mov.modelo_serie);
+      const key = `${normalizedMarca}__${normalizedModelo}`;
+      if (!articuloMap.has(key)) {
+        articuloMap.set(key, mov);
+      }
+    }
+
+    for (const [key, mov] of articuloMap.entries()) {
+      const normalizedMarca = normalizar(mov.marca);
+      const normalizedModelo = normalizar(mov.modelo_serie);
+
+      // Revisar si el artículo ya existe utilizando REPLACE para quitar espacios en la consulta
+      const articuloExistente = db.prepare(`
+        SELECT * FROM articulos
+        WHERE REPLACE(LOWER(trim(marca)), ' ', '') = ? AND REPLACE(LOWER(trim(modelo_serie)), ' ', '') = ?
+      `).get(normalizedMarca, normalizedModelo);
 
       if (!articuloExistente) {
-        // Insertar un nuevo artículo usando la cantidad del último movimiento
-        const result = db.prepare(
-          "INSERT INTO articulos (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida) VALUES (?, ?, ?, ?, ?, ?)"
-        ).run(
-          movimiento.material_repuesto,
-          movimiento.marca,
-          movimiento.modelo_serie,
-          0, // Se inicia en 0
-          null, // imagen
-          movimiento.unidad_medida
+        // Insertar artículo con stock = 0 (almacenando los valores originales, pero recortados)
+        const result = db.prepare(`
+          INSERT INTO articulos
+            (material_repuesto, marca, modelo_serie, cantidad, imagen, unidad_medida)
+          VALUES (?, ?, ?, ?, ?, ?)
+        `).run(
+          mov.material_repuesto,
+          mov.marca.trim(),
+          mov.modelo_serie.trim(),
+          0,     // stock inicial
+          null,  // imagen
+          mov.unidad_medida
         );
         const newArticleId = result.lastInsertRowid;
-        // Actualizar los movimientos correspondientes a este artículo
-        db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
-          .run(newArticleId, movimiento.marca, movimiento.modelo_serie);
+
+        // Actualizar en movimientos_materiales el artículo correspondiente usando normalización
+        db.prepare(`
+          UPDATE movimientos_materiales
+          SET articulo_id = ?
+          WHERE REPLACE(LOWER(trim(marca)), ' ', '') = ? AND REPLACE(LOWER(trim(modelo_serie)), ' ', '') = ?
+        `).run(newArticleId, normalizedMarca, normalizedModelo);
       } else {
-        // Actualizar los movimientos con el ID del artículo existente
-        db.prepare("UPDATE movimientos_materiales SET articulo_id = ? WHERE marca = ? AND modelo_serie = ?")
-          .run(articuloExistente.id, movimiento.marca, movimiento.modelo_serie);
-        // Comparar la cantidad y generar advertencia si difieren
-        if (articuloExistente.cantidad !== movimiento.cantidad) {
-          warnings.push(
-            `El artículo (Marca: ${movimiento.marca}, Modelo/Serie: ${movimiento.modelo_serie}) tiene cantidad en BD: ${articuloExistente.cantidad} y el último movimiento en Excel indica: ${movimiento.cantidad}.`
-          );
+        // Si existe, solo se actualiza el articulo_id en los movimientos
+        db.prepare(`
+          UPDATE movimientos_materiales
+          SET articulo_id = ?
+          WHERE REPLACE(LOWER(trim(marca)), ' ', '') = ? AND REPLACE(LOWER(trim(modelo_serie)), ' ', '') = ?
+        `).run(articuloExistente.id, normalizedMarca, normalizedModelo);
+      }
+    }
+
+    // 4) Recuperar todos los movimientos para elegir el "último" movimiento según la comparación personalizada
+    const allMovements = db.prepare("SELECT * FROM movimientos_materiales").all();
+
+    // Agrupar movimientos por (marca, modelo_serie) normalizados
+    const grouped = new Map<string, any[]>();
+    for (const mov of allMovements) {
+      const normalizedMarca = normalizar(mov.marca);
+      const normalizedModelo = normalizar(mov.modelo_serie);
+      const key = `${normalizedMarca}__${normalizedModelo}`;
+      if (!grouped.has(key)) {
+        grouped.set(key, []);
+      }
+      grouped.get(key)!.push(mov);
+    }
+
+    // Función para parsear el numero_movimiento (ejemplo: "1147-B", "1150", etc.)
+    function parseNumeroMov(numMov: string) {
+      const str = numMov.toString();
+      const match = str.match(/^(\d+)(?:-(.*))?$/);
+      if (!match) {
+        return { numeric: 0, suffix: numMov };
+      }
+      const numeric = parseInt(match[1], 10);
+      const suffix = match[2] || "";
+      return { numeric, suffix };
+    }
+
+    // Comparación personalizada: primero se compara la parte numérica y luego, en caso de empate,
+    // se considera mayor el movimiento sin sufijo o se comparan alfabéticamente los sufijos.
+    function compareNumeroMov(a: string, b: string) {
+      const pa = parseNumeroMov(a);
+      const pb = parseNumeroMov(b);
+
+      if (pa.numeric !== pb.numeric) {
+        return pa.numeric - pb.numeric;
+      } else {
+        if (pa.suffix === "" && pb.suffix !== "") {
+          return 1;
+        }
+        if (pb.suffix === "" && pa.suffix !== "") {
+          return -1;
+        }
+        return pa.suffix.localeCompare(pb.suffix);
+      }
+    }
+
+    // Array para almacenar los artículos cuyos movimientos tienen todos el numero_movimiento "0"
+    const movimientosSinID: string[] = [];
+
+    for (const [key, movimientos] of grouped.entries()) {
+      let ultimo: any;
+      const allZero = movimientos.every(mov => mov.numero_movimiento.toString() === "0");
+
+      if (allZero) {
+        // Si todos tienen "0", se usa la fecha para determinar el último movimiento
+        ultimo = movimientos.reduce((a, b) =>
+          new Date(a.fecha).getTime() > new Date(b.fecha).getTime() ? a : b
+        );
+        movimientosSinID.push(
+          `[${ultimo.material_repuesto} - ${ultimo.marca} - ${ultimo.modelo_serie}]`
+        );
+      } else {
+        // Caso normal: se usa la comparación personalizada por numero_movimiento
+        ultimo = movimientos[0];
+        for (let i = 1; i < movimientos.length; i++) {
+          const current = movimientos[i];
+          if (compareNumeroMov(current.numero_movimiento, ultimo.numero_movimiento) > 0) {
+            ultimo = current;
+          }
         }
       }
-    });
 
-    // Confirmar la transacción
+      // Actualizar el stock en la tabla "articulos" con el inventario_remanente del último movimiento
+      db.prepare(`
+        UPDATE articulos
+        SET cantidad = ?
+        WHERE id = ?
+      `).run(ultimo.inventario_remanente, ultimo.articulo_id);
+    }
+
+    // Confirmar transacción
     db.prepare("COMMIT").run();
-
-    // Retornar el resultado junto con las advertencias (si existen)
-    return { success: true, data: insertedData, warnings };
+    // console.log('movimientosSinID:', movimientosSinID);
+    return { success: true, data: movimientosGuardados, movimientosSinID };
 
   } catch (error) {
-    // En caso de error, revertir todas las operaciones realizadas en la transacción
     db.prepare("ROLLBACK").run();
-    console.error('[!] Hubo un error al reemplazar datos:', error);
-    return { success: false, error: error };
+    console.error("[!] Error al reemplazar datos:", error);
+    return { success: false, error };
   }
 }
+
+
 
 
 
@@ -241,7 +419,7 @@ export const guardarMovimiento = async (movimiento) => {
 
     // Determinar nueva cantidad según el tipo de movimiento
     if (tipo_movimiento === "INGRESO" || tipo_movimiento === "ENTRADA") {
-      
+
       nuevaCantidad = articulo.cantidad + cantidad_seleccionada;
 
     } else if (tipo_movimiento === "SALIDA") {
@@ -266,11 +444,11 @@ export const guardarMovimiento = async (movimiento) => {
 
 
 
-    const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, unidad_medida, articulo_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    const stmt = db.prepare(`INSERT INTO movimientos_materiales (numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, unidad_medida, inventario_remanente, articulo_id)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
 
     const result = stmt.run(
-      numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad_seleccionada, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, unidad_medida, articulo_id
+      numero_movimiento, fecha, tipo_movimiento, origen, destino, cantidad_seleccionada, permiso_trabajo_asociado, informe_asociado, orden_trabajo_asociada, remito, numero_almacenes, material_repuesto, marca, modelo_serie, observaciones, unidad_medida, nuevaCantidad, articulo_id
     )
 
     if (result.changes === 0) {
@@ -299,6 +477,7 @@ export const guardarMovimiento = async (movimiento) => {
       modelo_serie,
       observaciones,
       unidad_medida,
+      inventario_remanente: nuevaCantidad,
       articulo_id
     }
 
