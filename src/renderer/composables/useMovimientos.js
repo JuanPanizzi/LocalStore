@@ -662,26 +662,26 @@ export function useMovimientos() {
 
             {
                 "Fecha": item.fecha == null
-                    ? "-"
+                    ? ""
                     : (item.fecha instanceof Date
                         ? formatearFecha(item.fecha)
                         : item.fecha),
-                "ID": item.numero_movimiento?.toString() || "-",
-                "Movimiento": item.tipo_movimiento || "-",
-                "Origen": item.origen || "-",
-                "Destino": item.destino || "-",
-                "Material/Repuesto": item.material_repuesto || "-",
-                "Marca": item.marca || "-",
-                "Modelo/Serie": item.modelo_serie || "-",
-                "Cantidad": item.cantidad?.toString() || "-",
-                "Inventario": item.inventario_remanente?.toString() || "-",
-                "Unidad de Medida": item.unidad_medida || "-",
-                "PT Asociado": item.permiso_trabajo_asociado || "-",
+                "ID": item.numero_movimiento?.toString() || "",
+                "Movimiento": item.tipo_movimiento || "",
+                "Origen": item.origen || "",
+                "Destino": item.destino || "",
+                "Material/Repuesto": item.material_repuesto || "",
+                "Marca": item.marca || "",
+                "Modelo/Serie": item.modelo_serie || "",
+                "Cantidad": item.cantidad?.toString() || "",
+                "Inventario": item.inventario_remanente?.toString() || "",
+                "Unidad de Medida": item.unidad_medida || "",
+                "PT Asociado": item.permiso_trabajo_asociado || "",
                 "Informe Asociado": item.informe_asociado,
-                "OT Asociada": item.orden_trabajo_asociada?.toString() || "-",
-                "Remito": item.remito?.toString() || "-",
-                "N° Almacenes": item.numero_almacenes?.toString() || "-",
-                "Observaciones": item.observaciones || "-",
+                "OT Asociada": item.orden_trabajo_asociada?.toString() || "",
+                "Remito": item.remito?.toString() || "",
+                "N° Almacenes": item.numero_almacenes?.toString() || "",
+                "Observaciones": item.observaciones || "",
 
             }));
 
