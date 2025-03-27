@@ -656,13 +656,16 @@ export function useMovimientos() {
             toast.add({ severity: 'error', summary: 'Error', detail: 'No hay datos para generar el PDF', life: 3000 });
             return;
         }
-
+        // console.log('datosFiltrados', datosFiltrados)
         // Mapear los datos al formato requerido}
-        const formattedData = datosFiltrados.map((item) => (         
-            
+        const formattedData = datosFiltrados.map((item) => (
+
             {
-                // "Fecha": item.fecha ? formatearFecha(item.fecha) : "-",
-                "Fecha": item.fecha || "-",
+                "Fecha": item.fecha == null
+                    ? "-"
+                    : (item.fecha instanceof Date
+                        ? formatearFecha(item.fecha)
+                        : item.fecha),
                 "ID": item.numero_movimiento?.toString() || "-",
                 "Movimiento": item.tipo_movimiento || "-",
                 "Origen": item.origen || "-",
