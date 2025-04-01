@@ -107,13 +107,11 @@
             </Column>
             <Column field="cantidad" header="CANTIDAD"></Column>
             <Column field="inventario_remanente" header="INVENTARIO REMANENTE"></Column>
-            <Column field="unidad_medida" header="UNIDAD"></Column>
             <Column field="permiso_trabajo_asociado" header="PT ASOCIADO"></Column>
             <Column field="informe_asociado" header="INFORME ASOCIADO"></Column>
             <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
             <Column field="remito" header="REMITO"></Column>
             <Column field="numero_almacenes" header="N° ALMACENES"></Column>
-            <Column field="observaciones" header="OBSERVACIONES"></Column>
         </DataTable>
 
         <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
