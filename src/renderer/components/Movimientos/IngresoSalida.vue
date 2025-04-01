@@ -1,6 +1,6 @@
 <template>
-
-    <Form class="px-3 py-5 border border-gray rounded-xl  max-w-[95vw] mx-auto">
+<hr class="mx-6 border-t border-[#334155]">
+    <Form class="px-3 pt-5 pb-8  rounded-xl  max-w-[95vw] mx-auto">
 
         <div>
 
@@ -118,7 +118,7 @@
                 <Button label="Reiniciar" icon="pi pi-refresh" class="mr-auto" severity="secondary"
                 @click="reiniciarFormulario" />
             </div>  -->
-            <div class="flex items-center">
+            <div class="flex items-center px-4">
 
                 <Button label="Generar PDF " icon="pi pi-file-pdf" class="" severity="info"
                     :disabled="!camposRequeridos" @click="nuevoPdf" />
