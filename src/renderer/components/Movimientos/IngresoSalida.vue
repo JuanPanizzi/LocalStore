@@ -97,14 +97,25 @@
                 <p class="mr-2  w-2/5 text-left  font-semibold">N° Pieza de Almacén:</p>
                 <InputText v-model="formData.numero_almacenes" class="w-3/5"  :disabled="movimientoRealizado" />
             </div>
-            <div class="input-group flex items-center col-span-2">
+            <!-- <div class="input-group flex items-center col-span-2">
                 <p class=" w-1/5 text-left  font-semibold">Observaciones:</p>
                 <InputText v-model="formData.observaciones" class="w-4/5"  :disabled="movimientoRealizado" />
-            </div>
+            </div> -->
 
 
 
         </div>
+
+
+         <!-- Área de texto para Observaciones -->
+  <div class="p-4">
+    <label class="block font-semibold mb-2 ">Observaciones:</label>
+    <Textarea v-model="formData.observaciones" class="w-full max-h-[100px]" rows="4" :disabled="movimientoRealizado" maxlength="1079" />
+  </div>
+
+
+
+
         <div class="mt-8 flex items-center justify-end">
             <!-- <div class="flex items-center justify-start  mr-auto">
                 <Button label="Reiniciar" icon="pi pi-refresh" class="mr-auto" severity="secondary"
@@ -129,6 +140,7 @@ import Button from 'primevue/button';
 import DatePicker from 'primevue/datepicker';
 import InputNumber from 'primevue/inputnumber';
 import InputText from 'primevue/inputtext';
+import Textarea from 'primevue/textarea';
 import { computed, reactive, ref, watch } from 'vue';
 import { defineComponent } from 'vue';
 import { fechaActual } from '../../utils/funcionesFecha.js'
@@ -143,7 +155,8 @@ export default defineComponent({
         DatePicker,
         InputText,
         Button,
-        Toast
+        Toast,
+        Textarea
     },
     props: {
         numeroInformeMovimiento: {
