@@ -16,13 +16,10 @@
                 <InputText v-model="formData.modelo_serie" class="w-4/5" />
             </div>
             <div class=" flex justify-between items-center">
-                <label class="legend w-1/5 mr-4 text-left font-semibold">Cantidad:</label>
-                <InputNumber readonly v-model="formData.cantidad" class="w-4/5" />
+                <label class="legend w-1/5 mr-4 text-left font-semibold">Stock Actual:</label>
+                <InputNumber readonly v-model="formData.cantidad" class="w-4/5" disabled />
             </div>
-            <div class=" flex justify-between items-center">
-                <label class="legend w-1/5 mr-4 text-left font-semibold">Unidad:</label>
-                <InputText  v-model="formData.unidad_medida" class="w-4/5" />
-            </div>
+            
 
             <div class="flex flex-col col-span-2 items-center justify-center ">
                 <div class="py-5">
