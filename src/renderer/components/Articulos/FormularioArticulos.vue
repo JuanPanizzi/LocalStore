@@ -4,7 +4,7 @@
     <Form class="px-3 min-w-[50vw]  ">
 
         <!-- Grid de inputs alineados -->
-        <div class="grid grid-cols-1 gap-4 p-4 border border-gray rounded-lg ">
+        <div class="grid grid-cols-1 gap-4 p-4 rounded-lg ">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5  text-left font-semibold">Material / Repuesto:</label>
                 <InputText v-model="formData.material_repuesto" class="w-4/5 " aria-required="required" />
@@ -26,14 +26,10 @@
             <div class=" flex justify-between items-center">
 
                 <label class="legend w-1/5 text-left font-semibold">Cantidad:</label>
-                <InputNumber readonly v-model="formData.cantidad" class="w-4/5" />
+                <InputNumber readonly v-model="formData.cantidad" class="w-4/5" disabled/>
             </div>
 
-            <div class=" flex justify-between items-center">
-
-                <label class="legend w-1/5 text-left font-semibold">Unidad de medida:</label>
-                <InputText  v-model="formData.unidad_medida" class="w-4/5" />
-            </div>
+            
 
             <div class="flex flex-col items-center justify-center ">
                 <div class="py-5">
@@ -44,8 +40,8 @@
             </div>
         </div>
         <div class="mt-8 flex items-center justify-end">
-            <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" severity="secondary"
-                @click="reiniciarFormulario" />
+            <!-- <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" severity="secondary"
+                @click="reiniciarFormulario" /> -->
             <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="danger" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
 

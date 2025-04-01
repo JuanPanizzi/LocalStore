@@ -31,7 +31,7 @@
             </div>
             
             <div class="mt-8 col-span-2 flex items-center justify-end">
-            <Button label="Cancelar" icon="pi " class="mr-2" severity="danger" @click="cerrarDialog" />
+            <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="danger" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="actualizarArticulo" />
             </div>
 
