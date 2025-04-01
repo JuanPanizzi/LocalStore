@@ -1,7 +1,8 @@
 <template>
-
-    <Dialog v-model:visible="dialogVisible" :modal="true" :header="`EDITAR ARTÍCULO`" @hide="cerrarDialog">
-        <div class="grid grid-cols-2 gap-4">
+    
+    <Dialog v-model:visible="dialogVisible" :modal="true" :header="`EDITAR ARTÍCULO`" @hide="cerrarDialog" :pt="{ header: ' mx-5' }">
+        <hr class="mx-5 border-t border-[#334155] mb-5">
+        <div class="grid grid-cols-2 gap-4 p-6">
             <div class="flex  items-center justify-start">
                 <label class="legend w-1/5 mr-4  text-left font-semibold">Material / Repuesto:</label>
                 <InputText v-model="formData.material_repuesto" class="w-4/5 " aria-required="required" />
@@ -30,7 +31,7 @@
                 <p>{{ formData.imagen }}</p>
             </div>
             
-            <div class="mt-8 col-span-2 flex items-center justify-end">
+            <div class="mt-5 col-span-2 flex items-center justify-end">
             <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="danger" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="actualizarArticulo" />
             </div>
