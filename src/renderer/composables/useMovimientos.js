@@ -731,14 +731,14 @@ export function useMovimientos() {
 
         // Definir el ancho de las columnas
         worksheet["!cols"] = [
-            { wch: 12 }, // Fecha
-            { wch: 39 }, // ID (numero_movimiento)
-            { wch: 18 }, // Movimiento
-            { wch: 52 }, // Origen
-            { wch: 59 }, // Destino
-            { wch: 40 }, // Material/Repuesto
-            { wch: 50 }, // Marca
-            { wch: 74 }, // Modelo/Serie
+            { wch: 15 }, // Fecha
+            { wch: 15 }, // ID (numero_movimiento)
+            { wch: 15 }, // Movimiento
+            { wch: 40 }, // Origen
+            { wch: 40 }, // Destino
+            { wch: 50 }, // Material/Repuesto
+            { wch: 40 }, // Marca
+            { wch: 40 }, // Modelo/Serie
             { wch: 15 }, // Cantidad
             { wch: 20 }, // Inventario
             // { wch: 20 }, // Unidad de Medida
@@ -747,7 +747,7 @@ export function useMovimientos() {
             { wch: 22 }, // OT Asociada
             { wch: 22 }, // Remito
             { wch: 20 }, // N° Almacenes
-            { wch: 100 }, // Observaciones
+            { wch: 170 }, // Observaciones
 
         ];
 
