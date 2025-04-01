@@ -108,9 +108,9 @@
 
 
          <!-- Área de texto para Observaciones -->
-  <div class="p-4">
+  <div class="px-4 pt-4">
     <label class="block font-semibold mb-2 ">Observaciones:</label>
-    <Textarea v-model="formData.observaciones" class="w-full max-h-[100px]" rows="4" :disabled="movimientoRealizado" maxlength="1079" />
+    <Textarea v-model="formData.observaciones" class="w-full max-h-[110px]" rows="4" :disabled="movimientoRealizado" maxlength="1079" />
   </div>
 
 
