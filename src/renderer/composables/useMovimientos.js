@@ -675,7 +675,7 @@ export function useMovimientos() {
                 "Modelo/Serie": item.modelo_serie || "",
                 "Cantidad": item.cantidad?.toString() || "",
                 "Inventario": item.inventario_remanente?.toString() || "",
-                "Unidad de Medida": item.unidad_medida || "",
+                // "Unidad de Medida": item.unidad_medida || "",
                 "PT Asociado": item.permiso_trabajo_asociado || "",
                 "Informe Asociado": item.informe_asociado,
                 "OT Asociada": item.orden_trabajo_asociada?.toString() || "",
@@ -741,13 +741,13 @@ export function useMovimientos() {
             { wch: 74 }, // Modelo/Serie
             { wch: 15 }, // Cantidad
             { wch: 20 }, // Inventario
-            { wch: 20 }, // Unidad de Medida
+            // { wch: 20 }, // Unidad de Medida
             { wch: 15 }, // PT asociado
             { wch: 30 }, // Informe Asociado
             { wch: 22 }, // OT Asociada
             { wch: 22 }, // Remito
             { wch: 20 }, // N° Almacenes
-            { wch: 20 }, // Observaciones
+            { wch: 100 }, // Observaciones
 
         ];
 
