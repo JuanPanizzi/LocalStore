@@ -133,7 +133,7 @@
                 :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`
                     : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`" 
                     :pt="{
-                        header: ' ml-5'
+                        header: ' mx-5'
                     }">
                 <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
                     :numeroInformeMovimiento="numeroInformeMovimiento" :movimientoRealizado="movimientoRealizado"  @guardarMovimiento="crearMovimiento"
