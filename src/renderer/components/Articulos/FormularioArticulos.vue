@@ -1,7 +1,7 @@
 <template>
+<hr class="mx-6 border-t border-[#334155]">
 
-
-    <Form class="px-3 min-w-[50vw]  ">
+    <Form class="px-3  pt-5 pb-4  min-w-[50vw]  ">
 
         <!-- Grid de inputs alineados -->
         <div class="grid grid-cols-1 gap-4 p-4 rounded-lg ">
@@ -39,7 +39,7 @@
                 <p>{{ formData.imagen }}</p>
             </div>
         </div>
-        <div class="mt-8 flex items-center justify-end">
+        <div class="mt-5 flex items-center justify-end">
             <!-- <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" severity="secondary"
                 @click="reiniciarFormulario" /> -->
             <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="danger" @click="cerrarDialog" />

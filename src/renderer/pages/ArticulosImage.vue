@@ -1,5 +1,5 @@
 <template>
-   
+
     <section class="min-h-screen card mx-2 p-8 bg-[#0F172A]">
         <div class="max-w-[97%] mx-auto space-y-8">
             <!-- Filtros -->
@@ -27,13 +27,13 @@
                         </p>
 
                     </div>
-                    <Carousel  :key="filteredArticulos.length"
-                    v-else :value="filteredArticulos" :numVisible="1" :numScroll="1" :showIndicators="false"
-                        :responsiveOptions="responsiveOptions" class="rounded-lg overflow-hidden"
-                        emptyMessage="Sin resultados">
+                    <Carousel :key="filteredArticulos.length" v-else :value="filteredArticulos" :numVisible="1"
+                        :numScroll="1" :showIndicators="false" :responsiveOptions="responsiveOptions"
+                        class="rounded-lg overflow-hidden" emptyMessage="Sin resultados">
 
                         <template #empty>
-                            <div class="w-full h-full flex justify-center items-center bg-[#0F172A]  py-14 mt-1  rounded-xl">
+                            <div
+                                class="w-full h-full flex justify-center items-center bg-[#0F172A]  py-14 mt-1  rounded-xl">
                                 <h1>Sin Resultados</h1>
                             </div>
                         </template>
@@ -61,9 +61,12 @@
                                 <!-- Datos del artículo -->
                                 <div class="mt-4">
                                     <div class="flex justify-between text-white">
-                                        <p class="w-1/2"><strong>Material:</strong> {{ slotProps.data.material_repuesto}}</p>
-                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong> 
-                                        {{slotProps.data.cantidad }} <span v-if="slotProps.data.unidad_medida">{{slotProps.data.unidad_medida}}</span> </p>
+                                        <p class="w-1/2"><strong>Material:</strong> {{
+                                            slotProps.data.material_repuesto}}</p>
+                                        <p class="w-1/2 text-right"><strong>Cantidad:</strong>
+                                            {{ slotProps.data.cantidad }} <span
+                                                v-if="slotProps.data.unidad_medida">{{ slotProps.data.unidad_medida }}</span>
+                                        </p>
                                     </div>
                                     <div class="flex justify-between text-white">
                                         <p class="w-1/2"><strong>Modelo:</strong> {{ slotProps.data.modelo_serie }}</p>
@@ -100,9 +103,7 @@
                     </div>
                     <!-- selectionMode="single"  -->
                     <DataTable v-else :value="filteredArticulos" paginator :rows="4" class="mx-auto"
-                        :selection="selectedArticulo" 
-                        @row-select="onArticuloSelect"
-                        dataKey="id">
+                        :selection="selectedArticulo" @row-select="onArticuloSelect" dataKey="id">
 
                         <template #empty>
                             <h1 class="text-center ">Sin resultados</h1>
@@ -110,18 +111,18 @@
                         <Column field="material_repuesto" header="MATERIAL" :showFilterMenu="false" />
                         <Column field="marca" header="MARCA" :showFilterMenu="false" />
                         <Column field="modelo_serie" header="MODELO" :showFilterMenu="false" />
-                        <Column #body="slotProps" header="CANTIDAD" >
+                        <Column #body="slotProps" header="CANTIDAD">
                             {{ slotProps.data.cantidad }}
                             <span v-if="slotProps.data.unidad_medida"> {{ slotProps.data.unidad_medida }}</span>
                         </Column>
                         <!-- <Column field="unidad_medida" header="UNIDAD" ></Column> -->
-                        
+
                     </DataTable>
                 </div>
             </div>
 
             <!-- Aquí se ubican los Dialogs si los necesitas -->
-            <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO">
+            <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO" :pt="{ header: ' mx-5' }">
                 <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
             </Dialog>
 
@@ -131,14 +132,13 @@
             <!-- Dialog para ingresar o dar salida a un artículo -->
             <Dialog v-model:visible="showIngresoSalida.show" modal
                 :header="showIngresoSalida.accion == 'INGRESO' ? `INGRESO ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`
-                    : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`" 
-                    :pt="{
+                    : `SALIDA ARTICULO: ${articuloSeleccionado?.material_repuesto} - ${articuloSeleccionado?.marca} - ${articuloSeleccionado?.modelo_serie}`" :pt="{
                         header: ' mx-5'
                     }">
                 <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
-                    :numeroInformeMovimiento="numeroInformeMovimiento" :movimientoRealizado="movimientoRealizado"  @guardarMovimiento="crearMovimiento"
-                    @cancelarIngresoSalida="handleIngresoSalida(false)" @reiniciarFormulario="reiniciarIngresoSalida"
-                    @nuevoPdf="nuevoPdf" />
+                    :numeroInformeMovimiento="numeroInformeMovimiento" :movimientoRealizado="movimientoRealizado"
+                    @guardarMovimiento="crearMovimiento" @cancelarIngresoSalida="handleIngresoSalida(false)"
+                    @reiniciarFormulario="reiniciarIngresoSalida" @nuevoPdf="nuevoPdf" />
             </Dialog>
         </div>
         <Toast />
@@ -223,14 +223,14 @@ export default defineComponent({
         const movimientoRealizado = ref(false);
 
         const isLoading = ref(true);
-        
+
 
 
         const abrirHistorial = (articulo) => {
             const { id, marca, modelo_serie, material_repuesto } = articulo
             dialog.open(HistorialArticulo, {
                 data: {
-                     articulo_id: id,
+                    articulo_id: id,
                 },
                 props: {
                     modal: true,
@@ -338,7 +338,7 @@ export default defineComponent({
             { deep: true }
         );
 
-       
+
         // Computed que utiliza los filtros debounced para filtrar los artículos
         const filteredArticulos = computed(() => {
             return dataArticulos.value.filter(item => {
@@ -465,11 +465,11 @@ export default defineComponent({
         }
         async function guardarArticulo(datosFormulario) {
 
-            if(!datosFormulario.material_repuesto || !datosFormulario.marca || !datosFormulario.modelo_serie ){
+            if (!datosFormulario.material_repuesto || !datosFormulario.marca || !datosFormulario.modelo_serie) {
                 toast.add({ severity: 'error', summary: 'Campos Incompletos', detail: 'Debe completar los campos de Material, Marca y Modelo', life: 5000 });
                 return;
             }
-            
+
             const response = await crearArticulo(datosFormulario);
 
             if (response.success) {
@@ -487,7 +487,7 @@ export default defineComponent({
         }
         const editarArticulo = async (articulo) => {
 
-            if( !articulo.material_repuesto || !articulo.marca || !articulo.modelo_serie ){
+            if (!articulo.material_repuesto || !articulo.marca || !articulo.modelo_serie) {
                 toast.add({ severity: 'error', summary: 'Campos Incompletos', detail: 'Debe completar los campos de Material, Marca y Modelo', life: 5000 });
                 return;
             }
@@ -503,7 +503,7 @@ export default defineComponent({
                 toast.add({ severity: 'success', summary: 'Éxito', detail: 'Artículo editado correctamente', life: 5000 });
             } else {
 
-                if(response.message == 'Ya existe un artículo con la misma marca y modelo'){
+                if (response.message == 'Ya existe un artículo con la misma marca y modelo') {
                     toast.add({ severity: 'error', summary: 'Error', detail: 'Ya existe un artículo con la misma marca y modelo seleccionados', life: 5000 });
                     // showDialogEditar.value = false;
                     return;
@@ -646,9 +646,9 @@ export default defineComponent({
             const response = await obtenerArticulos();
             if (response.success) {
                 dataArticulos.value = response.data;
-               
+
             } else {
-              
+
                 toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudieron obtener los datos, intente nuevamente', life: 3000 });
 
             }
