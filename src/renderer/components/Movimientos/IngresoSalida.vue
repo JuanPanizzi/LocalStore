@@ -1,6 +1,6 @@
 <template>
 <hr class="mx-6 border-t border-[#334155]">
-    <Form class="px-3 pt-5 pb-8  rounded-xl  max-w-[95vw] mx-auto">
+    <Form class="px-3 pt-5 pb-4  rounded-xl  max-w-[95vw] mx-auto">
 
         <div>
 
