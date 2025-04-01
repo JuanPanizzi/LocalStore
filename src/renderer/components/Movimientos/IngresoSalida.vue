@@ -114,10 +114,6 @@
 
 
         <div class="mt-8 flex items-center justify-end">
-            <!-- <div class="flex items-center justify-start  mr-auto">
-                <Button label="Reiniciar" icon="pi pi-refresh" class="mr-auto" severity="secondary"
-                @click="reiniciarFormulario" />
-            </div>  -->
             <div class="flex items-center px-4">
 
                 <Button label="Generar PDF " icon="pi pi-file-pdf" class="" severity="info"
@@ -228,9 +224,7 @@ export default defineComponent({
         }, { immediate: true, deep: true });
 
 
-        const reiniciarFormulario = () => {
-            emit('reiniciarFormulario')
-        }
+       
 
         const nuevoPdf = () => {
             emit('nuevoPdf', { ...formData })
@@ -293,7 +287,6 @@ export default defineComponent({
             camposIncompletos,
             camposRequeridos,
             nuevoPdf,
-            reiniciarFormulario
         }
     },
 

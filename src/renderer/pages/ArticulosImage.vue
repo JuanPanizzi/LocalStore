@@ -138,7 +138,7 @@
                 <IngresoSalida :ingresoSalida="showIngresoSalida.accion" :articuloSeleccionado="articuloSeleccionado"
                     :numeroInformeMovimiento="numeroInformeMovimiento" :movimientoRealizado="movimientoRealizado"
                     @guardarMovimiento="crearMovimiento" @cancelarIngresoSalida="handleIngresoSalida(false)"
-                    @reiniciarFormulario="reiniciarIngresoSalida" @nuevoPdf="nuevoPdf" />
+                    @nuevoPdf="nuevoPdf" />
             </Dialog>
         </div>
         <Toast />
@@ -406,32 +406,7 @@ export default defineComponent({
             }
         }
 
-        const reiniciarIngresoSalida = async () => {
-
-            registroGuardado.value = false;
-
-
-            const ultimoNumMovimiento = await ultimoNumeroMovimiento();  //El numero de informe será el ultimo numero de movimiento + 1 (porque el n° de movimiento es el Id en el excel)
-            if (!ultimoNumMovimiento) {
-                toast.add({ severity: 'error', summary: 'Error', detail: 'No se pudo obtener el N° de informe, intente nuevamente', life: 5000 });
-                return;
-            }
-
-            // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
-            const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
-
-            if (isNaN(formatUltimoMovimiento)) {
-                toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
-                return;
-            }
-
-            //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
-            numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
-
-
-
-
-        }
+        
 
         const handleIngresoSalida = async (show, accion, articulo) => {
 
@@ -687,7 +662,6 @@ export default defineComponent({
             registroGuardado,
             generarPdf,
             nuevoPdf,
-            reiniciarIngresoSalida,
             actualizarArticulo,
             editarArticulo,
             formatImagePath,

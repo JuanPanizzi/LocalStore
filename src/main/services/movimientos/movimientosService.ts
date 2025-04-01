@@ -549,6 +549,7 @@ export const obtenerUltimoMovimiento = async () => {
     let maxSecuencia = 0;
     let tieneNuevoFormato = false;
 
+//     Se recorre cada número de informe: // Si coincide con el nuevo formato, se separa en: // grupo: parte izquierda del guion. // secuencia: parte derecha del guion.
     for (const mov of movimientos) {
       const match = regexNuevoFormato.exec(mov.numero_movimiento);
       if (match) {
