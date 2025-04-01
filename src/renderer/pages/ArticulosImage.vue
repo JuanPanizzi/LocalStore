@@ -448,15 +448,16 @@ export default defineComponent({
             }
 
             // Se extrae la parte numerica por si el numero viene con el formato de 1302-B por ejemplo.
-            const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
+            // const formatUltimoMovimiento = parseInt(ultimoNumMovimiento, 10);
 
-            if (isNaN(formatUltimoMovimiento)) {
-                toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
-                return;
-            }
+            // if (isNaN(formatUltimoMovimiento)) {
+            //     toast.add({ severity: 'error', summary: 'Error', detail: 'Formato de número de movimiento inválido, por favor revise el archivo excel importado.', life: 5000 });
+            //     return;
+            // }
 
             //numeroInformeMovimiento.value = formatUltimoMovimiento + 1;
-            numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
+            numeroInformeMovimiento.value = ultimoNumMovimiento
+            // numeroInformeMovimiento.value = (formatUltimoMovimiento + 1).toString();
 
             movimientoRealizado.value = false;
             showIngresoSalida.value.show = show;
@@ -523,6 +524,7 @@ export default defineComponent({
         const ultimoNumeroMovimiento = async () => {
 
             const response = await obtenerUltimoMovimiento();
+            console.log('response en ultimonumeromovimiento: 526', response)
             if (response.success) {
                 return response.data;
             } else {

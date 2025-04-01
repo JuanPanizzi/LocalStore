@@ -514,26 +514,79 @@ export const actualizarMovimiento = async (movimiento) => {
     return { success: false }
   }
 }
+// export const obtenerUltimoMovimiento = async () => {
+//   try {
+//     const result = db
+//       .prepare(`
+//               SELECT numero_movimiento 
+//               FROM movimientos_materiales 
+//               ORDER BY CAST(numero_movimiento AS INTEGER) DESC, numero_movimiento DESC 
+//               LIMIT 1
+//           `)
+//       .get();
+
+//     if (!result || !result.numero_movimiento) {
+//       return { success: true, data: 0 };
+//     }
+
+//     const maxNumero = result.numero_movimiento;
+
+//     return { success: true, data: maxNumero };
+//   } catch (error) {
+//     console.error('Error al obtener el número de movimiento:', error);
+//     return { success: false, error: error || 'Error al obtener el número de movimiento' };
+//   }
+// };
+
 export const obtenerUltimoMovimiento = async () => {
   try {
-    const result = db
-      .prepare(`
-              SELECT numero_movimiento 
-              FROM movimientos_materiales 
-              ORDER BY CAST(numero_movimiento AS INTEGER) DESC, numero_movimiento DESC 
-              LIMIT 1
-          `)
-      .get();
+    const movimientos = db.prepare(
+      `SELECT numero_movimiento FROM movimientos_materiales`
+    ).all();
 
-    if (!result || !result.numero_movimiento) {
-      return { success: true, data: 0 };
+    const regexNuevoFormato = /^(\d{4,})-(\d{4})$/;
+    let maxGrupo = 0;
+    let maxSecuencia = 0;
+    let tieneNuevoFormato = false;
+
+    for (const mov of movimientos) {
+      const match = regexNuevoFormato.exec(mov.numero_movimiento);
+      if (match) {
+        tieneNuevoFormato = true;
+        const grupo = parseInt(match[1], 10);
+        const secuencia = parseInt(match[2], 10);
+
+        if (grupo > maxGrupo || (grupo === maxGrupo && secuencia > maxSecuencia)) {
+          maxGrupo = grupo;
+          maxSecuencia = secuencia;
+        }
+      }
     }
 
-    const maxNumero = result.numero_movimiento;
+    let siguienteNumero;
+    if (!tieneNuevoFormato) {
+      siguienteNumero = '0001-0087';
+    } else {
+      let nuevoGrupo = maxGrupo;
+      let nuevaSecuencia = maxSecuencia + 1;
 
-    return { success: true, data: maxNumero };
+      if (nuevaSecuencia > 9999) {
+        nuevoGrupo += 1;
+        nuevaSecuencia = 1;
+      }
+
+      siguienteNumero = `${nuevoGrupo.toString().padStart(4, '0')}-${nuevaSecuencia
+        .toString()
+        .padStart(4, '0')}`;
+    }
+
+    return { success: true, data: siguienteNumero };
   } catch (error) {
     console.error('Error al obtener el número de movimiento:', error);
-    return { success: false, error: error || 'Error al obtener el número de movimiento' };
+    return {
+      success: false,
+      error: error || 'Error al obtener el número de movimiento',
+    };
   }
 };
+
