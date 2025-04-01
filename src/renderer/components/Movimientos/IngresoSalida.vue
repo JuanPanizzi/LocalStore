@@ -49,10 +49,7 @@
                     class="w-3/5"  :disabled="movimientoRealizado" />
             </div>
 
-            <div class="flex justify-between items-center ">
-                <label class="mr-2  w-2/5  text-left font-semibold ">Unidad:</label>
-                <InputText readonly v-model="formData.unidad_medida" class="w-3/5" :disabled="movimientoRealizado" />
-            </div>
+        
 
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
