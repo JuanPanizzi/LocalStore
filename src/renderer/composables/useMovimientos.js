@@ -220,7 +220,7 @@ export function useMovimientos() {
                     toast.add({
                         severity: "error",
                         summary: "ID inválido",
-                        detail: `Se encontraron IDs con formato incorrecto. Algunos ejemplos: ${ejemplos}. El formato válido es "0001-0001", donde el sufijo va de 0001 a 9999 y el número antes del guión debe tener al menos 4 dígitos.`,
+                        detail: `Se encontraron IDs con formato incorrecto. Algunos ejemplos: ${ejemplos}. El formato válido es "0001-0001", donde el sufijo debe ir de 0001 a 9999 y el número antes del guión debe tener al menos 4 dígitos.`,
                         life: 15000
                     });
                     return resolve({ success: false, message: "Formato de ID inválido" });
