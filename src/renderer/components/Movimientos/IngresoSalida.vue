@@ -127,7 +127,7 @@
                     :disabled="!camposRequeridos" @click="nuevoPdf" />
                 <Button label="Regresar" icon="pi pi-refresh" class="mx-2" severity="danger"
                     @click="cancelarIngresoSalida" />
-                <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" />
+                <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" :disabled="movimientoRealizado"/>
             </div>
 
         </div>
