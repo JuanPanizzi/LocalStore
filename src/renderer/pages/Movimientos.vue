@@ -10,7 +10,7 @@
         <!-- Filtros activos usando el componente Badge -->
         <!-- <Tag icon="pi pi-info-circle" severity="info" value="Filtros Aplicados"></Tag> -->
 
-        <div v-if="activeFilters.length" class=" mx-auto" style="max-width: 90vw">
+        <div v-if="activeFilters.length" class=" mx-auto w-full" style="max-width: 90vw">
             <Tag icon="pi pi-info-circle" severity="danger" value="Filtros Aplicados" class="mb-2 text-2xl"></Tag>
 
             <div class="flex flex-wrap gap-2">
@@ -21,8 +21,8 @@
                 size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
-            paginator :rows="5" tableStyle="min-width: 50rem; " showGridlines style="max-width: 90vw; "
-            class="mx-auto mt-16"  scrollable scrollHeight=""
+            paginator :rows="5" tableStyle="min-width: 50rem; min-height: 33rem; max-height: 35rem" showGridlines style="max-width: 90vw; "
+            class="mx-auto mt-16"  scrollable scrollHeight="33rem"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
