@@ -144,6 +144,7 @@ export function useMovimientos() {
                 // Formatear los datos para el DataTable
                 let fechasInvalidas = [];
                 const idsInvalidos = [];
+                const numericErrors = []; //Almacena valores no numericos encontrados en las columnas cantidad e inventario del excel
                 const formattedData = jsonData.map((row) => {
 
                     const normalizedRow = {}; // Objeto para almacenar los datos normalizados (pasamos las claves a minusculas )
@@ -174,18 +175,22 @@ export function useMovimientos() {
                                 }
                             }
                         }
-
+                        // Validar que "cantidad" e "inventario" sean numéricos
+                        if (normalizedKey === 'cantidad' || normalizedKey === 'inventario') {
+                            // Intentar convertir el valor a número
+                            const parsed = Number(row[key]);
+                            if (row[key] !== null && isNaN(parsed)) {
+                                numericErrors.push({ columna: normalizedKey.toUpperCase(), valor: row[key] });
+                            } else {
+                                // Guardar el valor numérico en lugar del original
+                                normalizedRow[normalizedKey] = parsed;
+                            }
+                        }
 
                     });
 
-
-
-
                     return {
-                        // id // fecha // tipo_movimiento // origen // destino // material_repuesto // marca // articulo_id // cantidad // permiso_trabajo_asociado
-                        // informe_asociado // orden_trabajo_asociada // remito // numero_almacenes // numero_serie // instrumento// numero_movimiento 
-                        // modelo_serie
-
+                      
                         // Convertir la fecha al formato YYYY-MM-DD para guardar en la base de datos
                         fecha: normalizedRow["fecha"] ? formatFechaToYYYYMMDD(normalizedRow["fecha"]) : null,
                         numero_movimiento: normalizedRow["id"], //no confundir id con numero_movimiento
@@ -210,9 +215,7 @@ export function useMovimientos() {
 
 
                 if (fechasInvalidas.length > 0) {
-                    const columnasInvalidas = [...new Set(fechasInvalidas.map(item => item.columna))];
-                    // const mensaje = `Se encontraron fechas con un formato distinto a 'DD/MM/YYYY' en las siguientes columnas: ${columnasInvalidas.map(col => `"${col}"`).join(", ")}`;
-                    // toast.add({ severity: "error", summary: "Fechas Inválidas", detail: mensaje, life: 9000 });
+                    // const columnasInvalidas = [...new Set(fechasInvalidas.map(item => item.columna))];
                     return resolve({ success: false, message: "Fechas inválidas" });
                 }
                 if (idsInvalidos.length > 0) {
@@ -246,6 +249,21 @@ export function useMovimientos() {
                         life: 10000
                     });
                     return resolve({ success: false, message: "Número de movimiento duplicado" });
+                }
+
+                // Si se encontraron errores en valores numéricos en las columnas de cantidad o de inventario, se detiene la importación
+                if (numericErrors.length > 0) {
+                    const columnasErroneas = [...new Set(numericErrors.map(e => e.columna))];
+                    toast.add({
+                        severity: "error",
+                        summary: "Formato inválido",
+                        detail: `Se encontraron valores no numéricos en las siguientes columnas: ${columnasErroneas.join(", ")}`,
+                        life: 6000
+                    });
+                    return resolve({
+                        success: false,
+                        message: `Formatos invalidos en las columnas de cantidad o inventario`
+                    });
                 }
 
 
