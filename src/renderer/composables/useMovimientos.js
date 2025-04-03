@@ -190,7 +190,7 @@ export function useMovimientos() {
                     });
 
                     return {
-                      
+
                         // Convertir la fecha al formato YYYY-MM-DD para guardar en la base de datos
                         fecha: normalizedRow["fecha"] ? formatFechaToYYYYMMDD(normalizedRow["fecha"]) : null,
                         numero_movimiento: normalizedRow["id"], //no confundir id con numero_movimiento
@@ -486,9 +486,14 @@ export function useMovimientos() {
 
                 // Obtenemos el contenido del PDF como ArrayBuffer
                 const pdfArrayBuffer = doc.output('arraybuffer');
+                // const fechaOriginal = `MOVINV-${formatearFecha(fecha).replace(/\//g, '-')}.pdf`;
+                const fechaOriginal = formatearFecha(fecha).replace(/\//g, '-'); // "03-04-2025"
+                const [dia, mes, anio] = fechaOriginal.split('-');
+                const fechaParaArchivo = `${anio}-${mes}-${dia}`; // "2025-04-03"
+                const nombrePdf = `MOVINV-${fechaParaArchivo}.pdf`
 
                 try {
-                    const result = await window.electronAPI.guardarPdf(pdfArrayBuffer);
+                    const result = await window.electronAPI.guardarPdf(pdfArrayBuffer, nombrePdf);
                     resolve(result); // Resolvemos la promesa con el resultado obtenido
                 } catch (error) {
                     reject(error);

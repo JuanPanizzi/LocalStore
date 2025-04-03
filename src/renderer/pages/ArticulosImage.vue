@@ -398,11 +398,11 @@ export default defineComponent({
                     toast.add({ severity: 'success', summary: 'Éxito', detail: 'PDF guardado correctamente', life: 6000 });
 
                 } else {
-                    toast.add({ severity: 'warn', summary: 'Pdf sin guardar', detail: 'No se ha generadoo el PDF', life: 6000 });
+                    toast.add({ severity: 'warn', summary: 'PDF sin guardar', detail: 'No se ha generado el PDF', life: 6000 });
                 }
 
             } catch (error) {
-                toast.add({ severity: 'error', summary: 'Pdf sin guardar', detail: 'Hubo un error al guardar el PDF, intente nuevamente', life: 6000 });
+                toast.add({ severity: 'error', summary: 'PDF sin guardar', detail: 'Hubo un error al guardar el PDF, intente nuevamente', life: 6000 });
             }
         }
 

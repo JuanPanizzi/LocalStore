@@ -25,14 +25,9 @@ export function handleMovimientos(ipcMain: IpcMain) {
     ipcMain.handle('guardar-excel-movimientos', async (event, data) => {    
         return await guardarExcelMovimientos(data);
     });
-    ipcMain.handle('guardar-pdf', async (event, pdfArrayBuffer) => {
+    ipcMain.handle('guardar-pdf', async (event, pdfArrayBuffer, nombrePdf) => {
 
-            const fechaActual = new Date();
-            const anio = fechaActual.getFullYear();
-            const mes = String(fechaActual.getMonth() + 1).padStart(2, '0');
-            const dia = String(fechaActual.getDate()).padStart(2, '0');
-            const nombrePdf = `MOVINV-${anio}-${mes}-${dia}.pdf`;
-
+         
         const { canceled, filePath } = await dialog.showSaveDialog({
           title: 'Guardar PDF',
           defaultPath: nombrePdf,
