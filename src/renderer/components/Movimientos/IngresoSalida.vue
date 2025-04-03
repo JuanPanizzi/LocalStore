@@ -8,7 +8,7 @@
             <div class="flex justify-between items-center  px-4 mb-4 mt-2">
 
                 <div class=" flex items-center mb-3">
-                    <label class=" text-right mr-3 font-semibold"  >ARTÍCULO EN STOCK:</label>
+                    <label class=" text-right mr-3 font-semibold">ARTÍCULO EN STOCK:</label>
                     <InputText v-model="formData.cantidad" readonly class="w-64" disabled />
                 </div>
 
@@ -16,11 +16,12 @@
                     <div class="input-group flex  flex-col  items-end mb-3 ">
                         <div>
                             <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                            <InputText v-model="formData.numero_movimiento" class="w-64" :class="{ '!border-red-500 ' : numero_informe_invalido || !formData.numero_movimiento}" :disabled="movimientoRealizado"
-                            :invalid="numero_informe_invalido " />
+                            <InputText v-model="formData.numero_movimiento" class="w-64"
+                                :class="{ '!border-red-500 ': numero_informe_invalido || !formData.numero_movimiento }"
+                                :disabled="movimientoRealizado" :invalid="numero_informe_invalido" />
                         </div>
-                            <small v-if="numero_informe_invalido" class=" text-red-500">Formato de número inválido</small>
-                            <small v-if="!formData.numero_movimiento" class=" text-red-500">Complete este campo</small>
+                        <small v-if="numero_informe_invalido" class=" text-red-500">Formato de número inválido</small>
+                        <small v-if="!formData.numero_movimiento" class=" text-red-500">Complete este campo</small>
 
                     </div>
                     <div :class="`input-group flex items-center `">
@@ -37,8 +38,7 @@
 
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
-                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly
-                   disabled />
+                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly disabled />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
@@ -49,6 +49,12 @@
                 <InputText v-model="formData.modelo_serie" class="w-3/5" readonly disabled />
             </div>
 
+            <div class="flex  items-center justify-between">
+                <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
+                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required"
+                    disabled />
+            </div>
+
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
                 <InputNumber v-model="formData.cantidad_seleccionada"
@@ -57,12 +63,6 @@
             </div>
 
 
-
-            <div class="flex  items-center justify-between">
-                <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
-                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required"
-                    disabled />
-            </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
                 <InputText v-model="formData.origen" :invalid="camposIncompletos.origen && !formData.origen"
@@ -129,7 +129,8 @@
                     :disabled="!movimientoRealizado" @click="nuevoPdf" />
                 <Button label="Regresar" icon="pi pi-refresh" class="mx-2" severity="secondary"
                     @click="cancelarIngresoSalida" />
-                <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento" :disabled="movimientoRealizado"/>
+                <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarMovimiento"
+                    :disabled="movimientoRealizado" />
             </div>
 
         </div>
@@ -262,13 +263,13 @@ export default defineComponent({
                 toast.add({ severity: "error", summary: `Cantidad Inválida`, detail: "Debe seleccionar una cantidad mayor a cero", life: 5000 });
                 return;
             }
-            if(!formData.numero_movimiento){
+            if (!formData.numero_movimiento) {
                 numero_informe_invalido.value = true;
                 toast.add({ severity: "error", summary: `Número de Informe Inexistente`, detail: "Debe seleccionar un número de informe", life: 5000 });
                 return;
             }
 
-            if(numero_informe_invalido.value){
+            if (numero_informe_invalido.value) {
                 toast.add({ severity: "error", summary: `N° de Informe Inválido`, detail: "Por favor seleccione un número de informe con un formato válido ", life: 5000 });
                 return;
             }
