@@ -253,12 +253,12 @@ export function useMovimientos() {
 
                 // Si se encontraron errores en valores numéricos en las columnas de cantidad o de inventario, se detiene la importación
                 if (numericErrors.length > 0) {
-                    const columnasErroneas = [...new Set(numericErrors.map(e => e.columna))];
+                    // const columnasErroneas = [...new Set(numericErrors.map(e => e.columna))];
                     toast.add({
                         severity: "error",
-                        summary: "Formato inválido",
-                        detail: `Se encontraron valores no numéricos en las siguientes columnas: ${columnasErroneas.join(", ")}`,
-                        life: 6000
+                        summary: "Formato numérico inválido",
+                        detail: `Se encontraron valores no numéricos en las columnas de cantidad y/o inventario del archivo excel, por favor revise que sólo haya valores numéricos en las mismas.`,
+                        life: 10000
                     });
                     return resolve({
                         success: false,
