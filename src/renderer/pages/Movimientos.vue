@@ -1,5 +1,5 @@
 <template>
-    <section class="p-5 bg-[#0F172A]">
+    <section class="h-[91vh] p-5 bg-[#0F172A] flex flex-col justify-center  ">
         <!-- <section class="p-5"> -->
         <!-- {{ dataMovimientosFiltrada }} -->
 
@@ -21,9 +21,8 @@
                 size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
-            paginator :rows="5" tableStyle="min-width: 50rem; height: 40rem" showGridlines style="max-width: 90vw; max-height: 70vh"
-            class="mx-auto mt-16"  scrollable
-           scrollHeight="70vh"
+            paginator :rows="5" tableStyle="min-width: 50rem; " showGridlines style="max-width: 90vw; "
+            class="mx-auto mt-16"  scrollable scrollHeight=""
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
@@ -118,7 +117,7 @@
             <Column field="numero_almacenes" header="N° ALMACENES"></Column>
         </DataTable>
 
-        <div class="mt-10 flex justify-end mx-auto" style="max-width: 90vw">
+        <div class="mt-10 flex justify-end mx-auto w-full" style="max-width: 90vw">
             <!-- <Button label="PDF Historial de Movimientos" @click="generarPdfArticulo(dataMovimientosFi
             severity="danger" icon="pi pi-file-pdf" outlined /> -->
             <Button label="PDF Historial de Artículo" class="mx-2" severity="danger" icon="pi pi-file-pdf" outlined
