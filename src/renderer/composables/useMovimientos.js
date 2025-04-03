@@ -221,10 +221,11 @@ export function useMovimientos() {
                         severity: "error",
                         summary: "ID inválido",
                         detail: `Se encontraron IDs con formato incorrecto. Algunos ejemplos: ${ejemplos}. El formato válido es "0001-0001", donde el sufijo va de 0001 a 9999 y el número antes del guión debe tener al menos 4 dígitos.`,
-                        life: 10000
+                        life: 15000
                     });
                     return resolve({ success: false, message: "Formato de ID inválido" });
                 }
+
                 // Filtrar sólo los registros cuyo numero_movimiento NO sea "0"
                 const validMovimientos = formattedData.filter(item => {
                     const idStr = String(item.numero_movimiento).trim();
@@ -236,8 +237,6 @@ export function useMovimientos() {
                     const currentId = String(item.numero_movimiento).trim();
                     return self.findIndex(other => String(other.numero_movimiento).trim() === currentId) !== index;
                 });
-
-
 
                 if (duplicate) {
                     toast.add({
