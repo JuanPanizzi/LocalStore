@@ -599,7 +599,7 @@ export default defineComponent({
                     return;
 
                 } else if (response.error == 'numero de informe repetido') {
-                    toast.add({ severity: 'error', summary: 'Informe Existente', detail: 'Ya existe un registro con este n° de informe, por favor reinicia el formulario para crear uno nuevo', life: 5000 });
+                    toast.add({ severity: 'error', summary: 'Informe Existente', detail: 'Ya existe un registro con este N° de informe, si desea utilizar este número por favor elimine el movimiento correspondiente del historial de movimientos, y vuelva a intentarlo.', life: 15000 });
                     return;
 
                 }

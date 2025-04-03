@@ -15,7 +15,7 @@
                 <div class="flex flex-col ">
                     <div class="input-group flex items-center mb-3">
                         <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                        <InputText v-model="formData.numero_movimiento" readonly class="w-64" :disabled="movimientoRealizado" />
+                        <InputText v-model="formData.numero_movimiento"  class="w-64" :disabled="movimientoRealizado" />
                     </div>
                     <div :class="`input-group flex items-center `">
                         <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
