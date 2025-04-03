@@ -143,6 +143,7 @@ export function useMovimientos() {
 
                 // Formatear los datos para el DataTable
                 let fechasInvalidas = [];
+                const idsInvalidos = [];
                 const formattedData = jsonData.map((row) => {
 
                     const normalizedRow = {}; // Objeto para almacenar los datos normalizados (pasamos las claves a minusculas )
@@ -160,9 +161,25 @@ export function useMovimientos() {
                                 fechasInvalidas.push({ columna: normalizedKey.toUpperCase(), fechaInvalida: row[key] })
                             }
                         }
+                        // Validar formato de ID
+                        if (normalizedKey === 'id') {
+                            const idStr = String(row[key]).trim();
+                            const regex = /^\d{4,}-\d{4}$/;
+                            if (!regex.test(idStr)) {
+                                idsInvalidos.push(idStr);
+                            } else {
+                                const [prefijo, sufijo] = idStr.split("-").map(Number);
+                                if (isNaN(prefijo) || isNaN(sufijo) || sufijo < 1 || sufijo > 9999) {
+                                    idsInvalidos.push(idStr);
+                                }
+                            }
+                        }
 
 
                     });
+
+
+
 
                     return {
                         // id // fecha // tipo_movimiento // origen // destino // material_repuesto // marca // articulo_id // cantidad // permiso_trabajo_asociado
@@ -198,7 +215,16 @@ export function useMovimientos() {
                     // toast.add({ severity: "error", summary: "Fechas Inválidas", detail: mensaje, life: 9000 });
                     return resolve({ success: false, message: "Fechas inválidas" });
                 }
-
+                if (idsInvalidos.length > 0) {
+                    const ejemplos = idsInvalidos.slice(0, 5).join(", ");
+                    toast.add({
+                        severity: "error",
+                        summary: "ID inválido",
+                        detail: `Se encontraron IDs con formato incorrecto. Algunos ejemplos: ${ejemplos}. El formato válido es "0001-0001", donde el sufijo va de 0001 a 9999 y el número antes del guión debe tener al menos 4 dígitos.`,
+                        life: 10000
+                    });
+                    return resolve({ success: false, message: "Formato de ID inválido" });
+                }
                 // Filtrar sólo los registros cuyo numero_movimiento NO sea "0"
                 const validMovimientos = formattedData.filter(item => {
                     const idStr = String(item.numero_movimiento).trim();
@@ -210,6 +236,8 @@ export function useMovimientos() {
                     const currentId = String(item.numero_movimiento).trim();
                     return self.findIndex(other => String(other.numero_movimiento).trim() === currentId) !== index;
                 });
+
+
 
                 if (duplicate) {
                     toast.add({
@@ -467,7 +495,7 @@ export function useMovimientos() {
     const obtenerUltimoMovimiento = async () => {
         try {
             const response = await window.electronAPI.obtenerUltimoMovimiento();
-          
+
             if (response.success) {
                 return { success: true, data: response.data };
             }
