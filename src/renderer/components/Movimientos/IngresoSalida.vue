@@ -8,7 +8,7 @@
             <div class="flex justify-between items-center  px-4 mb-4 mt-2">
 
                 <div class=" flex items-center mb-3">
-                    <label class=" text-right mr-3 font-semibold">ARTÍCULO EN STOCK:</label>
+                    <label class=" text-right mr-3 font-semibold"  >ARTÍCULO EN STOCK:</label>
                     <InputText v-model="formData.cantidad" readonly class="w-64" :disabled="movimientoRealizado" />
                 </div>
 
@@ -16,10 +16,12 @@
                     <div class="input-group flex  flex-col  items-end mb-3 ">
                         <div>
                             <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                            <InputText v-model="formData.numero_movimiento" class="w-64" :disabled="movimientoRealizado"
-                            :invalid="numero_informe_invalido" />
+                            <InputText v-model="formData.numero_movimiento" class="w-64" :class="{ '!border-red-500 ' : numero_informe_invalido || !formData.numero_movimiento}" :disabled="movimientoRealizado"
+                            :invalid="numero_informe_invalido " />
                         </div>
                             <small v-if="numero_informe_invalido" class=" text-red-500">Formato de número inválido</small>
+                            <small v-if="!formData.numero_movimiento" class=" text-red-500">Complete este campo</small>
+
                     </div>
                     <div :class="`input-group flex items-center `">
                         <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
