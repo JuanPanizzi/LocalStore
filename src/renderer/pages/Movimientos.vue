@@ -21,8 +21,9 @@
                 size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
-            paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
-            class="mx-auto mt-16"
+            paginator :rows="5" tableStyle="min-width: 50rem; height: 40rem" showGridlines style="max-width: 90vw; max-height: 70vh"
+            class="mx-auto mt-16"  scrollable
+           scrollHeight="70vh"
             :globalFilterFields="['material_repuesto', 'marca', 'modelo_serie', 'origen', 'destino']">
             <!-- <Column field="numero_movimiento" header="ID"></Column> -->
             <!-- <Column field="fecha" header="FECHA"></Column> -->
