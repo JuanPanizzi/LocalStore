@@ -1,5 +1,5 @@
 <template>
-<hr class="mx-6 border-t border-[#334155]">
+    <hr class="mx-6 border-t border-[#334155]">
     <Form class="px-3 pt-5 pb-4  rounded-xl  max-w-[95vw] mx-auto">
 
         <div>
@@ -13,14 +13,18 @@
                 </div>
 
                 <div class="flex flex-col ">
-                    <div class="input-group flex items-center mb-3">
-                        <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
-                        <InputText v-model="formData.numero_movimiento"  class="w-64" :disabled="movimientoRealizado" />
+                    <div class="input-group flex  flex-col  items-end mb-3 ">
+                        <div>
+                            <label class="mr-2 w-40 text-right mr-3 font-semibold">N° Informe:</label>
+                            <InputText v-model="formData.numero_movimiento" class="w-64" :disabled="movimientoRealizado"
+                            :invalid="numero_informe_invalido" />
+                        </div>
+                            <small v-if="numero_informe_invalido" class=" text-red-500">Formato de número inválido</small>
                     </div>
                     <div :class="`input-group flex items-center `">
                         <p class="mr-2 w-40 text-right mr-3 font-semibold">Fecha:</p>
                         <DatePicker v-model="formData.fecha" class="w-64" aria-required="required" dateFormat="dd/mm/yy"
-                            :showIcon="true"  :disabled="movimientoRealizado" />
+                            :showIcon="true" :disabled="movimientoRealizado" />
                     </div>
                 </div>
             </div>
@@ -31,7 +35,8 @@
 
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Material / Repuesto:</p>
-                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly :disabled="movimientoRealizado" />
+                <InputText v-model="formData.material_repuesto" class="w-3/5" readonly
+                    :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Marca:</p>
@@ -45,27 +50,28 @@
             <div class="flex justify-between items-center ">
                 <label class="mr-2  w-2/5  text-left font-semibold ">Cantidad:</label>
                 <InputNumber v-model="formData.cantidad_seleccionada"
-                    :invalid="camposIncompletos.cantidad_seleccionada && !formData.cantidad_seleccionada"
-                    class="w-3/5"  :disabled="movimientoRealizado" />
+                    :invalid="camposIncompletos.cantidad_seleccionada && !formData.cantidad_seleccionada" class="w-3/5"
+                    :disabled="movimientoRealizado" />
             </div>
 
-        
+
 
             <div class="flex  items-center justify-between">
                 <label class="mr-2  w-2/5  text-left font-semibold">Tipo Movimiento:</label>
-                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required" :disabled="movimientoRealizado" />
+                <InputText v-model="formData.tipo_movimiento" readonly class="w-3/5 " aria-required="required"
+                    :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Origen:</label>
                 <InputText v-model="formData.origen" :invalid="camposIncompletos.origen && !formData.origen"
-                    class="w-3/5" aria-required="required" required  :disabled="movimientoRealizado" />
+                    class="w-3/5" aria-required="required" required :disabled="movimientoRealizado" />
 
             </div>
 
             <div class="flex items-center  justify-between">
                 <label class="mr-2  w-2/5 text-left font-semibold">Destino:</label>
                 <InputText v-model="formData.destino" class="w-3/5"
-                    :invalid="camposIncompletos.destino && !formData.destino"  :disabled="movimientoRealizado" />
+                    :invalid="camposIncompletos.destino && !formData.destino" :disabled="movimientoRealizado" />
             </div>
 
 
@@ -74,25 +80,25 @@
             <div class="input-group flex justify-between items-center">
 
                 <p class="mr-2  w-2/5  text-left   font-semibold">Permiso de Trabajo Asociado: </p>
-                <InputText v-model="formData.permiso_trabajo_asociado" class="w-3/5 "  :disabled="movimientoRealizado" />
+                <InputText v-model="formData.permiso_trabajo_asociado" class="w-3/5 " :disabled="movimientoRealizado" />
 
 
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Informe Asociado:</p>
-                <InputText v-model="formData.informe_asociado" class="w-3/5"  :disabled="movimientoRealizado" />
+                <InputText v-model="formData.informe_asociado" class="w-3/5" :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Orden de trabajo Asociada:</p>
-                <InputText v-model="formData.orden_trabajo_asociada" class="w-3/5"  :disabled="movimientoRealizado" />
+                <InputText v-model="formData.orden_trabajo_asociada" class="w-3/5" :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">Remito de Ingreso:</p>
-                <InputText v-model="formData.remito" class="w-3/5"  :disabled="movimientoRealizado" />
+                <InputText v-model="formData.remito" class="w-3/5" :disabled="movimientoRealizado" />
             </div>
             <div class="input-group flex items-center">
                 <p class="mr-2  w-2/5 text-left  font-semibold">N° Pieza de Almacén:</p>
-                <InputText v-model="formData.numero_almacenes" class="w-3/5"  :disabled="movimientoRealizado" />
+                <InputText v-model="formData.numero_almacenes" class="w-3/5" :disabled="movimientoRealizado" />
             </div>
             <!-- <div class="input-group flex items-center col-span-2">
                 <p class=" w-1/5 text-left  font-semibold">Observaciones:</p>
@@ -104,11 +110,12 @@
         </div>
 
 
-         <!-- Área de texto para Observaciones -->
-  <div class="px-4 pt-4">
-    <label class="block font-semibold mb-2 ">Observaciones:</label>
-    <Textarea v-model="formData.observaciones" class="w-full max-h-[110px]" rows="4" :disabled="movimientoRealizado" maxlength="1068" />
-  </div>
+        <!-- Área de texto para Observaciones -->
+        <div class="px-4 pt-4">
+            <label class="block font-semibold mb-2 ">Observaciones:</label>
+            <Textarea v-model="formData.observaciones" class="w-full max-h-[110px]" rows="4"
+                :disabled="movimientoRealizado" maxlength="1068" />
+        </div>
 
 
 
@@ -214,6 +221,12 @@ export default defineComponent({
             )
         })
 
+        const numero_informe_invalido = computed(() => {
+            const regex = /^\d{4,}-\d{4}$/;
+            const valor = formData.numero_movimiento;
+            return valor ? !regex.test(valor) : false; // No marcar como inválido si está vacío
+        });
+
         watch(() => props.numeroInformeMovimiento, (nuevoValor) => {
             formData.numero_movimiento = nuevoValor;
         });
@@ -224,7 +237,7 @@ export default defineComponent({
         }, { immediate: true, deep: true });
 
 
-       
+
 
         const nuevoPdf = () => {
             emit('nuevoPdf', { ...formData })
@@ -245,6 +258,11 @@ export default defineComponent({
             if (formData.cantidad_seleccionada < 1) {
                 camposIncompletos.value.cantidad_seleccionada = true;
                 toast.add({ severity: "error", summary: `Cantidad Inválida`, detail: "Debe seleccionar una cantidad mayor a cero", life: 5000 });
+                return;
+            }
+            if(!formData.numero_movimiento){
+                numero_informe_invalido.value = true;
+                toast.add({ severity: "error", summary: `Número de Informe Inexistente`, detail: "Debe seleccionar un número de informe", life: 5000 });
                 return;
             }
 
@@ -287,6 +305,7 @@ export default defineComponent({
             camposIncompletos,
             camposRequeridos,
             nuevoPdf,
+            numero_informe_invalido
         }
     },
 
