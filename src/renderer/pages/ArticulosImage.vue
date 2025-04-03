@@ -499,7 +499,7 @@ export default defineComponent({
         const ultimoNumeroMovimiento = async () => {
 
             const response = await obtenerUltimoMovimiento();
-            console.log('response en ultimonumeromovimiento: 526', response)
+            // console.log('response en ultimonumeromovimiento: 526', response)
             if (response.success) {
                 return response.data;
             } else {

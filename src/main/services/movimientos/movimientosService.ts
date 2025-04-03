@@ -538,56 +538,117 @@ export const actualizarMovimiento = async (movimiento) => {
 //   }
 // };
 
+
+
 export const obtenerUltimoMovimiento = async () => {
   try {
-    const movimientos = db.prepare(
-      `SELECT numero_movimiento FROM movimientos_materiales`
-    ).all();
+    // Recuperamos todos los registros que contengan un guion (filtramos luego en JS)
+    const rows = db
+      .prepare(`
+        SELECT numero_movimiento 
+        FROM movimientos_materiales
+        WHERE numero_movimiento LIKE '%-%'
+      `)
+      .all();
 
-    const regexNuevoFormato = /^(\d{4,})-(\d{4})$/;
-    let maxGrupo = 0;
-    let maxSecuencia = 0;
-    let tieneNuevoFormato = false;
+    // Filtramos solo los registros que cumplen con el formato "0001-0022"
+    const validos = rows.filter(r => /^\d{4,}-\d{4}$/.test(r.numero_movimiento));
 
-//     Se recorre cada número de informe: // Si coincide con el nuevo formato, se separa en: // grupo: parte izquierda del guion. // secuencia: parte derecha del guion.
-    for (const mov of movimientos) {
-      const match = regexNuevoFormato.exec(mov.numero_movimiento);
-      if (match) {
-        tieneNuevoFormato = true;
-        const grupo = parseInt(match[1], 10);
-        const secuencia = parseInt(match[2], 10);
-
-        if (grupo > maxGrupo || (grupo === maxGrupo && secuencia > maxSecuencia)) {
-          maxGrupo = grupo;
-          maxSecuencia = secuencia;
-        }
-      }
-    }
-
-    let siguienteNumero;
-    if (!tieneNuevoFormato) {
-      siguienteNumero = '0001-0087';
-    } else {
-      let nuevoGrupo = maxGrupo;
-      let nuevaSecuencia = maxSecuencia + 1;
-
-      if (nuevaSecuencia > 9999) {
-        nuevoGrupo += 1;
-        nuevaSecuencia = 1;
-      }
-
-      siguienteNumero = `${nuevoGrupo.toString().padStart(4, '0')}-${nuevaSecuencia
-        .toString()
-        .padStart(4, '0')}`;
-    }
-
-    return { success: true, data: siguienteNumero };
-  } catch (error) {
-    console.error('Error al obtener el número de movimiento:', error);
-    return {
-      success: false,
-      error: error || 'Error al obtener el número de movimiento',
+    // Función para comparar dos números de movimiento
+    const compararMovimientos = (a, b) => {
+      const [prefA, sufA] = a.split("-").map(Number);
+      const [prefB, sufB] = b.split("-").map(Number);
+      if (prefA !== prefB) return prefA - prefB;
+      return sufA - sufB;
     };
+
+    // Definimos el valor base mínimo
+    const baseMinima = "0001-0087";
+
+    // Ordenamos de menor a mayor
+    validos.sort((r1, r2) =>
+      compararMovimientos(r1.numero_movimiento, r2.numero_movimiento)
+    );
+
+    // Obtenemos el último número de movimiento válido
+    const maxMovimiento = validos.length > 0 ? validos[validos.length - 1].numero_movimiento : null;
+
+    // Si no hay registros válidos o el mayor es menor que la base mínima, se retorna la base mínima
+    if (!maxMovimiento || compararMovimientos(maxMovimiento, baseMinima) < 0) {
+      return { success: true, data: baseMinima };
+    }
+
+    // Separamos el prefijo y sufijo y calculamos el siguiente número
+    let [pref, suf] = maxMovimiento.split("-").map(Number);
+    suf++;
+    if (suf > 9999) {
+      suf = 1;
+      pref++;
+    }
+    // Aseguramos que el prefijo tenga al menos 4 dígitos y el sufijo exactamente 4
+    const siguiente = `${String(pref).padStart(Math.max(String(pref).length, 4), "0")}-${String(suf).padStart(4, "0")}`;
+
+    return { success: true, data: siguiente };
+  } catch (error) {
+    console.error("Error al obtener el número de movimiento:", error);
+    return { success: false, error: error || "Error al obtener el número de movimiento" };
   }
 };
+
+
+
+
+
+// export const obtenerUltimoMovimiento = async () => {
+//   try {
+//     const movimientos = db.prepare(
+//       `SELECT numero_movimiento FROM movimientos_materiales`
+//     ).all();
+
+//     const regexNuevoFormato = /^(\d{4,})-(\d{4})$/;
+//     let maxGrupo = 0;
+//     let maxSecuencia = 0;
+//     let tieneNuevoFormato = false;
+
+// //     Se recorre cada número de informe: // Si coincide con el nuevo formato, se separa en: // grupo: parte izquierda del guion. // secuencia: parte derecha del guion.
+//     for (const mov of movimientos) {
+//       const match = regexNuevoFormato.exec(mov.numero_movimiento);
+//       if (match) {
+//         tieneNuevoFormato = true;
+//         const grupo = parseInt(match[1], 10);
+//         const secuencia = parseInt(match[2], 10);
+
+//         if (grupo > maxGrupo || (grupo === maxGrupo && secuencia > maxSecuencia)) {
+//           maxGrupo = grupo;
+//           maxSecuencia = secuencia;
+//         }
+//       }
+//     }
+
+//     let siguienteNumero;
+//     if (!tieneNuevoFormato) {
+//       siguienteNumero = '0001-0087';
+//     } else {
+//       let nuevoGrupo = maxGrupo;
+//       let nuevaSecuencia = maxSecuencia + 1;
+
+//       if (nuevaSecuencia > 9999) {
+//         nuevoGrupo += 1;
+//         nuevaSecuencia = 1;
+//       }
+
+//       siguienteNumero = `${nuevoGrupo.toString().padStart(4, '0')}-${nuevaSecuencia
+//         .toString()
+//         .padStart(4, '0')}`;
+//     }
+
+//     return { success: true, data: siguienteNumero };
+//   } catch (error) {
+//     console.error('Error al obtener el número de movimiento:', error);
+//     return {
+//       success: false,
+//       error: error || 'Error al obtener el número de movimiento',
+//     };
+//   }
+// };
 
