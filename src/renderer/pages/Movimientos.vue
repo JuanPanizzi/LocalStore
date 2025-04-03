@@ -17,7 +17,8 @@
                 <Tag v-for="(filter, index) in activeFilters" :key="index" :value="`${filter.field}: ${filter.value}`"
                     severity="secondary" class="mb-2 text-2xl" icon="pi pi-filter" />
             </div>
-            <Button label="Reestablecer Filtros" icon="pi pi-filter-slash" @click="clearFilters" class="mt-2 text-md" size="small" />
+            <Button label="Reestablecer Filtros" icon="pi pi-filter-slash" @click="clearFilters" class="mt-2 text-md"
+                size="small" />
         </div>
         <DataTable v-model:filters="filters" @filter="handleFilter" filterDisplay="menu" :value="dataMovimientos"
             paginator :rows="5" tableStyle="min-width: 50rem" showGridlines style="max-width: 90vw"
@@ -32,7 +33,9 @@
                     </div>
                 </template>
 </Column> -->
-<template #empty> <Message severity="secondary" outlined class="my-8 py-3" variant="outlined">Sin Resultados</Message> </template>
+            <template #empty>
+                <Message severity="secondary" outlined class="my-8 py-3" variant="outlined">Sin Resultados</Message>
+            </template>
 
             <Column field="" header="">
                 <template #body="slotProps">
@@ -299,7 +302,7 @@ export default defineComponent({
                             toast.add({ severity: 'warn', summary: 'Advertencia', detail: 'Movimiento no encontrado', life: 3000 });
                         }
                     } else {
-                        toast.add({ severity: 'error', summary: 'Error al eliminar movimiento', detail:  response.message || 'Error al eliminar el movimiento, intente nuevamente', life: 6000 });
+                        toast.add({ severity: 'error', summary: 'Error al eliminar movimiento', detail: response.message || 'Error al eliminar el movimiento, intente nuevamente', life: 6000 });
                     }
 
                 },
@@ -320,14 +323,17 @@ export default defineComponent({
             if (response.success) {
                 // console.log('response.data', response.data)
                 dataMovimientos.value = response.data.sort((a, b) => {
-                    const [dayA, monthA, yearA] = a.fecha.split('/');
-                    const [dayB, monthB, yearB] = b.fecha.split('/');
+                    // Separamos el ID en dos partes: el número principal y el sufijo
+                    const [numA, sufA] = a.numero_movimiento.split('-').map(Number);
+                    const [numB, sufB] = b.numero_movimiento.split('-').map(Number);
 
-                    const dateA = new Date(yearA, monthA - 1, dayA);
-                    const dateB = new Date(yearB, monthB - 1, dayB);
-
-                    // Para order descendente (más reciente primero) restamos dateB - dateA
-                    return dateB - dateA;
+                    // Primero comparamos el número principal
+                    if (numA === numB) {
+                        // Si son iguales, se compara el sufijo
+                        return sufB - sufA;
+                    }
+                    // Orden descendente según el número principal
+                    return numB - numA;
                 });
                 toast.add({ severity: "success", summary: "Éxito", detail: "Datos cargados correctamente.", life: 10000 });
             } else {
