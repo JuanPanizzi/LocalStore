@@ -558,7 +558,7 @@ export default defineComponent({
         }
 
         const crearMovimiento = async (datosCompIngresoSalida) => {
-
+           
             const datosFormulario = {
                 ...datosCompIngresoSalida,
                 fecha: datosCompIngresoSalida.fecha ? formatFechaToYYYYMMDD(datosCompIngresoSalida.fecha) : ''
