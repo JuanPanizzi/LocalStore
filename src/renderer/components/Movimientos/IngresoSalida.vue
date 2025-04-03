@@ -253,6 +253,11 @@ export default defineComponent({
                 toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de origen.", life: 5000 });
                 return;
             }
+            if (!formData.fecha) {
+                camposIncompletos.value.origen = true;
+                toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor seleccione una fecha.", life: 5000 });
+                return;
+            }
             if (!formData.destino) {
                 camposIncompletos.value.destino = true;
                 toast.add({ severity: "error", summary: `Campos incompletos`, detail: "Por favor complete el campo de destino.", life: 5000 });
