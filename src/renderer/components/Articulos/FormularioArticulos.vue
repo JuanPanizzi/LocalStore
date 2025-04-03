@@ -40,9 +40,7 @@
             </div>
         </div>
         <div class="mt-5 flex items-center justify-end">
-            <!-- <Button label="Reiniciar" icon="pi pi-refresh" class="mr-2" severity="secondary"
-                @click="reiniciarFormulario" /> -->
-            <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="danger" @click="cerrarDialog" />
+            <Button label="Cancelar" icon="pi pi-times" class="mr-2" severity="secondary" @click="cerrarDialog" />
             <Button label="Guardar" icon="pi pi-save" severity="success" class="" @click="guardarArticulo" />
 
         </div>
