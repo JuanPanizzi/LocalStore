@@ -1,5 +1,5 @@
 import * as XLSX from "xlsx-js-style";
-import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha, formatearFecha } from '../utils/funcionesFecha';
+import { formatFechaDDMMYYYY, formatFechaToYYYYMMDD, validarFormatoFecha, formatearFecha, stringToDate } from '../utils/funcionesFecha';
 import { useToast } from "primevue/usetoast";
 import logo from '../../resources/pdflogo.png'
 import jsPDF from 'jspdf';
@@ -280,7 +280,8 @@ export function useMovimientos() {
                         // Solo si el reemplazo es exitoso, formatear las fechas para el frontend
                         const movimientos = response.data.map((row) => ({
                             ...row,
-                            fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
+                            // fecha: row.fecha ? formatFechaDDMMYYYY(row.fecha) : null, // Renderizar como DD-MM-YYYY
+                            fecha: row.fecha ? stringToDate(row.fecha) : null, 
                         }));
 
                         // Mostrar advertencias si existen
@@ -847,7 +848,8 @@ export function useMovimientos() {
         exportarExcel,
         eliminarMovimiento,
         actualizarMovimiento,
-        obtenerArticuloById
+        obtenerArticuloById,
+        stringToDate
     }
 
 }
