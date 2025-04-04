@@ -1,5 +1,5 @@
 <template>
-    <section class="h-[91vh] p-5 bg-[#0F172A] flex flex-col justify-center  ">
+    <section class=" p-5 bg-[#0F172A] flex flex-col justify-center  ">
         <!-- <section class="p-5"> -->
         <!-- {{ dataMovimientosFiltrada }} -->
 

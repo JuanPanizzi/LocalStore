@@ -6,3 +6,8 @@
     font-family: 'Source Sans Pro', sans-serif;
 }
 
+@media screen and (max-width: 1420px) {
+    *{
+        font-size: 0.85rem;
+    }
+}

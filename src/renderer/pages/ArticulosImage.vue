@@ -1,6 +1,6 @@
 <template>
 
-    <section class="h-[91vh] card mx-2 p-8 bg-[#0F172A] ">
+    <section class=" card mx-2 p-8 bg-[#0F172A] ">
         <div class="max-w-[97%] mx-auto space-y-8">
             <!-- Filtros -->
             <div class="bg-slate-800 p-4 rounded-lg shadow-md">
