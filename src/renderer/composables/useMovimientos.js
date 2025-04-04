@@ -673,10 +673,10 @@ export function useMovimientos() {
                     8: { cellWidth: 16 }, // inventario_remanente
                     9: { cellWidth: 18 }, // pt asociado
                     10: { cellWidth: 22 }, //  ot asociado 
-                    11: { cellWidth: 23 }, // informe asociado
+                    11: { cellWidth: 25 }, // informe asociado
                     12: { cellWidth: 15 }, // remito
                     13: { cellWidth: 17 }, // n° almacenes
-                    14: { cellWidth: 35 }, // observaciones
+                    14: { cellWidth: 32 }, // observaciones
                 },
                 margin: { left: 1, right: 1 },
                 theme: "grid"
