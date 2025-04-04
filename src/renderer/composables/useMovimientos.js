@@ -558,14 +558,13 @@ export function useMovimientos() {
         const { cantidad: stock_articulo_seleccionado, unidad_medida } = response.data;
 
 
-
-        const doc = new jsPDF("l", "mm", "a4"); // Cambiamos a orientación horizontal (landscape)
-
-        
-        // Después de crear el doc
-        doc.addFileToVFS("Roboto-Regular.ttf", base64Fuente); // <-- Aquí pones tu cadena base64
+        // const doc = new jsPDF({ orientation: "landscape" });
+        const doc = new jsPDF("l", "mm", "a4");
+        doc.addFileToVFS("Roboto-Regular.ttf", base64Fuente);
         doc.addFont("Roboto-Regular.ttf", "Roboto", "normal");
-        doc.setFont("Roboto");
+        doc.setFont("Roboto", "normal");
+        doc.setFontSize(10);  // tamaño de fuente de ejemplo
+
 
         // Agregar logo
         const appLogo = new Image();
@@ -577,10 +576,10 @@ export function useMovimientos() {
             doc.text(`HISTORIAL DE MOVIMIENTOS `, 29, 19);
             doc.text(`${material_repuesto?.toUpperCase()} - ${marca?.toUpperCase()} - ${modelo_serie?.toUpperCase()}`, 29, 26);
 
+
+
+
             doc.setFontSize(10);
-
-
-
             // doc.setFontSize(9)
             doc.setFont('Roboto', 'bold');
             doc.rect(260, 11, 30, 5); //rectangulo fecha
@@ -598,7 +597,7 @@ export function useMovimientos() {
             doc.text(`${stock_articulo_seleccionado} ${unidad_medida || ''}`, 263, 26)
 
 
-
+            // const columnWidths = { 0: { cellWidth: 30 }, 1: { cellWidth: 60 }, 2: { cellWidth: 60 }, 3: { cellWidth: 90 } };
             //   if (tipoFiltradoPdf.value) {
             //     doc.text(`FILTRADO POR ${tipoFiltradoPdf.value}`, doc.internal.pageSize.width / 2, 22, { align: "center" });
             //   }
@@ -663,10 +662,15 @@ export function useMovimientos() {
 
             // Configurar tabla con mejores ajustes
             autoTable(doc, {
+                tableWidth: 'wrap',
                 startY: 40,
+                margin: { left: 1, right: 1 },
                 head: [columnas.map(col => col.title)],
                 body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
-                styles: { fontSize: 6, cellPadding: 1 },
+                styles: {
+                    font: "Roboto", fontStyle: "normal", fontSize: 6,
+                    overflow: 'linebreak', cellWidth: 'wrap'
+                },
                 headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 6 },
                 columnStyles: {
                     0: { cellWidth: 16 }, //Fecha
@@ -686,8 +690,8 @@ export function useMovimientos() {
                     13: { cellWidth: 17 }, // n° almacenes
                     14: { cellWidth: 32 }, // observaciones
                 },
-                margin: { left: 1, right: 1 },
-                theme: "grid"
+                // margin: { left: 1, right: 1 },
+                // theme: "grid"
             });
 
             // Guardar PDF
