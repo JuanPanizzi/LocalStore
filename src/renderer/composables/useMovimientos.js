@@ -824,7 +824,7 @@ export function useMovimientos() {
         if (tipoExcel == "historial articulo") {
             const material = datosFiltrados[0].material_repuesto;
             const marca = datosFiltrados[0].marca;
-            const modelo = datosFiltrados[1].modelo_serie
+            const modelo = datosFiltrados[0].modelo_serie
             XLSX.writeFile(workbook, `INF-MOV-${material?.toUpperCase() || ''}-${marca?.toUpperCase() || ''}-${modelo?.toUpperCase() || ''}-FECHA-${yyyy}-${mm}-${dd}.xlsx`);
 
         } else {
