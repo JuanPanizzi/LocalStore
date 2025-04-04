@@ -662,6 +662,7 @@ export function useMovimientos() {
 
             // Configurar tabla con mejores ajustes
             autoTable(doc, {
+                theme: "grid",
                 tableWidth: 'wrap',
                 startY: 40,
                 margin: { left: 1, right: 1 },
@@ -676,7 +677,7 @@ export function useMovimientos() {
                     0: { cellWidth: 16 }, //Fecha
                     1: { cellWidth: 20 }, //material / repuesto
                     2: { cellWidth: 19 }, //marca
-                    3: { cellWidth: 24 },//modelo
+                    3: { cellWidth: 22 },//modelo
                     4: { cellWidth: 18 }, // movimiento
                     5: { cellWidth: 18 }, // origen
                     6: { cellWidth: 18 }, // destino
@@ -685,10 +686,10 @@ export function useMovimientos() {
                     8: { cellWidth: 16 }, // inventario_remanente
                     9: { cellWidth: 18 }, // pt asociado
                     10: { cellWidth: 22 }, //  ot asociado 
-                    11: { cellWidth: 25 }, // informe asociado
+                    11: { cellWidth: 20 }, // informe asociado
                     12: { cellWidth: 15 }, // remito
                     13: { cellWidth: 17 }, // n° almacenes
-                    14: { cellWidth: 32 }, // observaciones
+                    14: { cellWidth: 39 }, // observaciones
                 },
                 // margin: { left: 1, right: 1 },
                 // theme: "grid"
