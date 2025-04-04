@@ -57,6 +57,7 @@
                 <template #body="{ data }">
                     <!-- {{ data.fecha }} -->
                     {{ formatearFecha(data.fecha) }}
+                    
                 </template>
                 <template #filter="{ filterModel }">
                     <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />

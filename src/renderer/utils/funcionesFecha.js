@@ -103,10 +103,18 @@ export const fechaActual = () => {
 };
 
 
-export const stringToDate = (fechaStr) => {
+// export const stringToDate = (fechaStr) => {
   
-  const partes = fechaStr.split("-"); // Divide la fecha en partes [YYYY, MM, DD]
-  console.log('fechaStr', fechaStr)
-    console.log('new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); ', new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])) )
-    return new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); 
- }
+//   const partes = fechaStr.split("-"); // Divide la fecha en partes [YYYY, MM, DD]
+//   console.log('fechaStr', fechaStr)
+//     console.log('new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); ', new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])) )
+//     return new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); 
+//  }
+export const stringToDate = (fechaStr) => {
+  const partes = fechaStr.split("-"); // Suponiendo formato "YYYY-MM-DD"
+  const year = parseInt(partes[0]);
+  const month = parseInt(partes[1]);
+  const day = parseInt(partes[2]);
+  // Fijar la hora a las 12 para evitar problemas de cambio de día por zona horaria
+  return new Date(year, month - 1, day, 12);
+}
