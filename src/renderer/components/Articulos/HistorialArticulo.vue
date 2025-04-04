@@ -95,7 +95,7 @@
             <Column field="orden_trabajo_asociada" header="OT ASOCIADA"></Column>
             <Column field="remito" header="REMITO"></Column>
             <Column field="numero_almacenes" header="N° ALMACENES"></Column>
-            <Column field="observaciones" header="OBSERVACIONES"></Column>
+            <!-- <Column field="observaciones" header="OBSERVACIONES"></Column> -->
         </DataTable>
 
     </div>
