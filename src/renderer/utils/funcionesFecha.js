@@ -104,6 +104,9 @@ export const fechaActual = () => {
 
 
 export const stringToDate = (fechaStr) => {
-    const partes = fechaStr.split("-"); // Divide la fecha en partes [YYYY, MM, DD]
+  
+  const partes = fechaStr.split("-"); // Divide la fecha en partes [YYYY, MM, DD]
+  console.log('fechaStr', fechaStr)
+    console.log('new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); ', new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])) )
     return new Date(parseInt(partes[0]), parseInt(partes[1]) - 1, parseInt(partes[2])); 
  }

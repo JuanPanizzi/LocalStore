@@ -2,6 +2,7 @@
     <section class=" p-5 bg-[#0F172A] flex flex-col justify-center  ">
         <!-- <section class="p-5"> -->
         <!-- {{ dataMovimientosFiltrada }} -->
+          <!-- {{dataMovimientos}} -->
 
         <!-- <h1 class="font-bold text-xl text-[#0EA5E9] flex justify-end">Movimientos de Materiales</h1> -->
 
@@ -49,13 +50,13 @@
             <Column field="numero_movimiento" header="ID"></Column>
 
             <Column header="FECHA" filterField="fecha" dataType="date" style="min-width: 10rem"
-                :showFilterOperator="false" :showFilterMatchModes="true" :showAddButton="true" :filterMatchModeOptions="[
+                :showFilterOperator="false" :showFilterMatchModes="true"  :filterMatchModeOptions="[
                     { label: 'Fechas Posteriores a:', value: 'dateAfter' },
                     { label: 'Fechas Anteriores a:', value: 'dateBefore' }
                 ]">
                 <template #body="{ data }">
-                    {{ data.fecha }}
-                    <!-- {{ formatearFecha(data.fecha) }} -->
+                    <!-- {{ data.fecha }} -->
+                    {{ formatearFecha(data.fecha) }}
                 </template>
                 <template #filter="{ filterModel }">
                     <DatePicker v-model="filterModel.value" dateFormat="dd/mm/yy" placeholder="Seleccione fecha " />
@@ -422,12 +423,15 @@ export default defineComponent({
         onMounted(async () => {
 
             const response = await obtenerMovimientos();
+
+
             if (response.success) {
                 // dataMovimientos.value = response.data;
+                // stringToDate('2025-04-04')
                 dataMovimientos.value = response.data.map(mov => ({
                     ...mov,
-                    // fecha: stringToDate(mov.fecha)
-                    fecha: formatFechaDDMMYYYY(mov.fecha)
+                    fecha: stringToDate(mov.fecha)
+                    // fecha: formatFechaDDMMYYYY(mov.fecha)
                 })
                 )
 
