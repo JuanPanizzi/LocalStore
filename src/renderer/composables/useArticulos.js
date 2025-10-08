@@ -1,6 +1,11 @@
+import logo from '../../resources/pdflogo.png';
+import jsPDF from 'jspdf';
+import autoTable from "jspdf-autotable";
+import { useToast } from "primevue/usetoast";
 
 export function useArticulos(){
 
+    const toast = useToast();
 
     const obtenerArticulos  = async () => {
 
@@ -88,14 +93,82 @@ export function useArticulos(){
         }
     }
 
-   
+    const generarListadoPDF = (articulos) => {
+        if (!articulos || articulos.length === 0) {
+            toast.add({ severity: 'error', summary: 'Error', detail: 'No hay artículos para generar el PDF', life: 3000 });
+            return;
+        }
+
+        const doc = new jsPDF("l", "mm", "a4"); // Orientación horizontal
+
+        // Agregar logo
+        const appLogo = new Image();
+        appLogo.src = logo;
+        appLogo.onload = () => {
+            doc.addImage(appLogo, "PNG", 10, 10, 20, 20);
+            doc.setFontSize(18);
+            doc.setFont("helvetica", "bold");
+            doc.text("INVENTARIO DE ARTÍCULOS", doc.internal.pageSize.width / 2, 22, { align: "center" });
+            
+            // Agregar fecha de exportación
+            const today = new Date();
+            const fecha = today.toLocaleDateString('es-ES', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+            doc.setFontSize(10);
+            doc.text(`Fecha de exportación: ${fecha}`, doc.internal.pageSize.width - 20, 15, { align: "right" });
+
+            const columnas = [
+                { title: "MATERIAL / REPUESTO", dataKey: "material_repuesto" },
+                { title: "MARCA", dataKey: "marca" },
+                { title: "MODELO / SERIE", dataKey: "modelo_serie" },
+                { title: "CANTIDAD", dataKey: "cantidad" },
+                { title: "UNIDAD", dataKey: "unidad_medida" }
+            ];
+
+            const filas = articulos.map(item => {
+                return columnas.reduce((obj, col) => {
+                    obj[col.dataKey] = item[col.dataKey] || "-";
+                    return obj;
+                }, {});
+            });
+
+            autoTable(doc, {
+                startY: 40,
+                head: [columnas.map(col => col.title)],
+                body: filas.map(fila => columnas.map(col => fila[col.dataKey])),
+                styles: { fontSize: 9, cellPadding: 2 },
+                headStyles: { fillColor: [0, 128, 255], textColor: 255, fontStyle: "bold", fontSize: 9 },
+                columnStyles: {
+                    0: { cellWidth: 80 }, // Material/Repuesto
+                    1: { cellWidth: 60 }, // Marca
+                    2: { cellWidth: 60 }, // Modelo/Serie
+                    3: { cellWidth: 30 }, // Cantidad
+                    4: { cellWidth: 30 }  // Unidad
+                },
+                margin: { left: 20, right: 20 },
+                theme: "grid"
+            });
+
+            // Guardar PDF
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            const nombrePdf = `INVENTARIO-ARTICULOS-${yyyy}-${mm}-${dd}.pdf`;
+
+            doc.save(nombrePdf);
+        };
+    };
+
     return {
         obtenerArticulos,
         crearArticulo,
         eliminarArticulo,
         seleccionarImagen,
         actualizarArticulo,
-       
+        generarListadoPDF
     }
 
 

@@ -121,6 +121,12 @@
                 </div>
             </div>
 
+            <!-- Botón de exportar PDF -->
+            <div class="flex justify-end mt-4">
+                <Button label="Exportar Inventario PDF" icon="pi pi-file-pdf" severity="danger" outlined
+                    @click="generarListadoPDF(filteredArticulos)" />
+            </div>
+
             <!-- Aquí se ubican los Dialogs si los necesitas -->
             <Dialog v-model:visible="showForm" modal header="NUEVO ARTÍCULO" :pt="{ header: ' mx-5' }">
                 <FormularioArticulos @guardarArticulo="guardarArticulo" @cancelar="handleForm(false)" />
@@ -200,7 +206,7 @@ export default defineComponent({
     },
 
     setup() {
-        const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo, seleccionarImagen } = useArticulos();
+        const { obtenerArticulos, crearArticulo, eliminarArticulo, actualizarArticulo, seleccionarImagen, generarListadoPDF } = useArticulos();
         const { guardarMovimiento, generarPdf, obtenerUltimoMovimiento } = useMovimientos();
         const dataArticulos = ref([]);
         const toast = useToast();
@@ -675,7 +681,8 @@ export default defineComponent({
             isLoading,
             actualizarImagenDirecta,
             debouncedFilters,
-            movimientoRealizado
+            movimientoRealizado,
+            generarListadoPDF
 
         }
     }
