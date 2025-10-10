@@ -1,5 +1,5 @@
 {
-    "appId": "com.localStore.app",
+    "appId": "com.gestmet.app",
     "directories": {
         "output": "dist",
         "buildResources": "src/resources"
